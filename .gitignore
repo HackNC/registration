@@ -4,6 +4,7 @@ include/
 lib/
 share/
 
+settings.py
 pip-selfcheck.json
 
 # Byte-compiled / optimized / DLL files
