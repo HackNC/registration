@@ -12,6 +12,9 @@ setup(name='registration',
         'flask==0.11.1',
         'requests==2.10.0',
         'requests_oauthlib==0.6.2',
-        'flask-sqlalchemy'
+        'flask-sqlalchemy==2.1',
+        'flask_login==0.3.2',
+        'uwsgi==2.0.13.1',
+        'psycopg2==2.6.2'
       ],
 )

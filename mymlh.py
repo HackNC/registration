@@ -41,7 +41,7 @@ class MlhShim():
             "access_token": access_token
         })
         payload_dict = json.loads(payload)
-        return payload_dict
+        return payload_dict["data"]
 
     def _post(self, url, params):
         """
@@ -51,9 +51,7 @@ class MlhShim():
         :return: the response body
         """
         packed_url = url + "?" + parse.urlencode(params)
-        print(packed_url)
         r = requests.post(packed_url)
-        print(r.text)
         r.raise_for_status()
         return r.text
 
@@ -66,6 +64,5 @@ class MlhShim():
         """
         packed_url = url + "?" + parse.urlencode(params)
         r = requests.get(packed_url)
-        print(r.text)
         r.raise_for_status()
         return r.text
