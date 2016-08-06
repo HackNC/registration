@@ -30,4 +30,4 @@ def logout():
 
 if __name__ == "__main__":
     debug = sys.argv[1] == "debug"
-    app.run(port=8000, debug=debug)
+    app.run(debug=debug, port=5000)
