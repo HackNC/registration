@@ -4,12 +4,14 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.engine.url import URL
 from requests import RequestException
 from flask.ext.login import LoginManager, current_user, login_required, login_user
+from flask_cors import CORS, cross_origin
 
 import mymlh
 import models
 import settings
 
 app = Flask(__name__)
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = URL(**settings.DATABASE)
 app.secret_key = settings.SECRET_KEY
 models.db.init_app(app)
@@ -51,7 +53,19 @@ def dashboard():
     """
     Successful logins are directed here
     """
-    return jsonify(**{"id": current_user.id})
+    user = models.SessionUser.query.get(current_user.id)
+
+    if request.method == "GET":
+        return jsonify(**{
+            "user_data": user.serialize(),
+            "team_mates": user.get_teammates()
+        })
+    elif request.method == "POST":
+        update_success = user.update(request.form)
+        return jsonify(**{
+            "action": update_success,
+            "user_data":user.serialize()
+        })
 
 @login_required
 @app.route("/admin", methods=["GET"])

@@ -41,7 +41,13 @@ class MlhShim():
             "access_token": access_token
         })
         payload_dict = json.loads(payload)
-        return payload_dict["data"]
+        payload_dict = payload_dict["data"]
+
+        # Restructure the dict so we don't have to worry about this in the object model.
+        payload_dict['school_id'] = payload_dict['school']['id']
+        payload_dict['school_name'] = payload_dict['school']['name']
+        payload_dict.pop('school', None)
+        return payload_dict
 
     def _post(self, url, params):
         """
