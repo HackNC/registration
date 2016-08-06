@@ -11,5 +11,7 @@ setup(name='registration',
       install_requires=[
         'flask==0.11.1',
         'requests==2.10.0',
-        'requests_oauthlib==0.6.2'],
+        'requests_oauthlib==0.6.2',
+        'flask-sqlalchemy'
+      ],
 )
