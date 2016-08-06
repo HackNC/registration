@@ -1,5 +1,5 @@
 import requests
-import urllib
+from urllib import parse
 import json
 
 class MlhShim():
@@ -37,9 +37,9 @@ class MlhShim():
         return payload_dict
 
     def _get_user(self, access_token):
-        payload = self._get("https://my.mlh.io/api/v1/user", (
-            ("access_token", access_token)
-        ))
+        payload = self._get("https://my.mlh.io/api/v1/user", {
+            "access_token": access_token
+        })
         payload_dict = json.loads(payload)
         return payload_dict
 
@@ -50,7 +50,10 @@ class MlhShim():
         :param params: Parameter argument specified as a tuple of 2-tuples
         :return: the response body
         """
-        r = requests.post(url + urllib.urlencode(params))
+        packed_url = url + "?" + parse.urlencode(params)
+        print(packed_url)
+        r = requests.post(packed_url)
+        print(r.text)
         r.raise_for_status()
         return r.text
 
@@ -61,3 +64,8 @@ class MlhShim():
         :param params: Parameter argument specified as tuple of 2-tuples
         :return: the response body
         """
+        packed_url = url + "?" + parse.urlencode(params)
+        r = requests.get(packed_url)
+        print(r.text)
+        r.raise_for_status()
+        return r.text
