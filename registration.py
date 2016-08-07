@@ -1,8 +1,10 @@
 import sys
+import os
+
+from requests import RequestException
 from flask import Flask, request, url_for, render_template, jsonify, redirect, render_template, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.engine.url import URL
-from requests import RequestException
 from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user
 from flask_cors import CORS, cross_origin
 
@@ -10,19 +12,27 @@ import mymlh
 import models
 import settings
 
+# Load app
 app = Flask(__name__)
-CORS(app)
+
+# Configure app
 app.config['SQLALCHEMY_DATABASE_URI'] = URL(**settings.DATABASE)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = settings.UPLOAD_FOLDER
 app.secret_key = settings.SECRET_KEY
+
+# Load sub-modules
+CORS(app)
 models.db.init_app(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+# Load MLH shim
 mlh_shim = mymlh.MlhShim(
     settings.MYMLH["app_id"],
     settings.MYMLH["secret"],
     settings.MYMLH["redirect_uri"]
 )
-login_manager = LoginManager()
-login_manager.init_app(app)
 
 # 
 # Login handlers
@@ -63,6 +73,9 @@ def dashboard():
             flash("Update successful")
         else:
             flash("Update failed")
+
+        if secure_store(request.files, user, "resume"):
+            flash("File uploaded")
 
     return render_template(
         "dashboard.html",
@@ -142,8 +155,37 @@ def build_auth_url():
         callback_uri=settings.CALLBACK_URI
     )
 
-def form_to_dict(form):
-    return form.to_dict()
+def allowed_file(filename):
+    return '.' in filename \
+        and filename.rsplit('.', 1)[1] in settings.ALLOWED_EXTENSIONS
+
+def secure_store(requests_files, user, form_file_name):
+    # check if the post request has the file part
+    if form_file_name not in requests_files:
+        # User gave no file.  That's fine.
+        return False
+    
+    else:
+        file = request.files[form_file_name]
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            # User gave no file.  That's fine.
+            return False
+        
+        if file and allowed_file(file.filename):
+            old_name, extension = os.path.splitext(file.filename)
+            new_filename = "{fname}_{lname}_{id}_{filetype}{ext}".format(
+                fname=user.first_name,
+                lname=user.last_name,
+                id=user.id,
+                filetype=form_file_name,
+                ext=extension)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
+            return {
+                "action": "uploaded",
+                "filename": new_filename
+            }
 
 if __name__ == "__main__":
     debug = "debug" in sys.argv

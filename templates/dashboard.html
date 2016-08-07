@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
   <h2>MLH Data</h2>
-  <p><a href="{{ mlh_edit_link }}">Edit MLH Data</a> <a href="{{ url_for('index') }}">Refresh MLH Data</a></p>
 
   <table>
   {% for field, value in mlh_data %}
@@ -14,16 +13,20 @@
   {% endfor %}
   </table>
 
+  <p><a href="{{ mlh_edit_link }}">Edit MLH Data</a> <a href="{{ url_for('index') }}">Refresh MLH Data</a></p>
+
   <h2>HackNC Data</h2>
   
-  <form class=entries action="{{ url_for('dashboard') }}" method="post">
-
+  <form class=entries action="{{ url_for('dashboard') }}" method="post" enctype="multipart/form-data">
   {% for field, value in hacknc_data %}
     <label>{{ field }}</label>
     <input type="text" name="{{ field }}" value="{{ value }}"></input>
     <br>
   {% endfor %}
-  <input type=submit value="Save">
+    <label>Resume</label>
+    <input type=file name="resume"></input>
+    <br><br>
+    <input type=submit value="Save">
   </form>
 
   <h2>Team</h2>
