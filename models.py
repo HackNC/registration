@@ -1,7 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy, inspect
 
-import settings
-
 db = SQLAlchemy()
 
 class User(db.Model):
@@ -66,9 +64,9 @@ class User(db.Model):
         return {c: getattr(self, c) for c in inspect(self).attrs.keys()}
 
     def update(self, update_dict):
-        for key, value in update_dict:
+        for key, value in update_dict.items():
             
-            if key in self.settable_keys:
+            if key in self.hacknc_settable_keys:
                 setattr(self, key, value)
             
             else:
@@ -83,11 +81,19 @@ class User(db.Model):
 
     def get_teammates(self):
         if self.team_name is not None:
-            teammates = self.query.filter(self.column.ilike(self.team_name))
-            teammate_ids = [teammate.id for teammate in teammates]
-            return teammate_ids         
+            teammates = self.query.filter(SessionUser.team_name.ilike(self.team_name))
+            teammates = [teammate.first_name + " " + teammate.last_name for teammate in teammates]
+            return teammates
         else:
             return []
+
+    def get_mlh_data(self):
+        mlh_values = [getattr(self, field) for field in self.mlh_settable_keys]
+        return zip(self.mlh_settable_keys, mlh_values)
+
+    def get_hacknc_data(self):
+        hacknc_values = [getattr(self, field) for field in self.hacknc_settable_keys]
+        return zip(self.hacknc_settable_keys, hacknc_values)
 
 class SessionUser(User):
 

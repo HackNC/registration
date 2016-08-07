@@ -1,9 +1,9 @@
 import sys
-from flask import Flask, request, url_for, render_template, jsonify, redirect
+from flask import Flask, request, url_for, render_template, jsonify, redirect, render_template, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.engine.url import URL
 from requests import RequestException
-from flask.ext.login import LoginManager, current_user, login_required, login_user
+from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user
 from flask_cors import CORS, cross_origin
 
 import mymlh
@@ -13,6 +13,7 @@ import settings
 app = Flask(__name__)
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = URL(**settings.DATABASE)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = settings.SECRET_KEY
 models.db.init_app(app)
 mlh_shim = mymlh.MlhShim(
@@ -55,6 +56,30 @@ def dashboard():
     """
     user = models.SessionUser.query.get(current_user.id)
 
+    if request.method == "POST":
+        # TODO: Determine if application is in an updatable state (Has application window closed?)
+        update_success = user.update(request.form.to_dict())
+        if update_success['status'] == "success":
+            flash("Update successful")
+        else:
+            flash("Update failed")
+
+    return render_template(
+        "dashboard.html",
+        mlh_data=user.get_mlh_data(),
+        hacknc_data=user.get_hacknc_data(),
+        teammates=user.get_teammates(),
+        mlh_edit_link=settings.MLH_EDIT_LINK,
+        user=user)
+
+
+@login_required
+@app.route("/api/me", methods=["GET", "POST"])
+def me():
+    """
+    An API endpoint for /dashboard data
+    """
+    user = models.SessionUser.query.get(current_user.id)
     if request.method == "GET":
         return jsonify(**{
             "user_data": user.serialize(),
@@ -116,6 +141,9 @@ def build_auth_url():
         client_id=settings.MYMLH['app_id'],
         callback_uri=settings.CALLBACK_URI
     )
+
+def form_to_dict(form):
+    return form.to_dict()
 
 if __name__ == "__main__":
     debug = "debug" in sys.argv

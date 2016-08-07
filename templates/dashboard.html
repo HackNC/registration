@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>MLH Data</h2>
+  <p><a href="{{ mlh_edit_link }}">Edit MLH Data</a> <a href="{{ url_for('index') }}">Refresh MLH Data</a></p>
+
+  <table>
+  {% for field, value in mlh_data %}
+    
+    <tr>
+    <td><label>{{ field }}</label></td>
+    <td><input type="text" value="{{ value }}" disabled></input></td>
+    </tr>
+  
+  {% endfor %}
+  </table>
+
+  <h2>HackNC Data</h2>
+  
+  <form class=entries action="{{ url_for('dashboard') }}" method="post">
+
+  {% for field, value in hacknc_data %}
+    <label>{{ field }}</label>
+    <input type="text" name="{{ field }}" value="{{ value }}"></input>
+    <br>
+  {% endfor %}
+  <input type=submit value="Save">
+  </form>
+
+  <h2>Team</h2>
+
+  {% for teammate in teammates %}
+  {{ teammate }}<br>
+  {% endfor %}
+  
+{% endblock %}
