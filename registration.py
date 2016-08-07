@@ -74,16 +74,18 @@ def dashboard():
         else:
             flash("Update failed")
 
-        if secure_store(request.files, user, "resume"):
+        resume_success = secure_store(request.files, user, "resume")
+        if resume_success:
+            user.set_resume_location(resume_success['filename'])
             flash("File uploaded")
 
     return render_template(
         "dashboard.html",
-        mlh_data=user.get_mlh_data(),
-        hacknc_data=user.get_hacknc_data(),
+        mlh_data=user.get_friendly_mlh_data(),
+        data=user.get_friendly_hacknc_data(),
         teammates=user.get_teammates(),
         mlh_edit_link=settings.MLH_EDIT_LINK,
-        user=user)
+    )
 
 
 @login_required

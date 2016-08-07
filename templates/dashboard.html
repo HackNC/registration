@@ -1,38 +1,76 @@
 {% extends "layout.html" %}
 {% block body %}
-  <h2>MLH Data</h2>
+  <div class="container">
 
-  <table>
-  {% for field, value in mlh_data %}
-    
-    <tr>
-    <td><label>{{ field }}</label></td>
-    <td><input type="text" value="{{ value }}" disabled></input></td>
-    </tr>
-  
-  {% endfor %}
-  </table>
+    <div class="row">
+      <div class="col-sm-12">
+        <h1>Registration</h1>
+        <p>Please complete the HackNC Data section to finalize your application.  You can save your progress and come back at any time.  Your progress will be automatically submitted when registration closes.</p>
+      </div>
+    </div>
 
-  <p><a href="{{ mlh_edit_link }}">Edit MLH Data</a> <a href="{{ url_for('index') }}">Refresh MLH Data</a></p>
+    <div class="row">
 
-  <h2>HackNC Data</h2>
-  
-  <form class=entries action="{{ url_for('dashboard') }}" method="post" enctype="multipart/form-data">
-  {% for field, value in hacknc_data %}
-    <label>{{ field }}</label>
-    <input type="text" name="{{ field }}" value="{{ value }}"></input>
-    <br>
-  {% endfor %}
-    <label>Resume</label>
-    <input type=file name="resume"></input>
-    <br><br>
-    <input type=submit value="Save">
-  </form>
+    <!-- HackNC Section -->
 
-  <h2>Team</h2>
+      <div class="col-sm-6 col-md-8">
+        <h2>HackNC Data</h2>
+        <p>Please give us a little more info so we can get to know you!</p>
+        
+        <form class=entries action="{{ url_for('dashboard') }}" method="post" enctype="multipart/form-data">
 
-  {% for teammate in teammates %}
-  {{ teammate }}<br>
-  {% endfor %}
+          <div class="form-group">
+            <label for="what_to_learn">{{ data['what_to_learn']['friendly_name'] }}</label>
+            <p class="help-text">{{ data['what_to_learn']['help_text'] }}</p>
+            <textarea class="form-control" id="what_to_learn" name="what_to_learn">{{ data['what_to_learn']['value'] }}</textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="background">{{ data['background']['friendly_name'] }}</label>
+            <p class="help-text">{{ data['background']['help_text'] }}</p>
+            <textarea class="form-control" id="background" name="background">{{ data['background']['value'] }}</textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="team_name">{{ data['team_name']['friendly_name'] }}</label>
+            <p class="help-text">{{ data['team_name']['help_text'] }}</p>
+           <input type="text" class="form-control" id="team_name" name="team_name" value="{{  data['team_name']['value'] }}">
+          </div>
+
+          <div class="form-group">
+            <label for="resume">Resume Upload</label>
+            <input type="file" class="form-control" name="resume">
+          </div>
+          <input type=submit value="Save">
+        
+        </form>
+
+        <h2>Team</h2>
+
+        {% for teammate in teammates %}
+        {{ teammate }}<br>
+        {% endfor %}
+        
+      </div>
+
+      <!-- MLH Section -->
+
+      <div class="col-sm-6 col-md-4">
+        <h2>MLH Data</h2>  
+        <p><a href="{{ mlh_edit_link }}">Edit MLH Data</a> | <a href="{{ url_for('index') }}">Refresh MLH Data</a></p>
+        <form>
+          {% for field, value in mlh_data %}
+          
+          <div class="form-group">
+            <label for="{{ field }}">{{ field }}</label>
+            <input type="text" class="form-control" id="{{ field }}" name="{{ field }}" value="{{ value }}" disabled>
+          </div>
+        
+          {% endfor %}
+        </form>
+      </div>
+
+    </div>
+  </div>
   
 {% endblock %}

@@ -1,0 +1,7 @@
+p {
+    font-size: 16px;
+}
+p.help-text {
+    font-size: 12px;
+    font-style: italic;
+}

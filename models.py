@@ -17,9 +17,9 @@ class User(db.Model):
         "date_of_birth", 
         "email", 
         "first_name", 
+        "last_name", 
         "gender", 
         "graduation", 
-        "last_name", 
         "major", 
         "phone_number",
         "school_id",
@@ -91,6 +91,53 @@ class User(db.Model):
         mlh_values = [getattr(self, field) for field in self.mlh_settable_keys]
         return zip(self.mlh_settable_keys, mlh_values)
 
+    def get_friendly_mlh_data(self):
+        """
+        Returns a dictionary of "Friendly Key" : "Value" pairs
+        """
+        friendly_names = {
+            "date_of_birth": "Date of Birth",
+            "email": "Email",
+            "first_name": "First Name",
+            "last_name": "Last Name",
+            "gender": "Gender",
+            "graduation": "Graduation",
+            "major": "Major",
+            "phone_number": "Phone Number",
+            "school_name": "School",
+            "shirt_size": "Shirt Size", 
+            "special_needs": "Special Needs",
+            "dietary_restrictions": "Dietary Restrictions"
+        }
+        mlh_friendly_values = [getattr(self, field) for field in friendly_names.keys()]
+        return zip(friendly_names.values(), mlh_friendly_values)
+
+    def get_friendly_hacknc_data(self):
+        """
+        Must resturn both the object_key, Friendly Key, help_text, and value for ever item that should be included in the form
+        """
+        return {
+            "what_to_learn" : { 
+                "friendly_name": "What do you want to learn?",
+                "help_text": "Whether it be virtual reality, the internet of things, or how to scrape together your first webpage, let us know what you're interested in learning!",
+                "value": self.what_to_learn
+            },
+            "background": {
+                "friendly_name": "Your Background",
+                "help_text": "Tell us a little more about you!  How'd you get into tech?",
+                "value": self.background
+            },
+            "team_name": {
+                "friendly_name": "Team Name",
+                "help_text": "Create a team by giving us a team name.  Your teammates can all add the same name and get grouped.  This won't affect your application - it's just for fun!",
+                "value": self.team_name
+            }
+        }
+
+    def set_resume_location(self, resume_location):
+        self.resume_location = resume_location
+        db.session.commit()
+    
     def get_hacknc_data(self):
         hacknc_values = [getattr(self, field) for field in self.hacknc_settable_keys]
         return zip(self.hacknc_settable_keys, hacknc_values)

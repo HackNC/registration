@@ -1,9 +1,18 @@
 <!doctype html>
-<title>My HackNC</title>
+<head>
+    <title>My HackNC</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+</head>
 <div class=page>
-  <h1>Registration</h1>
-  {% for message in get_flashed_messages() %}
-    <div class=flash>{{ message }}</div>
-  {% endfor %}
-  {% block body %}{% endblock %}
+    <div class="container">
+        <div class="row">
+            <div class="col-2m-12">
+              {% for message in get_flashed_messages() %}
+                <div class=flash><p class="bg-info">{{ message }}</p></div>
+              {% endfor %}
+              </div>
+        </div>
+    </div>
+    {% block body %}{% endblock %}
 </div>

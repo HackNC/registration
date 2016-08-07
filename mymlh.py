@@ -11,7 +11,6 @@ class MlhShim():
         self.redirect_uri = redirect_uri
         self.grant_type = "authorization_code"
 
-
     def get_user(self, auth_code):
         """Given an auth code, run through the Oauth flow and return a user object
         :param: auth_code: See https://my.mlh.io/docs#oauth_flows

@@ -3,13 +3,13 @@ A flask app for HackNC registration using MyMLH for auth.
 
 # Requirements
 
-use apt-get to install the following
+use aptto install the following
 
 ```
-sudo apt-get install python3 python3-dev python-dev libpq-dev virtualenv postgresql
+sudo apt-get install python3 python3-dev python-dev libpq-dev virtualenv postgresql nginx
 ```
 
-# Development
+# Development 
 
 clone the code and checkout a branch
 
