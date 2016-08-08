@@ -112,7 +112,7 @@ def dashboard():
     return render_template(
         "dashboard.html",
         mlh_data=user.get_friendly_mlh_data(),
-        data=user.get_friendly_hacknc_data(),
+        form_data=user.get_friendly_hacknc_data(),
         teammates=user.get_teammates(),
         status_dict=user.get_status(),
         mlh_edit_link=settings.MLH_EDIT_LINK,

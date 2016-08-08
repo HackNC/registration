@@ -8,6 +8,11 @@ def sanitize_None(value):
 class User(db.Model):
 
     # The status codes and their meanings
+    # These are the statuses that a user account can be in
+    # Here's how HackNC does it:
+    # open > aaccepted / rejected / travel +accepted / notravel +accepted / waitlisted
+    # waitlisted > accepted / travel +accepted / notravel +accepted
+    # accepted / travel +accepted / notravel +accepted > checked-in
     status_dict = {
         "o": {
             "friendly_name": "Open",
@@ -16,6 +21,26 @@ class User(db.Model):
         "a": {
             "friendly_name": "Accepted",
             "help_text": "Congrats - You're accepted!  Keep an eye on your email for further actions."
+        },
+        "r": {
+            "friendly_name": "Not Accepted",
+            "help_text": "Unfortunately, we couldn't reserve a spot for you this year.  Don't be discouraged - there were a ton of hackers that wanted in.  If you think there may have been a mistake, send mail to hello@hacknc.com"
+        },
+        "w": {
+            "friendly_name": "Waitlisted",
+            "help_text": "Sit tight!  We're trying to find you a spot.  Check back often!"
+        },
+        "t": {
+            "friendly_name": "Accepted with Travel",
+            "help_text": "Congrats - You're accepted with a travel reimbursement!  Keep an eye on your email for further actions.  Questions about travel can be directed to travel@hacknc.com"
+        },
+        "n": {
+            "friendly_name": "Accepted without Travel",
+            "help_text": "Congrats - You're accepted!  Unfortunately, we can't compensate you for travel.  If you have any questions, shoot us an email at hello@hacknc.com"
+        },
+        "c": {
+            "friendly_name": "Checked In",
+            "help_text": "OMG you're here!!  Thanks for coming to hang out with us!  Let us know if there's anything you need."
         },
         "default": {
             "friendly_name": "Unknown",
@@ -28,30 +53,36 @@ class User(db.Model):
         "what_to_learn" : { 
             "friendly_name": "What do you want to learn?",
             "help_text": "Whether it be virtual reality, the internet of things, or how to scrape together your first webpage, let us know what you're interested in learning!",
+            "formtype": "textarea"
         },
         "background": {
             "friendly_name": "Your Background",
             "help_text": "Tell us a little more about you!  How'd you get into tech?",
+            "formtype": "textarea"
         },
         "team_name": {
             "friendly_name": "Team Name",
             "help_text": "Create a team by giving us a team name.  Your teammates can all add the same name and get grouped.  This won't affect your application - it's just for fun!",
+            "formtype": "text"
         },
         "github": {
             "friendly_name" : "GitHub URL",
             "help_text" : "A link to your github profile",
+            "formtype": "text"
         },
         "website": {
             "friendly_name" : "Persoanl URL",
             "help_text" : "Could be your website, or a link to something else you're proud of.",
+            "formtype": "text"
         },
         "mac_address": {
             "friendly_name" : "MAC Address",
             "help_text" : "The MAC accress of your laptop's wireless card.  We need this to connect you to our WIFI.",
+            "formtype": "text"
         }
     }
 
-    # The list of keys MLH is allowed to set.
+    # The list of keys MLH is allowed to set - don't touch this
     mlh_settable_keys = [
         "id", 
         "created_at", 
@@ -71,7 +102,7 @@ class User(db.Model):
         "updated_at"
     ]
 
-    # Things MLH knows.
+    # Things MLH knows - these keys are necessary for the app to function
     id = db.Column(db.INTEGER, primary_key=True)
     created_at = db.Column(db.DateTime)
     date_of_birth = db.Column(db.Date)
@@ -89,7 +120,7 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime)
     dietary_restrictions = db.Column(db.Text)
 
-    # Our extended data
+    # Our extended data - we can modify this
     what_to_learn = db.Column(db.Text)
     resume_location = db.Column(db.String(256))
     background = db.Column(db.Text)
@@ -98,7 +129,7 @@ class User(db.Model):
     github = db.Column(db.String(128))
     website = db.Column(db.String(128))
 
-    # System data
+    # System data - the system needs these.
     is_admin = db.Column(db.Boolean)
     registration_status = db.Column(db.CHAR)
 

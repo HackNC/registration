@@ -24,46 +24,29 @@
         
         <form class=entries action="{{ url_for('dashboard') }}" method="post" enctype="multipart/form-data">
 
-          <div class="form-group">
-            <label for="what_to_learn">{{ data['what_to_learn']['friendly_name'] }}</label>
-            <p class="help-text">{{ data['what_to_learn']['help_text'] }}</p>
-            <textarea class="form-control" id="what_to_learn" name="what_to_learn">{{ data['what_to_learn']['value'] }}</textarea>
-          </div>
+          {% for field_id, data in form_data.items() %}
 
-          <div class="form-group">
-            <label for="background">{{ data['background']['friendly_name'] }}</label>
-            <p class="help-text">{{ data['background']['help_text'] }}</p>
-            <textarea class="form-control" id="background" name="background">{{ data['background']['value'] }}</textarea>
-          </div>
+            {% if data['formtype'] == 'textarea' %}
+              <div class="form-group">
+                <label for="{{ field_id }}">{{ data['friendly_name'] }}</label>
+                <p class="help-text">{{ data['help_text'] }}</p>
+                <textarea class="form-control" id="{{ field_id }}" name="{{ field_id }}">{{ data['value'] }}</textarea>
+              </div>
+            {% elif data['formtype'] == 'text' %}
+              <div class="form-group">
+                <label for="{{ field_id }}">{{ data['friendly_name'] }}</label>
+                <p class="help-text">{{ data['help_text'] }}</p>
+               <input type="text" class="form-control" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}">
+              </div>
+            {% endif %}
 
-          <div class="form-group">
-            <label for="team_name">{{ data['team_name']['friendly_name'] }}</label>
-            <p class="help-text">{{ data['team_name']['help_text'] }}</p>
-           <input type="text" class="form-control" id="team_name" name="team_name" value="{{  data['team_name']['value'] }}">
-          </div>
-
-          <div class="form-group">
-            <label for="github">{{ data['github']['friendly_name'] }}</label>
-            <p class="help-text">{{ data['github']['help_text'] }}</p>
-           <input type="text" class="form-control" id="github" name="github" value="{{  data['github']['value'] }}">
-          </div>
-
-          <div class="form-group">
-            <label for="website">{{ data['website']['friendly_name'] }}</label>
-            <p class="help-text">{{ data['website']['help_text'] }}</p>
-           <input type="text" class="form-control" id="website" name="website" value="{{  data['website']['value'] }}">
-          </div>
-
-          <div class="form-group">
-            <label for="mac_address">{{ data['mac_address']['friendly_name'] }}</label>
-            <p class="help-text">{{ data['mac_address']['help_text'] }}</p>
-           <input type="text" class="form-control" id="mac_address" name="mac_address" value="{{  data['mac_address']['value'] }}">
-          </div>
+          {% endfor %}
 
           <div class="form-group">
             <label for="resume">Resume Upload</label>
             <input type="file" class="form-control" name="resume">
           </div>
+
           <input type=submit value="Save">
         
         </form>
