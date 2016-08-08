@@ -47,76 +47,8 @@ def unauthorized_callback():
     return redirect('/')
 
 # 
-# The Views
+# Views - Everyone
 # 
-
-@app.route("/")
-def index():
-    if current_user.is_anonymous:
-        auth_url = build_auth_url()
-        return redirect(auth_url)
-    else:
-        return redirect(url_for("dashboard"))
-
-@login_required
-@app.route("/dashboard", methods=["GET", "POST"])
-def dashboard():
-    """
-    Successful logins are directed here
-    """
-    user = models.SessionUser.query.get(current_user.id)
-
-    if request.method == "POST":
-        # TODO: Determine if application is in an updatable state (Has application window closed?)
-        update_success = user.update(request.form.to_dict())
-        if update_success['status'] == "success":
-            flash("Update successful")
-        else:
-            flash("Update failed")
-
-        resume_success = secure_store(request.files, user, "resume")
-        if resume_success:
-            user.set_resume_location(resume_success['filename'])
-            flash("File uploaded")
-
-    return render_template(
-        "dashboard.html",
-        mlh_data=user.get_friendly_mlh_data(),
-        data=user.get_friendly_hacknc_data(),
-        teammates=user.get_teammates(),
-        mlh_edit_link=settings.MLH_EDIT_LINK,
-    )
-
-
-@login_required
-@app.route("/api/me", methods=["GET", "POST"])
-def me():
-    """
-    An API endpoint for /dashboard data
-    """
-    user = models.SessionUser.query.get(current_user.id)
-    if request.method == "GET":
-        return jsonify(**{
-            "user_data": user.serialize(),
-            "team_mates": user.get_teammates()
-        })
-    elif request.method == "POST":
-        update_success = user.update(request.form)
-        return jsonify(**{
-            "action": update_success,
-            "user_data":user.serialize()
-        })
-
-@login_required
-@app.route("/admin", methods=["GET"])
-def admin():
-    """
-    Administrative users can examine the live registration data
-    """
-    if current_user.is_admin:
-        return jsonify(**mlh_shim.get_all())
-    else:
-        return jsonify(permission="denied"), 403
 
 @app.route("/login")
 def login():
@@ -146,6 +78,106 @@ def login():
 def logout():
     logout_user()
     return jsonify(action="logged_out")
+
+@app.route("/")
+def index():
+    if current_user.is_anonymous:
+        auth_url = build_auth_url()
+        return redirect(auth_url)
+    else:
+        return redirect(url_for("dashboard"))
+
+@login_required
+@app.route("/dashboard", methods=["GET", "POST"])
+def dashboard():
+    """
+    Successful logins are directed here
+    """
+    user = models.SessionUser.query.get(current_user.id)
+
+    if request.method == "POST":
+        # TODO: Determine if application is in an updatable state (Has application window closed?)
+        update_dict = request.form.to_dict()
+        update_success = user.update(update_dict)
+        if update_success['status'] == "success":
+            flash("Update successful")
+        else:
+            flash("Update failed")
+
+        resume_success = secure_store(request.files, user, "resume")
+        if resume_success:
+            user.set_resume_location(resume_success['filename'])
+            flash("File uploaded")
+
+    return render_template(
+        "dashboard.html",
+        mlh_data=user.get_friendly_mlh_data(),
+        data=user.get_friendly_hacknc_data(),
+        teammates=user.get_teammates(),
+        status_dict=user.get_status(),
+        mlh_edit_link=settings.MLH_EDIT_LINK,
+    )
+
+@login_required
+@app.route("/api/me", methods=["GET", "POST"])
+def me():
+    """
+    An API endpoint for /dashboard data
+    """
+    user = models.SessionUser.query.get(current_user.id)
+    if request.method == "GET":
+        return jsonify(**{
+            "user_data": user.serialize(),
+            "team_mates": user.get_teammates()
+        })
+    elif request.method == "POST":
+        update_success = user.update(request.form)
+        return jsonify(**{
+            "action": update_success,
+            "user_data":user.serialize()
+        })
+
+# 
+# Views - Administrative
+# 
+
+@login_required
+@app.route("/admin", methods=["GET"])
+def admin():
+    """
+    Administrative users can examine the live registration data
+    """
+    if current_user.is_admin:
+        users = models.SessionUser.query
+
+        order_by = request.args.get("order")
+        if order_by is not None:
+            if order_by == "school":
+                users = models.SessionUser.query.order_by(models.SessionUser.school_id)
+            elif order_by == "id":
+                users = models.SessionUser.query.order_by(models.SessionUser.id)
+            elif order_by == "status":
+                users = models.SessionUser.query.order_by(models.SessionUser.registration_status)
+
+        return render_template(
+            "admin.html",
+            users=users
+        )
+    else:
+        return jsonify(permission="denied"), 403
+
+@login_required
+@app.route("/admin/update/<int:user_id>", methods=["POST"])
+def admin_update(user_id):
+    """
+    This method may be used to set ANY field.
+    """
+    if current_user.is_admin:
+        user = load_user(user_id)
+        print(user.admin_update(request.form.to_dict()))
+        return redirect(url_for("admin"))
+    else:
+        return jsonify(permission="denied"), 403
 
 # 
 # Helpers

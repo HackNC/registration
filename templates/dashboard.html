@@ -3,9 +3,14 @@
   <div class="container">
 
     <div class="row">
-      <div class="col-sm-12">
+      <div class="col-sm-6 col-md-8 registration-header">
         <h1>Registration</h1>
         <p>Please complete the HackNC Data section to finalize your application.  You can save your progress and come back at any time.  Your progress will be automatically submitted when registration closes.</p>
+      </div>
+
+      <div class="col-sm-6 col-md-4">
+        <h2>Status - {{ status_dict['friendly_name'] }}</h2>
+        <p>{{ status_dict['help_text'] }}</p>
       </div>
     </div>
 
@@ -14,7 +19,7 @@
     <!-- HackNC Section -->
 
       <div class="col-sm-6 col-md-8">
-        <h2>HackNC Data</h2>
+        <h2>HackNC 2016</h2>
         <p>Please give us a little more info so we can get to know you!</p>
         
         <form class=entries action="{{ url_for('dashboard') }}" method="post" enctype="multipart/form-data">
@@ -35,6 +40,24 @@
             <label for="team_name">{{ data['team_name']['friendly_name'] }}</label>
             <p class="help-text">{{ data['team_name']['help_text'] }}</p>
            <input type="text" class="form-control" id="team_name" name="team_name" value="{{  data['team_name']['value'] }}">
+          </div>
+
+          <div class="form-group">
+            <label for="github">{{ data['github']['friendly_name'] }}</label>
+            <p class="help-text">{{ data['github']['help_text'] }}</p>
+           <input type="text" class="form-control" id="github" name="github" value="{{  data['github']['value'] }}">
+          </div>
+
+          <div class="form-group">
+            <label for="website">{{ data['website']['friendly_name'] }}</label>
+            <p class="help-text">{{ data['website']['help_text'] }}</p>
+           <input type="text" class="form-control" id="website" name="website" value="{{  data['website']['value'] }}">
+          </div>
+
+          <div class="form-group">
+            <label for="mac_address">{{ data['mac_address']['friendly_name'] }}</label>
+            <p class="help-text">{{ data['mac_address']['help_text'] }}</p>
+           <input type="text" class="form-control" id="mac_address" name="mac_address" value="{{  data['mac_address']['value'] }}">
           </div>
 
           <div class="form-group">
