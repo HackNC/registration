@@ -45,7 +45,9 @@ class MlhShim():
         # Restructure the dict so we don't have to worry about this in the object model.
         payload_dict['school_id'] = payload_dict['school']['id']
         payload_dict['school_name'] = payload_dict['school']['name']
+        payload_dict['mlh_id'] = payload_dict['id']
         payload_dict.pop('school', None)
+        payload_dict.pop('id', None)
         return payload_dict
 
     def _post(self, url, params):

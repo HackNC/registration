@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 <script>
-  function get_user(user_id){
+  function get_user(user_email){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (xhttp.readyState == 4 && xhttp.status == 200) {
@@ -24,7 +24,7 @@
        // . = xhttp.responseText;
       }
     };
-    xhttp.open("GET", ("/admin/user/" + user_id) , true);
+    xhttp.open("GET", ("/admin/user/" + user_email) , true);
     xhttp.send();
   }
 </script>
@@ -53,10 +53,10 @@ Status: o(pen), a (accepted), r (rejected), w (waitlisted), t (travel grant + ac
     <tr>
       <td>{{ user.first_name }}</td>
       <td>{{ user.last_name }}</td>
-      <td>{{ user.id }}</td>
+      <td>{{ user.mlh_id }}</td>
       <td>{{ user.school_name }}</td>
       <td>{{ user.registration_status }}</td>
-      <td><button onclick="get_user({{ user.id }})">Details</button></td>
+      <td><button onclick="get_user('{{ user.email }}')">Details</button></td>
     </tr>
     {% endfor %}
   </table>

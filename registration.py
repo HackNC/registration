@@ -93,7 +93,7 @@ def dashboard():
     """
     Successful logins are directed here
     """
-    user = models.SessionUser.query.get(current_user.id)
+    user = models.SessionUser.query.get(current_user.email)
 
     if request.method == "POST":
         # TODO: Determine if application is in an updatable state (Has application window closed?)
@@ -125,7 +125,7 @@ def me():
     a json endpoint for /dashboard data
     TODO: refactor this into /dashboard so that MIME type is considered
     """
-    user = models.SessionUser.query.get(current_user.id)
+    user = models.SessionUser.query.get(current_user.email)
     if request.method == "GET":
         return jsonify(**{
             "user_data": user.serialize(),
@@ -156,7 +156,7 @@ def admin():
             if order_by == "school":
                 users = models.SessionUser.query.order_by(models.SessionUser.school_id)
             elif order_by == "id":
-                users = models.SessionUser.query.order_by(models.SessionUser.id)
+                users = models.SessionUser.query.order_by(models.SessionUser.mlh_id)
             elif order_by == "status":
                 users = models.SessionUser.query.order_by(models.SessionUser.registration_status)
 
@@ -168,17 +168,17 @@ def admin():
         return jsonify(permission="denied"), 403
 
 @login_required
-@app.route("/admin/user/<int:user_id>", methods=["POST", "GET"])
-def admin_update(user_id):
+@app.route("/admin/user/<user_email>", methods=["POST", "GET"])
+def admin_update(user_email):
     """
     This method may be used to set ANY field.  Be careful when using this.
     """
     if current_user.is_admin:
         if request.method == "POST":
-            user = load_user(user_id)
+            user = load_user(user_email)
             return jsonify(user.admin_update(request.form.to_dict()))
         elif request.method == "GET":
-            user = load_user(user_id)
+            user = load_user(user_email)
             return jsonify(**{
                 "user_data": user.serialize(),
                 "team_mates": user.get_teammates()
@@ -216,10 +216,10 @@ def secure_store(requests_files, user, form_file_name):
         
         if file and allowed_file(file.filename):
             old_name, extension = os.path.splitext(file.filename)
-            new_filename = "{fname}_{lname}_{id}_{filetype}{ext}".format(
+            new_filename = "{fname}_{lname}_{email}_{filetype}{ext}".format(
                 fname=user.first_name,
                 lname=user.last_name,
-                id=user.id,
+                email=user.email,
                 filetype=form_file_name,
                 ext=extension)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))

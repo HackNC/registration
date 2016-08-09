@@ -1,5 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy, inspect
 
+import settings
+
 db = SQLAlchemy()
 
 def sanitize_None(value):
@@ -110,7 +112,7 @@ class User(db.Model):
 
     # The list of keys MLH is allowed to set - don't touch this
     mlh_settable_keys = [
-        "id", 
+        "mlh_id", 
         "created_at", 
         "date_of_birth", 
         "email", 
@@ -130,10 +132,10 @@ class User(db.Model):
 
     # Things MLH knows - these keys are necessary for the app to function
     # TODO: change application to use email as the primary key
-    id = db.Column(db.INTEGER, primary_key=True)
+    mlh_id = db.Column(db.INTEGER)
     created_at = db.Column(db.DateTime)
     date_of_birth = db.Column(db.Date)
-    email = db.Column(db.String(32))
+    email = db.Column(db.String(32), primary_key=True)
     first_name = db.Column(db.String(32))
     gender = db.Column(db.String(16))
     graduation = db.Column(db.Date)
@@ -162,8 +164,8 @@ class User(db.Model):
     can_edit = db.Column(db.Boolean)
     notes = db.Column(db.Text)
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, email):
+        self.email = email
         self.is_admin = False
         self.can_edit = True
         self.registration_status = settings.DEFAULT_REGISTRATION_STATUS
@@ -265,16 +267,16 @@ class SessionUser(User):
     is_anonymous=True
 
     def get_id(self):
-        return self.id
+        return self.email
     
 def update_or_create(user_dict):
-    uid = user_dict["id"]
-    user = SessionUser.query.get(uid)
+    email = user_dict["email"]
+    user = SessionUser.query.get(email)
     
     if user:
         pass
     else:
-        user = SessionUser(uid)
+        user = SessionUser(email)
         db.session.add(user)
 
     for key, value in user_dict.items():
