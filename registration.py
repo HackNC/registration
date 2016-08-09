@@ -122,7 +122,8 @@ def dashboard():
 @app.route("/api/me", methods=["GET", "POST"])
 def me():
     """
-    An API endpoint for /dashboard data
+    a json endpoint for /dashboard data
+    TODO: refactor this into /dashboard so that MIME type is considered
     """
     user = models.SessionUser.query.get(current_user.id)
     if request.method == "GET":
@@ -167,15 +168,21 @@ def admin():
         return jsonify(permission="denied"), 403
 
 @login_required
-@app.route("/admin/update/<int:user_id>", methods=["POST"])
+@app.route("/admin/user/<int:user_id>", methods=["POST", "GET"])
 def admin_update(user_id):
     """
-    This method may be used to set ANY field.
+    This method may be used to set ANY field.  Be careful when using this.
     """
     if current_user.is_admin:
-        user = load_user(user_id)
-        print(user.admin_update(request.form.to_dict()))
-        return redirect(url_for("admin"))
+        if request.method == "POST":
+            user = load_user(user_id)
+            return jsonify(user.admin_update(request.form.to_dict()))
+        elif request.method == "GET":
+            user = load_user(user_id)
+            return jsonify(**{
+                "user_data": user.serialize(),
+                "team_mates": user.get_teammates()
+            })   
     else:
         return jsonify(permission="denied"), 403
 
@@ -226,4 +233,4 @@ if __name__ == "__main__":
     migrate = "migrate" in sys.argv
     if migrate:
         models.make_migrations(app)
-    app.run(debug=debug, port=80, host="0.0.0.0")
+    app.run(debug=debug, port=8080, host="0.0.0.0")

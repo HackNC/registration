@@ -30,13 +30,15 @@
               <div class="form-group">
                 <label for="{{ field_id }}">{{ data['friendly_name'] }}</label>
                 <p class="help-text">{{ data['help_text'] }}</p>
-                <textarea class="form-control" id="{{ field_id }}" name="{{ field_id }}">{{ data['value'] }}</textarea>
+                <textarea class="form-control" id="{{ field_id }}" name="{{ field_id }}" 
+                  {{ 'disabled' if not data['editable'] else ''}}>{{ data['value'] }}
+                </textarea>
               </div>
             {% elif data['formtype'] == 'text' %}
               <div class="form-group">
                 <label for="{{ field_id }}">{{ data['friendly_name'] }}</label>
                 <p class="help-text">{{ data['help_text'] }}</p>
-               <input type="text" class="form-control" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}">
+               <input type="text" class="form-control" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" {{ 'disabled' if not data['editable'] else ''}}>
               </div>
             {% endif %}
 

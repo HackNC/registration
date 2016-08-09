@@ -1,41 +1,64 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="container">
-  
-  <div class="row">
-    <div class="col-sm-12">
-      <h1>Admin</h1>
-      <p>
-      Modify the internal object mode.<br>
-      Status: o(pen), a (accepted), r (rejected), w (waitlisted), t (travel grant + accpeted), n (no travel grant + accepted)<br>
-      </p>
-      
-        <table class="admin">
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th><a href="{{ url_for('admin') }}?order=id">ID</a></th>
-            <th><a href="{{ url_for('admin') }}?order=school">School</a></th>
-            <th><a href="{{ url_for('admin') }}?order=status">Status</a></th>
-            <th>Set Status</th>
-          </tr>
-        {% for user in users %}
-          <tr>
-            <td>{{ user.first_name }}</td>
-            <td>{{ user.last_name }}</td>
-            <td>{{ user.id }}</td>
-            <td>{{ user.school_name }}</td>
-            <td>{{ user.registration_status }}</td>
-            <td>
-              <form action="{{ url_for('admin_update', user_id=user.id) }}" method="post">
-                <input type="text" name="registration_status"></input>
-                <input type="submit" value="save"></input>
-              </form>
-            </td>
-          </tr>
-        {% endfor %}
-        </table>
-    </div>
-  </div>
+<script>
+  function get_user(user_id){
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (xhttp.readyState == 4 && xhttp.status == 200) {
+
+        // Empty the element
+        node = document.getElementById("admin-more-info")
+        while (node.hasChildNodes()) {
+            node.removeChild(node.lastChild);
+        }
+        var user = JSON.parse(xhttp.responseText);
+        var user_data = user['user_data'];
+        var user_teammates = user['team_mates'];
+
+        // Add the new ones
+        node.innerHTML = "<table>"
+        for (var key in user_data) {
+          node.innerHTML = node.innerHTML + "<tr><td>" + key + "</td><td>" + user_data[key] + "</td></tr>";
+        }
+        node.innerHTML += "</table>"
+       // . = xhttp.responseText;
+      }
+    };
+    xhttp.open("GET", ("/admin/user/" + user_id) , true);
+    xhttp.send();
+  }
+</script>
+
+<div id="more-info">
+  <table id="admin-more-info">
+  </table>
 </div>
+
+<h1>Admin</h1>
+<p>
+Modify the internal object mode.<br>
+Status: o(pen), a (accepted), r (rejected), w (waitlisted), t (travel grant + accpeted), n (no travel grant + accepted)<br>
+</p>
+
+  <table class="admin">
+    <tr>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th><a href="{{ url_for('admin') }}?order=id">ID</a></th>
+      <th><a href="{{ url_for('admin') }}?order=school">School</a></th>
+      <th><a href="{{ url_for('admin') }}?order=status">Status</a></th>
+      <th>Set Status</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.first_name }}</td>
+      <td>{{ user.last_name }}</td>
+      <td>{{ user.id }}</td>
+      <td>{{ user.school_name }}</td>
+      <td>{{ user.registration_status }}</td>
+      <td><button onclick="get_user({{ user.id }})">Details</button></td>
+    </tr>
+    {% endfor %}
+  </table>
+
 {% endblock %}
