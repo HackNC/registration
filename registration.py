@@ -11,6 +11,7 @@ from flask_cors import CORS, cross_origin
 import mymlh
 import models
 import settings
+from views import AdminView
 
 # Load app
 app = Flask(__name__)
@@ -39,8 +40,9 @@ mlh_shim = mymlh.MlhShim(
 # 
 
 @login_manager.user_loader
-def load_user(user_id):
-    return models.SessionUser.query.get(user_id)
+def load_user(user_email):
+    return models.User.query.get(user_email)
+
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
@@ -67,7 +69,7 @@ def login():
     # The code should be a valid auth token.
     try:
         user_dict = mlh_shim.get_user(auth_code)
-        user_obj = models.update_or_create(user_dict)
+        user_obj = models.HackerUser.update_or_create(user_dict)
         login_user(user_obj)
         return redirect(url_for("dashboard"))
     except RequestException as re:
@@ -93,7 +95,7 @@ def dashboard():
     """
     Successful logins are directed here
     """
-    user = models.SessionUser.query.get(current_user.email)
+    user = load_user(current_user.email)
 
     if request.method == "POST":
         # TODO: Determine if application is in an updatable state (Has application window closed?)
@@ -125,7 +127,7 @@ def me():
     a json endpoint for /dashboard data
     TODO: refactor this into /dashboard so that MIME type is considered
     """
-    user = models.SessionUser.query.get(current_user.email)
+    user = current_user
     if request.method == "GET":
         return jsonify(**{
             "user_data": user.serialize(),
@@ -148,24 +150,8 @@ def admin():
     """
     Administrative users can examine the live registration data
     """
-    if current_user.is_admin:
-        users = models.SessionUser.query
-
-        order_by = request.args.get("order")
-        if order_by is not None:
-            if order_by == "school":
-                users = models.SessionUser.query.order_by(models.SessionUser.school_id)
-            elif order_by == "id":
-                users = models.SessionUser.query.order_by(models.SessionUser.mlh_id)
-            elif order_by == "status":
-                users = models.SessionUser.query.order_by(models.SessionUser.registration_status)
-
-        return render_template(
-            "admin.html",
-            users=users
-        )
-    else:
-        return jsonify(permission="denied"), 403
+    return AdminView(current_user).get_admin_panel( 
+        order=request.args.get("order_by"))
 
 @login_required
 @app.route("/admin/user/<user_email>", methods=["POST", "GET"])
@@ -179,10 +165,7 @@ def admin_update(user_email):
             return jsonify(user.admin_update(request.form.to_dict()))
         elif request.method == "GET":
             user = load_user(user_email)
-            return jsonify(**{
-                "user_data": user.serialize(),
-                "team_mates": user.get_teammates()
-            })   
+            return AdminView(current_user).api_get(user)   
     else:
         return jsonify(permission="denied"), 403
 
