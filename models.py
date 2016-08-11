@@ -9,11 +9,6 @@ db = SQLAlchemy()
 
 class User(db.Model):
 
-    # Flask login stuff
-    is_authenticated=False
-    is_active=True
-    is_anonymous=True
-
     __tablename__ = 'user'
     
     # User data
@@ -39,6 +34,22 @@ class User(db.Model):
         Given the primary key for User, return an instance of the subclass implementation
         """
         return self.email
+
+    def has_role(self, role_name):
+        return self.discriminator == role_name
+
+    # Flask Login Stuff
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
 
 
 class HackerUser(User, db.Model):

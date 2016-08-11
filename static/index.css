@@ -2,9 +2,6 @@
     width: 100%;
     background-color: #2C2C31;
 }
-p {
-    font-size: 16px;
-}
 p.help-text {
     font-size: 12px;
     font-style: italic;
@@ -20,4 +17,23 @@ img.header-img {
     display: block;
     margin: 0 auto;
     margin-top: -30px;
+}
+
+/*
+Generic
+*/
+button {
+    padding: 10px;
+    font-size: 20px;
+    margin: 20px;
+}
+p {
+    font-size: 16px;
+}
+
+/*
+Index
+*/
+.mlh-login {
+    width: 100%
 }

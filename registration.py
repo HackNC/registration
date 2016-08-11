@@ -46,7 +46,7 @@ def load_user(user_email):
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
-    return redirect('/')
+    return redirect(url_for('index'))
 
 # 
 # Views - Everyone
@@ -84,18 +84,20 @@ def logout():
 @app.route("/")
 def index():
     if current_user.is_anonymous:
-        auth_url = build_auth_url()
-        return redirect(auth_url)
+        return render_template(
+            "index.html",
+            auth_url=build_auth_url())
     else:
         return redirect(url_for("dashboard"))
 
-@login_required
+
 @app.route("/dashboard", methods=["GET", "POST"])
+@login_required
 def dashboard():
     """
     Successful logins are directed here
     """
-    user = load_user(current_user.email)
+    user = current_user
 
     if request.method == "POST":
         # TODO: Determine if application is in an updatable state (Has application window closed?)
@@ -120,8 +122,8 @@ def dashboard():
         mlh_edit_link=settings.MLH_EDIT_LINK,
     )
 
-@login_required
 @app.route("/api/me", methods=["GET", "POST"])
+@login_required
 def me():
     """
     a json endpoint for /dashboard data
@@ -144,8 +146,8 @@ def me():
 # Views - Administrative
 # 
 
-@login_required
 @app.route("/admin", methods=["GET"])
+@login_required
 def admin():
     """
     Administrative users can examine the live registration data
@@ -153,8 +155,8 @@ def admin():
     return AdminView(current_user).get_admin_panel( 
         order=request.args.get("order_by"))
 
-@login_required
 @app.route("/admin/user/<user_email>", methods=["POST", "GET"])
+@login_required
 def admin_update(user_email):
     """
     This method may be used to set ANY field.  Be careful when using this.
