@@ -76,10 +76,14 @@ This project contains the following endpoints:
     GET - returns the user's current details
     POST - specify the fields to update in a form.  MLH-related fields should update on my.mlh.io - changes will reflect
 
+/api/me
+    GET - gets my
+
 /admin
     GET - returns admin interface
 
-/admin/update/{user_id}
+/admin/user/{user_email}
+    GET - gets any specified user's JSON respresentation.
     POST - adminstrative endpoint to set any user field
 ```
 
