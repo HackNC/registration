@@ -1,8 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy, inspect
-
-import settings
-import utilities
 from abc import ABCMeta, abstractmethod
+
+from . import settings
+from . import utilities
 
 db = SQLAlchemy()
 

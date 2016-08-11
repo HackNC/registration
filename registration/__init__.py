@@ -1,17 +1,17 @@
+# Standard
 import sys
 import os
-
+# pre-installed
 from requests import RequestException
 from flask import Flask, request, url_for, render_template, jsonify, redirect, render_template, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.engine.url import URL
 from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user
 from flask_cors import CORS, cross_origin
-
-import mymlh
-import models
-import settings
-from views import AdminView
+# modules
+from . import mymlh
+from . import models
+from . import settings
 
 # Load app
 app = Flask(__name__)
@@ -35,6 +35,22 @@ mlh_shim = mymlh.MlhShim(
     settings.MYMLH["redirect_uri"]
 )
 
+#
+# Index
+#
+
+@app.route("/")
+def index():
+    if current_user.is_anonymous:
+        return render_template(
+            "index.html",
+            auth_url=build_auth_url())
+    else:
+        if current_user.discriminator == "hacker_user":
+            return redirect(url_for("dashboard"))
+        else:
+            return jsonify(action=unknown)
+
 # 
 # Login handlers
 # 
@@ -48,9 +64,10 @@ def load_user(user_email):
 def unauthorized_callback():
     return redirect(url_for('index'))
 
-# 
-# Views - Everyone
-# 
+@app.route("/logout")
+def logout():
+    logout_user()
+    return jsonify(action="logged_out")
 
 @app.route("/login")
 def login():
@@ -75,101 +92,6 @@ def login():
     except RequestException as re:
         print(re)
         return redirect(url_for("logout"))
-
-@app.route("/logout")
-def logout():
-    logout_user()
-    return jsonify(action="logged_out")
-
-@app.route("/")
-def index():
-    if current_user.is_anonymous:
-        return render_template(
-            "index.html",
-            auth_url=build_auth_url())
-    else:
-        return redirect(url_for("dashboard"))
-
-
-@app.route("/dashboard", methods=["GET", "POST"])
-@login_required
-def dashboard():
-    """
-    Successful logins are directed here
-    """
-    user = current_user
-
-    if request.method == "POST":
-        # TODO: Determine if application is in an updatable state (Has application window closed?)
-        update_dict = request.form.to_dict()
-        update_success = user.update(update_dict)
-        if update_success['status'] == "success":
-            flash("Update successful")
-        else:
-            flash("Update failed")
-
-        resume_success = secure_store(request.files, user, "resume")
-        if resume_success:
-            user.set_resume_location(resume_success['filename'])
-            flash("File uploaded")
-
-    return render_template(
-        "dashboard.html",
-        mlh_data=user.get_friendly_mlh_data(),
-        form_data=user.get_friendly_hacknc_data(),
-        teammates=user.get_teammates(),
-        status_dict=user.get_status(),
-        mlh_edit_link=settings.MLH_EDIT_LINK,
-    )
-
-@app.route("/api/me", methods=["GET", "POST"])
-@login_required
-def me():
-    """
-    a json endpoint for /dashboard data
-    TODO: refactor this into /dashboard so that MIME type is considered
-    """
-    user = current_user
-    if request.method == "GET":
-        return jsonify(**{
-            "user_data": user.serialize(),
-            "team_mates": user.get_teammates()
-        })
-    elif request.method == "POST":
-        update_success = user.update(request.form)
-        return jsonify(**{
-            "action": update_success,
-            "user_data":user.serialize()
-        })
-
-# 
-# Views - Administrative
-# 
-
-@app.route("/admin", methods=["GET"])
-@login_required
-def admin():
-    """
-    Administrative users can examine the live registration data
-    """
-    return AdminView(current_user).get_admin_panel( 
-        order=request.args.get("order_by"))
-
-@app.route("/admin/user/<user_email>", methods=["POST", "GET"])
-@login_required
-def admin_update(user_email):
-    """
-    This method may be used to set ANY field.  Be careful when using this.
-    """
-    if current_user.is_admin:
-        if request.method == "POST":
-            user = load_user(user_email)
-            return jsonify(user.admin_update(request.form.to_dict()))
-        elif request.method == "GET":
-            user = load_user(user_email)
-            return AdminView(current_user).api_get(user)   
-    else:
-        return jsonify(permission="denied"), 403
 
 # 
 # Helpers
@@ -213,9 +135,6 @@ def secure_store(requests_files, user, form_file_name):
                 "filename": new_filename
             }
 
-if __name__ == "__main__":
-    debug = "debug" in sys.argv
-    migrate = "migrate" in sys.argv
-    if migrate:
-        models.make_migrations(app)
-    app.run(debug=debug, port=8080, host="0.0.0.0")
+# Load views - this is how we make sub modules
+from .admin import views
+from .hacker import views

@@ -1,5 +1,6 @@
 from flask import render_template, jsonify
-import models
+
+from registration import models
 
 class AdminView():
 
@@ -37,14 +38,3 @@ class AdminView():
             })
         else:
             return jsonify(**self.permission_denied), 403
-
-class HackerView():
-
-    def __init__(self, user):
-        """
-        Given a user, create their hacker view
-        """
-        self.user = user
-
-    def get_dashboard(self):
-        pass
