@@ -83,13 +83,13 @@ hacker_get_set_dict = collections.OrderedDict([
     ("github", {
         "friendly_name" : "GitHub URL",
         "help_text" : "A link to your github profile",
-        "formtype": "text",
+        "formtype": "url",
         "always": False
     }),
     ("website", {
         "friendly_name" : "Persoanl URL",
         "help_text" : "Could be your website, or a link to something else you're proud of.",
-        "formtype": "text",
+        "formtype": "url",
         "always": False
     }),
     ("mac_address", {
@@ -106,7 +106,7 @@ hacker_get_set_dict = collections.OrderedDict([
     }),
 ])
 
-# The MLH View
+# The MLH View - what she
 mlh_friendly_names = collections.OrderedDict([
     ("email", "Email"),
     ("first_name", "First Name"),

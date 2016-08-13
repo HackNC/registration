@@ -50,12 +50,24 @@
           <th>Details</th>
         </tr>
         {% for user in users %}
-        <tr>
+        <tr> 
           <td>{{ user.first_name }}</td>
           <td>{{ user.last_name }}</td>
           <td>{{ user.mlh_id }}</td>
           <td>{{ user.school_name }}</td>
-          <td>{{ user.registration_status }}</td>
+
+          <td>
+            <form method='post' action='{{ url_for("admin_update", user_email=user.email) }}'>
+              <select name="registration_status">
+              {% for status in statuses %}
+                <option value='{{ status }}'
+                  {% if status == user.registration_status %}
+                    selected 
+                  {% endif %}>{{ status }}</option>
+              {% endfor %}
+              </select>
+              <input type='submit' value='upd8'>
+            </form>
           <td>{{ user.team_name }}</td>
           <td><a href='{{ user.website }}'>{{ user.website }}</a></td>
           <td><button onclick="get_user('{{ user.email }}')">Details</button></td>

@@ -27,7 +27,11 @@ def admin_update(user_email):
     if current_user.is_admin:
         if request.method == "POST":
             user = load_user(user_email)
-            return jsonify(user.admin_update(request.form.to_dict()))
+            success_status = user.admin_update(request.form.to_dict())
+            if success_status['status'] == 'success':
+                return redirect(url_for('admin'))
+            else:
+                return jsonify(**success_status)
         elif request.method == "GET":
             user = load_user(user_email)
             return renderers.AdminView(current_user).api_get(user)   
