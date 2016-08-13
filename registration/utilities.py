@@ -1,3 +1,5 @@
+import collections
+
 # The status codes and their meanings
 # These are the statuses that a user account can be in
 # Here's how HackNC does it:
@@ -61,8 +63,8 @@ StatusCodes = {
 
 # The list of keys the user is allowed to get/set, plus metadata for the view.
 # Since it's 1:1, we should keep the meta here.
-hacker_get_set_dict = {
-    "what_to_learn" : { 
+hacker_get_set_dict = collections.OrderedDict([
+    ("what_to_learn" , { 
         # The field name to shwo the user
         "friendly_name": "What do you want to learn?",
         # Some help text to explain what they should put
@@ -71,38 +73,54 @@ hacker_get_set_dict = {
         "formtype": "textarea",
         # Is the field editable regardless of registration_status?
         "always": False
-    },
-    "background": {
+    }),
+    ("background", {
         "friendly_name": "Your Background",
         "help_text": "Tell us a little more about you!  How'd you get into tech?",
         "formtype": "textarea",
         "always": False
-    },
-    "team_name": {
-        "friendly_name": "Team Name",
-        "help_text": "Create a team by giving us a team name.  Your teammates can all add the same name and get grouped.  This won't affect your application - it's just for fun!",
-        "formtype": "text",
-        "always": True
-    },
-    "github": {
+    }),
+    ("github", {
         "friendly_name" : "GitHub URL",
         "help_text" : "A link to your github profile",
         "formtype": "text",
         "always": False
-    },
-    "website": {
+    }),
+    ("website", {
         "friendly_name" : "Persoanl URL",
         "help_text" : "Could be your website, or a link to something else you're proud of.",
         "formtype": "text",
         "always": False
-    },
-    "mac_address": {
+    }),
+    ("mac_address", {
         "friendly_name" : "MAC Address",
         "help_text" : "The MAC accress of your laptop's wireless card.  We need this to connect you to our WIFI.",
         "formtype": "text",
         "always": True
-    }
-}
+    }),
+    ("team_name", {
+        "friendly_name": "Team Name",
+        "help_text": "Create a team by giving us a team name.  Your teammates can all add the same name and get grouped.  This won't affect your application - it's just for fun!",
+        "formtype": "text",
+        "always": True
+    }),
+])
+
+# The MLH View
+mlh_friendly_names = collections.OrderedDict([
+    ("email", "Email"),
+    ("first_name", "First Name"),
+    ("last_name", "Last Name"),
+    ("gender", "Gender"),
+    ("graduation", "Graduation"),
+    ("major", "Major"),
+    ("phone_number", "Phone Number"),
+    ("school_name", "School"),
+    ("date_of_birth", "Date of Birth"),
+    ("shirt_size", "Shirt Size"), 
+    ("special_needs", "Special Needs"),
+    ("dietary_restrictions", "Dietary Restrictions")
+])
 
 # The list of keys MLH is allowed to set - don't touch this
 mlh_settable_keys = [

@@ -32,6 +32,7 @@ def dashboard():
         teammates=user.get_teammates(),
         status_dict=user.get_status(),
         mlh_edit_link=settings.MLH_EDIT_LINK,
+        allowed_extensions=settings.ALLOWED_EXTENSIONS
     )
 
 @app.route("/api/me", methods=["GET", "POST"])

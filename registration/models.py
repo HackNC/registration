@@ -146,20 +146,7 @@ class HackerUser(User, db.Model):
         """
         Returns a dictionary of "Friendly Key" : "Value" pairs
         """
-        friendly_names = {
-            "date_of_birth": "Date of Birth",
-            "email": "Email",
-            "first_name": "First Name",
-            "last_name": "Last Name",
-            "gender": "Gender",
-            "graduation": "Graduation",
-            "major": "Major",
-            "phone_number": "Phone Number",
-            "school_name": "School",
-            "shirt_size": "Shirt Size", 
-            "special_needs": "Special Needs",
-            "dietary_restrictions": "Dietary Restrictions"
-        }
+        friendly_names = utilities.mlh_friendly_names
         mlh_friendly_values = [sanitize_None(getattr(self, field)) for field in friendly_names.keys()]
         return zip(friendly_names.values(), mlh_friendly_values)
 

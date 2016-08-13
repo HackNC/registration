@@ -7,7 +7,12 @@ p.help-text {
     font-style: italic;
 }
 .admin td, th {
-    padding:6px;
+    padding:4px;
+}
+.admin button {
+    padding: 2px;
+    margin: 0px;
+    font-size: 12px;
 }
 .flash p {
     padding: 8px;
