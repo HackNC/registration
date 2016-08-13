@@ -16,7 +16,8 @@ def admin():
     Administrative users can examine the live registration data
     """
     return renderers.AdminView(current_user).get_admin_panel( 
-        order=request.args.get("order_by"))
+        order=request.args.get("order_by"),
+        ufilter=request.args.get("filter"))
 
 @app.route("/admin/user/<user_email>", methods=["POST", "GET"])
 @login_required

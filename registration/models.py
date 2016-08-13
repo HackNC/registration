@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy, inspect
 from abc import ABCMeta, abstractmethod
+from dateutil.relativedelta import relativedelta
 
 from . import settings
 from . import utilities
@@ -176,6 +177,13 @@ class HackerUser(User, db.Model):
             "action": "admin_update",
             "status":"success"
         } 
+    
+    @property
+    def isOver18(self):
+        return "Y" \
+            if self.date_of_birth <= settings.DATE_OF_HACKATHON - relativedelta(years=18) \
+            else "N"
+    
 
     @property
     def is_editable(self):

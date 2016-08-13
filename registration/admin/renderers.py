@@ -1,6 +1,6 @@
 from flask import render_template, jsonify
 
-from registration import models, utilities
+from registration import models, utilities, settings
 
 class AdminView():
 
@@ -11,18 +11,21 @@ class AdminView():
         self.user = user
         self.permission_denied = {"status": "permission_denied"}
 
-    def get_admin_panel(self, order=None):
+    def get_admin_panel(self, order=None, ufilter=None):
         if self.user.is_admin:
-            users = None
-            if order:
+            users = users = models.HackerUser.query
+            if order or ufilter:
                 if order == "school":
-                    users = models.SessionUser.query.order_by(models.SessionUser.school_id)
+                    users = users.order_by(models.HackerUser.school_id)
                 elif order == "id":
-                    users = models.SessionUser.query.order_by(models.SessionUser.mlh_id)
+                    users = users.order_by(models.HackerUser.mlh_id)
                 elif order == "status":
-                    users = models.SessionUser.query.order_by(models.SessionUser.registration_status)
-            else:
-                users = models.HackerUser.query
+                    users = users.order_by(models.HackerUser.registration_status)
+                elif order == "over18":
+                    users = users.order_by(models.HackerUser.date_of_birth)
+                elif order == "team":
+                    users = users.order_by(models.HackerUser.team_name)
+
             return render_template(
                 "admin.html",
                 users=users,

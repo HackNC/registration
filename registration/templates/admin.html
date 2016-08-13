@@ -35,17 +35,18 @@
       <h1>Admin</h1>
       <p>
       Modify the internal object mode.<br>
-      Status: o(pen), a (accepted), r (rejected), w (waitlisted), t (travel grant + accpeted), n (no travel grant + accepted)<br>
+      Status: o(pen), a (accepted), r (rejected), w (waitlisted), t (travel grant + accpeted), n (no travel grant + accepted)
       </p>
 
       <table class="admin">
         <tr>
           <th>Fname</th>
           <th>Lname</th>
-          <th><a href="{{ url_for('admin') }}?order=id">ID</a></th>
-          <th><a href="{{ url_for('admin') }}?order=school">School</a></th>
-          <th><a href="{{ url_for('admin') }}?order=status">Status</a></th>
-          <th>Team</a></th>
+          <th><a href="{{ url_for('admin') }}?order_by=id">ID</a></th>
+          <th><a href="{{ url_for('admin') }}?order_by=school">School</a></th>
+          <th><a href="{{ url_for('admin') }}?order_by=status">Status</a></th>
+          <th><a href="{{ url_for('admin') }}?order_by=over18">18+</a></th>
+          <th><a href="{{ url_for('admin') }}?order_by=team">Team</a></th>
           <th>Site</th>
           <th>Details</th>
         </tr>
@@ -68,6 +69,8 @@
               </select>
               <input type='submit' value='upd8'>
             </form>
+          </td>
+          <td>{{ user.isOver18 }}</td>
           <td>{{ user.team_name }}</td>
           <td><a href='{{ user.website }}'>{{ user.website }}</a></td>
           <td><button onclick="get_user('{{ user.email }}')">Details</button></td>
