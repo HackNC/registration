@@ -1,84 +1,44 @@
 {% extends "layout.html" %}
 {% block body %}
+<!-- HackNC Section -->
+<form class=entries action="{{ url_for('dashboard') }}" method="post" enctype="multipart/form-data">
+  <!-- <p><a href="{{ mlh_edit_link }}">Edit MLH Data</a> | <a href="{{ url_for('index') }}">Refresh MLH Data</a></p> -->
+<!-- MLH Section -->
   <div class="container">
-
-    <div class="row">
-      <div class="col-sm-6 col-md-8 registration-header">
-        <h1>Registration</h1>
-        <p>Please complete the HackNC Data section to finalize your application.  You can save your progress and come back at any time.  Your progress will be automatically submitted when registration closes.</p>
-      </div>
-
-      <div class="col-sm-6 col-md-4">
-        <h2>Status - {{ status_dict['friendly_name'] }}</h2>
-        <p>{{ status_dict['help_text'] }}</p>
-      </div>
-    </div>
-
-    <div class="row">
-
-    <!-- HackNC Section -->
-
-      <div class="col-sm-6 col-md-8">
-        <h2>HackNC 2016</h2>
-        <p>Please give us a little more info so we can get to know you!</p>
-        
-        <form class=entries action="{{ url_for('dashboard') }}" method="post" enctype="multipart/form-data">
-
-          {% for field_id, data in form_data.items() %}
-
-            {% if data['formtype'] == 'textarea' %}
-              <div class="form-group">
-                <label for="{{ field_id }}">{{ data['friendly_name'] }}</label>
-                <p class="help-text">{{ data['help_text'] }}</p>
-                <textarea class="form-control" id="{{ field_id }}" name="{{ field_id }}" 
-                  {{ 'disabled' if not data['editable'] else ''}}>{{ data['value'] }}</textarea>
-              </div>
-            {% elif data['formtype'] == 'text' %}
-              <div class="form-group">
-                <label for="{{ field_id }}">{{ data['friendly_name'] }}</label>
-                <p class="help-text">{{ data['help_text'] }}</p>
-               <input type="text" class="form-control" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" {{ 'disabled' if not data['editable'] else ''}}>
-              </div>
-            {% endif %}
-
-          {% endfor %}
-
-          <div class="form-group">
-            <label for="resume">Resume Upload</label>
-            <p class="help-text">Accepted file types are {{ allowed_extensions }}</p>
-            <input type="file" class="form-control" name="resume">
-          </div>
-
-          <input type=submit value="Save">
-        
-        </form>
-
-        <h2>Team</h2>
-
-        {% for teammate in teammates %}
-        {{ teammate }}<br>
-        {% endfor %}
-        
-      </div>
-
-      <!-- MLH Section -->
-
-      <div class="col-sm-6 col-md-4">
-        <h2>MLH Data</h2>  
-        <p><a href="{{ mlh_edit_link }}">Edit MLH Data</a> | <a href="{{ url_for('index') }}">Refresh MLH Data</a></p>
-        <form>
-          {% for field, value in mlh_data %}
-          
-          <div class="form-group">
-            <label for="{{ field }}">{{ field }}</label>
-            <input type="text" class="form-control" id="{{ field }}" name="{{ field }}" value="{{ value }}" disabled>
-          </div>
-        
-          {% endfor %}
-        </form>
-      </div>
-
-    </div>
+    <h1>Complete your application</h1>
   </div>
+  <div class="column">
+      {% for field, value in mlh_data %}
+        <label>{{ field }}
+          <input type="text" class="form-control" id="{{ field }}" name="{{ field }}" value="{{ value }}" disabled>
+        </label>      
+      {% endfor %}
+  </div>
+
+  <div class="column">
+    {% for field_id, data in form_data.items() %}
+      <label>{{ data['friendly_name'] }}
+        {% if data['formtype'] == 'textarea' %}
+          <textarea class="form-control" id="{{ field_id }}" name="{{ field_id }}" rows="3"
+          {{ 'disabled' if not data['editable'] else ''}}>
+            {{ data['value'] }}
+          </textarea>
+        {% else %}
+          <input type="{{ data['formtype'] }}" class="form-control" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" {{ 'disabled' if not data['editable'] else ''}}>
+        {% endif %}
+      </label>
+    {% endfor %}
+    <label>Resume Upload
+      <input type="file" class="form-control" name="resume">
+    </label>
+    <div class="team">
+    <!-- <h2>Team</h2>
+      {% for teammate in teammates %}
+      {{ teammate }}<br>
+      {% endfor %}
+    </div> -->
+    <button type="submit">Submit!</button>
+  </div>
+</form>
   
 {% endblock %}

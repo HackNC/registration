@@ -1,44 +1,117 @@
-.shell {
-    width: 100%;
-    background-color: #2C2C31;
-}
-p.help-text {
-    font-size: 12px;
-    font-style: italic;
-}
-.admin td, th {
-    padding:4px;
-}
-.admin button {
-    padding: 2px;
-    margin: 0px;
-    font-size: 12px;
-}
-.flash p {
-    padding: 8px;
-}
-img.header-img {
-    height: 300px;
-    display: block;
-    margin: 0 auto;
-    margin-top: -30px;
+/* Imports */
+@font-face {
+  font-family: 'geo-sans-light';
+  src: url("fonts/geo_sans_light/GeosansLight.ttf");
 }
 
-/*
-Generic
-*/
+/* Base */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #204F80;
+  color: white;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font-family: -apple-system, "Helvetica Neue", sans-serif;
+  font-size: 1.2em;
+  line-height: 1.5em;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, label, button {
+  font-family: 'geo-sans-light', sans-serif;
+  font-weight: bold;
+}
+
+h1, h2, h3 {
+  color: #FFD600;
+}
+
+
+/* Header Styles */
+header {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+header .sky {
+  display: block;
+  height: 50px;
+  width: 100%;
+  background: #5FB1FC;
+}
+header .header-img {
+  width: 100%;
+}
+
+/* Layouts */
+.column {
+  display: inline-block;
+  width: 38%;
+  margin: 0 6%;
+  padding: 0 20px;
+  vertical-align: top;
+}
+
+.column:first-of-type {
+  margin-right: 3%;
+  clear: left;
+}
+.column:last-of-type {
+  margin-left: 3%;
+  clear: right;
+}
+
+.container{
+  display: block;
+  width: 100%;
+  clear: both;
+  padding: 0 5%;
+}
+
+/* Form Elements */
+form label {
+  display: block;
+  width: 100%;
+  font-size: 1rem;
+  line-height: 1;
+  margin: 20px 0;
+  color: #DCEEFF;
+}
+
+form label input,
+form label textarea,
 button {
-    padding: 10px;
-    font-size: 20px;
-    margin: 20px;
-}
-p {
-    font-size: 16px;
+  display: block;
+  width: 100%;
+  font-size: 1em;
+  margin-top: 2px;
+  padding: 16px 20px;
+  border-radius: 3px;
+  background: #346CA5;
+  color: white;
+  border: none;
 }
 
-/*
-Index
-*/
-.mlh-login {
-    width: 100%
+form label textarea {
+  line-height: 1.4;
+}
+
+button {
+  width: 80%;
+  margin: 40px auto;
+  background: #FFD600;
+  border: none;
+  color: #2C2C31;
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: color 0.2s, background 0.3s;
+}
+
+button:hover {
+  background: #FFC027;
+  color: white;
 }

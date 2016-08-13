@@ -1,5 +1,5 @@
 from flask import request, url_for, render_template, jsonify, redirect, render_template, flash
-from flask.ext.login import current_user, login_required
+from flask_login import current_user, login_required
 
 from registration import app, load_user
 

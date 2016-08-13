@@ -6,7 +6,7 @@ from requests import RequestException
 from flask import Flask, request, url_for, render_template, jsonify, redirect, render_template, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.engine.url import URL
-from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user
+from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from flask_cors import CORS, cross_origin
 # modules
 from . import mymlh
