@@ -9,9 +9,9 @@ This enables you to do things like:
 * Not worry about logins / password security
 * Accept resumes
 * Ask additional questions and collect info no included in the MLH form.
-* ( In development) Trigger custom python callbacks for.
-  * New user creation
-  * User info updates
+* Trigger custom python callbacks for.
+  * New user creation (Done)
+  * User info updates (Pending)
 * Manage registrations with an admin panel.
 * Provide dashboard for acceptances
 * Provide dasbboard for check-in
