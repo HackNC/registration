@@ -1,7 +1,8 @@
-from registration import app, models
-import callbacks
-
 import sys
+from registration import app, models
+
+# If you defined any event triggers, import them
+import callbacks
 
 if __name__ == '__main__':
     

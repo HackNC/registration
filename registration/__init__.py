@@ -99,9 +99,9 @@ def login():
 # 
 
 def build_auth_url():
-    return settings.AUTH_URL.format(
+    return settings.MYMLH['auth_url'].format(
         client_id=settings.MYMLH['app_id'],
-        callback_uri=settings.CALLBACK_URI
+        callback_uri=settings.MYMLH['redirect_uri']
     )
 
 def allowed_file(filename):

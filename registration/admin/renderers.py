@@ -1,6 +1,6 @@
 from flask import render_template, jsonify
 
-from registration import models, utilities, settings
+from registration import models, utilities
 
 class AdminView():
 
