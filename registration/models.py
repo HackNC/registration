@@ -205,24 +205,23 @@ class HackerUser(User, db.Model):
         
         if user:
             pass
+        
         else:
             user = HackerUser(email)
             db.session.add(user)
 
-        for key, value in user_dict.items():
-            if key in user.mlh_settable_keys:
-                setattr(user, key, value)
-            else:
-                # MLH tried to set a key it shouldn't have - panic
-                raise KeyError("MLH Tried to set a key it shouldn't have.")
-        
-        # Trigger the created event
-        user.user_created()
-        
-        db.session.commit()
+            for key, value in user_dict.items():
+                if key in user.mlh_settable_keys:
+                    setattr(user, key, value)
+                else:
+                    # MLH tried to set a key it shouldn't have - panic
+                    raise KeyError("MLH Tried to set a key it shouldn't have.")
+
+            user.user_created()
+            db.session.commit()
         
         return user
-    
+
 # 
 # Model Helpers
 # 
