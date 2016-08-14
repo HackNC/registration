@@ -17,6 +17,7 @@ setup(name='registration',
         'requests-oauthlib==0.6.2',
         'uwsgi==2.0.13.1',
         'psycopg2==2.6.2',
-        'python-dateutil==2.5.3'
+        'python-dateutil==2.5.3',
+        'sparkpost==1.2.0'
       ],
 )
