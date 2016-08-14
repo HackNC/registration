@@ -26,9 +26,10 @@ class User(db.Model):
     discriminator = db.Column(db.String(50))
     __mapper_args__ = {"polymorphic_on": discriminator}
 
+    create_callbacks = []
+
     def __init__(self, email):
         self.email = email
-
 
     def get_id(self):
         """
@@ -38,6 +39,14 @@ class User(db.Model):
 
     def has_role(self, role_name):
         return self.discriminator == role_name
+
+    def user_created(self):
+        for fn in self.create_callbacks:
+            fn(self)
+
+    @staticmethod
+    def register_create_callback(callback):
+        User.create_callbacks.append(callback)
 
     # Flask Login Stuff
     @property
@@ -206,6 +215,9 @@ class HackerUser(User, db.Model):
             else:
                 # MLH tried to set a key it shouldn't have - panic
                 raise KeyError("MLH Tried to set a key it shouldn't have.")
+        
+        # Trigger the created event
+        user.user_created()
         
         db.session.commit()
         

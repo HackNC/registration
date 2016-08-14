@@ -1,5 +1,10 @@
-from registration import app, models
+from registration import app, models, triggers
 import sys
+
+# Create the triggers
+@triggers.new_user
+def say_hello(user):
+    print('NEW USER: ' + user.first_name)
 
 # TODO: use argparse here
 debug = "debug" in sys.argv
