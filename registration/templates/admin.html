@@ -1,6 +1,5 @@
-<html>
-<head>
-<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+{% extends "layout.html" %}
+{% block body %}
 <script>
   function get_user(user_email){
     var xhttp = new XMLHttpRequest();
@@ -29,57 +28,59 @@
     xhttp.send();
   }
 </script>
-</head>
-<body>
-  <div class='admin block left'>
-    <h1>Admin</h1>
-    <p>
-    Modify the internal object mode.<br>
-    Status: o(pen), a (accepted), r (rejected), w (waitlisted), t (travel grant + accpeted), n (no travel grant + accepted)
-    </p>
-    <table class="admin">
-      <tr>
-        <th>Fname</th>
-        <th>Lname</th>
-        <th><a href="{{ url_for('admin') }}?order_by=id">ID</a></th>
-        <th><a href="{{ url_for('admin') }}?order_by=school">School</a></th>
-        <th><a href="{{ url_for('admin') }}?order_by=status">Status</a></th>
-        <th><a href="{{ url_for('admin') }}?order_by=over18">18+</a></th>
-        <th><a href="{{ url_for('admin') }}?order_by=team">Team</a></th>
-        <th>Site</th>
-        <th>Details</th>
-      </tr>
-      {% for user in users %}
-      <tr> 
-        <td>{{ user.first_name }}</td>
-        <td>{{ user.last_name }}</td>
-        <td>{{ user.mlh_id }}</td>
-        <td>{{ user.school_name }}</td>
 
-        <td>
-          <form method='post' action='{{ url_for("admin_update", user_email=user.email) }}'>
-            <select name="registration_status">
-            {% for status in statuses %}
-              <option value='{{ status }}'
-                {% if status == user.registration_status %}
-                  selected 
-                {% endif %}>{{ status }}</option>
-            {% endfor %}
-            </select>
-            <input type='submit' value='upd8'>
-          </form>
-        </td>
-        <td>{{ user.isOver18 }}</td>
-        <td>{{ user.team_name }}</td>
-        <td><a href='{{ user.website }}'>{{ user.website }}</a></td>
-        <td><button onclick="get_user('{{ user.email }}')">Details</button></td>
-      </tr>
-      {% endfor %}
-    </table>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-8">
+      <h1>Admin</h1>
+      <p>
+      Modify the internal object mode.<br>
+      Status: o(pen), a (accepted), r (rejected), w (waitlisted), t (travel grant + accpeted), n (no travel grant + accepted)<br>
+      </p>
+
+      <table class="admin">
+        <tr>
+          <th>Fname</th>
+          <th>Lname</th>
+          <th><a href="{{ url_for('admin') }}?order=id">ID</a></th>
+          <th><a href="{{ url_for('admin') }}?order=school">School</a></th>
+          <th><a href="{{ url_for('admin') }}?order=status">Status</a></th>
+          <th>Team</a></th>
+          <th>Site</th>
+          <th>Details</th>
+        </tr>
+        {% for user in users %}
+        <tr> 
+          <td>{{ user.first_name }}</td>
+          <td>{{ user.last_name }}</td>
+          <td>{{ user.mlh_id }}</td>
+          <td>{{ user.school_name }}</td>
+
+          <td>
+            <form method='post' action='{{ url_for("admin_update", user_email=user.email) }}'>
+              <select name="registration_status">
+              {% for status in statuses %}
+                <option value='{{ status }}'
+                  {% if status == user.registration_status %}
+                    selected 
+                  {% endif %}>{{ status }}</option>
+              {% endfor %}
+              </select>
+              <input type='submit' value='upd8'>
+            </form>
+          <td>{{ user.team_name }}</td>
+          <td><a href='{{ user.website }}'>{{ user.website }}</a></td>
+          <td><button onclick="get_user('{{ user.email }}')">Details</button></td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+    <div class="col-sm-4">
+      <div id="more-info">
+        <table id="admin-more-info">
+        </table>
+      </div>
+    </div>
   </div>
-  <div class="admin block right">
-    <table id="admin-more-info">
-    </table>
-  </div>
-</body>
-</html>
+</div>
+{% endblock %}

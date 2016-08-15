@@ -11,21 +11,18 @@ class AdminView():
         self.user = user
         self.permission_denied = {"status": "permission_denied"}
 
-    def get_admin_panel(self, order=None, ufilter=None):
+    def get_admin_panel(self, order=None):
         if self.user.is_admin:
-            users = users = models.HackerUser.query
-            if order or ufilter:
+            users = None
+            if order:
                 if order == "school":
-                    users = users.order_by(models.HackerUser.school_id)
+                    users = models.SessionUser.query.order_by(models.SessionUser.school_id)
                 elif order == "id":
-                    users = users.order_by(models.HackerUser.mlh_id)
+                    users = models.SessionUser.query.order_by(models.SessionUser.mlh_id)
                 elif order == "status":
-                    users = users.order_by(models.HackerUser.registration_status)
-                elif order == "over18":
-                    users = users.order_by(models.HackerUser.date_of_birth)
-                elif order == "team":
-                    users = users.order_by(models.HackerUser.team_name)
-
+                    users = models.SessionUser.query.order_by(models.SessionUser.registration_status)
+            else:
+                users = models.HackerUser.query
             return render_template(
                 "admin.html",
                 users=users,
