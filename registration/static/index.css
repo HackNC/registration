@@ -1,45 +1,229 @@
-.shell {
-    width: 100%;
-    background-color: #2C2C31;
-}
-p.help-text {
-    font-size: 12px;
-    font-style: italic;
-}
-.admin td, th {
-    padding:4px;
-    max-width:300px;
-}
-.admin button {
-    padding: 2px;
-    margin: 0px;
-    font-size: 12px;
-}
-.flash p {
-    padding: 8px;
-}
-img.header-img {
-    height: 300px;
-    display: block;
-    margin: 0 auto;
-    margin-top: -30px;
+/* Imports */
+@font-face {
+  font-family: 'geo-sans-light';
+  src: url("fonts/geo_sans_light/GeosansLight.ttf");
 }
 
-/*
-Generic
-*/
-button {
-    padding: 10px;
-    font-size: 20px;
-    margin: 20px;
+/* Base */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #204F80;
+  color: white;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font-family: -apple-system, "Helvetica Neue", sans-serif;
+  font-size: 1.2em;
+  line-height: 1.5em;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, label, button {
+  font-family: 'geo-sans-light', sans-serif;
+  font-weight: bold;
+}
+
+h1, h2, h3 {
+  color: #FFD600;
 }
 p {
-    font-size: 16px;
+
+}
+p.help-text {
+  font-family: -apple-system,"Helvetica Neue",sans-serif;
+  font-size: 12px;
+  font-weight: 300;
 }
 
-/*
-Index
-*/
-.mlh-login {
-    width: 100%
+/* Header Styles */
+header {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+header .sky {
+  display: block;
+  height: 50px;
+  width: 100%;
+  background: #5FB1FC;
+}
+header .header-img {
+  width: 100%;
+}
+header .logo {
+  top: -20px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute;
+}
+
+.flash {
+  width: 80%;
+  margin: 0 10%;
+  padding-left: 10px;
+  background-color: #346CA5;
+}
+
+/* Layouts */
+.column {
+  display: inline-block;
+  width: 44%;
+  margin: 0 3%;
+  padding: 0px;
+  vertical-align: top;
+  float: left;
+}
+
+.column:first-of-type {
+  /*margin-right: 0%;*/
+  /*clear: left;*/
+}
+.column:last-of-type {
+  /*margin-left: 0%;*/
+  /*clear: right;*/
+}
+
+.container{
+  display: block;
+  width: 80%;
+  margin: 0 10%;
+  clear: both;
+}
+
+/* Form Elements */
+form label {
+  display: block;
+  width: 100%;
+  font-size: 1.1rem;
+  line-height: 1;
+  margin: 20px 0;
+  color: #DCEEFF;
+}
+
+form label input,
+form label textarea,
+button {
+  display: block;
+  width: 100%;
+  font-size: 1em;
+  margin-top: 2px;
+  border-radius: 3px;
+  background: #346CA5;
+  color: white;
+  border: none;
+  outline: none;
+  box-sizing: border-box !important;
+  border: 1px solid transparent;
+  box-shadow: 0px 0px 4px transparent;
+  transition: border-color 0.4s, box-shadow 0.4s;
+}
+
+form label input:focus,
+form label textarea:focus {
+  border-color: #FFD600;
+  box-shadow: 0px 0px 4px #FFD600;
+}
+
+form label input:invalid:not(:focus),
+form label textarea:invalid:not(:focus) {
+  border-color: #D91414;
+  box-shadow: 0px 0px 4px #D91414;
+}
+
+form label textarea {
+  line-height: 1.4;
+}
+form .big {
+  padding: 16px 20px;
+}
+
+button {
+  background: #FFD600;
+  border: none;
+  color: #2C2C31;
+  font-size: 1.3em;
+  cursor: pointer;
+  transition: color 0.2s, background 0.3s;
+}
+button.big {
+  padding: 16px 20px;
+  margin: 40px auto;
+  width: 80%;
+}
+
+button:hover {
+  background: #FFC027;
+  color: white;
+}
+
+::-webkit-input-placeholder { /* Chrome */
+  color: #204F80;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  color: #204F80;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  color: #204F80;
+  opacity: 1;
+}
+:-moz-placeholder { /* Firefox 4 - 18 */
+  color: #204F80;
+  opacity: 1;
+}
+
+.admin {
+  font-size: 14px;
+  line-height: 14px;
+}
+.admin a,
+.admin a:hover,
+.admin a:visited {
+  color: white;
+}
+.admin td, th {
+  padding:4px;
+  max-width:300px;
+}
+.admin.block {
+  position: absolute;
+  overflow-y:scroll;
+  top: 0px;
+  height: 100%;
+}
+.admin.block.left{
+  left: 0px;
+  width: 65%;
+}
+.admin.block.right {
+  right: 0px;
+  width: 35%;
+}
+
+@media(min-width: 0px){
+  .column {
+    width: 94%;
+  }
+  .column.mlh {
+    display: none;
+  }
+  header .logo {
+    height: 200px;
+  }
+}
+@media(min-width: 850px){
+  .column {
+    width: 44%;
+  }
+  .column.mlh{
+    display: inline-block;
+  }
+  header .logo {
+    height: 240px;
+  }
 }

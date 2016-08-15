@@ -78,48 +78,113 @@ hacker_get_set_dict = collections.OrderedDict([
         "friendly_name": "Your Background",
         "help_text": "Tell us a little more about you!  How'd you get into tech?",
         "formtype": "textarea",
-        "always": False
+        "always": False,
+        "pattern": "^.+$"
     }),
     ("github", {
         "friendly_name" : "GitHub URL",
         "help_text" : "A link to your github profile",
-        "formtype": "url",
-        "always": False
+        "formtype": "text",
+        "always": False,
+        "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?[Gg][Ii][Tt][Hh][Uu][Bb]\.com\/[\w]+$"
     }),
     ("website", {
         "friendly_name" : "Persoanl URL",
         "help_text" : "Could be your website, or a link to something else you're proud of.",
-        "formtype": "url",
-        "always": False
+        "formtype": "text",
+        "always": False,
+        "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?([\dA-Za-z\.-]+)\.([A-Za-z\.]{2,6})([\/\w \.-]*)*\/?$"
     }),
     ("mac_address", {
         "friendly_name" : "MAC Address",
         "help_text" : "The MAC accress of your laptop's wireless card.  We need this to connect you to our WIFI.",
         "formtype": "text",
-        "always": True
+        "always": True,
+        "pattern": "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
     }),
     ("team_name", {
         "friendly_name": "Team Name",
         "help_text": "Create a team by giving us a team name.  Your teammates can all add the same name and get grouped.  This won't affect your application - it's just for fun!",
         "formtype": "text",
-        "always": True
+        "always": True,
+        "pattern": "^\w+$"
     }),
 ])
 
 # The MLH View - what she
 mlh_friendly_names = collections.OrderedDict([
-    ("email", "Email"),
-    ("first_name", "First Name"),
-    ("last_name", "Last Name"),
-    ("gender", "Gender"),
-    ("graduation", "Graduation"),
-    ("major", "Major"),
-    ("phone_number", "Phone Number"),
-    ("school_name", "School"),
-    ("date_of_birth", "Date of Birth"),
-    ("shirt_size", "Shirt Size"), 
-    ("special_needs", "Special Needs"),
-    ("dietary_restrictions", "Dietary Restrictions")
+    ("email", {
+        "friendly_name": "Email",
+        "help_text": "",
+        "formtype": "email",
+        "always": False
+    }),
+    ("first_name", {
+        "friendly_name": "First Name",
+        "help_text": "",
+        "formtype": "text",
+        "always": False
+    }),
+    ("last_name", {
+        "friendly_name": "Last Name",
+        "help_text": "",
+        "formtype": "text",
+        "always": False
+    }),
+    ("gender", {
+        "friendly_name": "Gender",
+        "help_text": "",
+        "formtype": "text",
+        "always": False
+    }),
+    ("graduation", {
+        "friendly_name": "Graduation",
+        "help_text": "",
+        "formtype": "text",
+        "always": False
+    }),
+    ("major",{
+        "friendly_name": "Major",
+        "help_text": "",
+        "formtype": "text",
+        "always": False
+    }),
+    ("phone_number", {
+        "friendly_name": "Phone Number",
+        "help_text": "",
+        "formtype": "tel",
+        "always": False
+    }),
+    ("school_name", {
+        "friendly_name": "School",
+        "help_text": "",
+        "formtype": "text",
+        "always": False
+    }),
+    ("date_of_birth", {
+        "friendly_name": "Date of Birth",
+        "help_text": "",
+        "formtype": "text",
+        "always": False
+    }),
+    ("shirt_size", {
+        "friendly_name": "Shirt Size",
+        "help_text": "",
+        "formtype": "text",
+        "always": False
+    }), 
+    ("special_needs", {
+        "friendly_name": "Special Needs",
+        "help_text": "",
+        "formtype": "text",
+        "always": False
+    }),
+    ("dietary_restrictions", {
+        "friendly_name": "Dietary Restrictions",
+        "help_text": "",
+        "formtype": "text",
+        "always": False
+    })
 ])
 
 # The list of keys MLH is allowed to set - don't touch this
@@ -147,3 +212,9 @@ def get_by_code(code):
         return StatusCodes[code]
     else:
         return StatusCodes['u']
+
+def merge_two_dicts(x, y):
+    '''Given two dicts, merge them into a new dict as a shallow copy.'''
+    z = x.copy()
+    z.update(y)
+    return z

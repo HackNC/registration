@@ -1,5 +1,5 @@
 from flask import request, url_for, render_template, jsonify, redirect, render_template, flash
-from flask.ext.login import current_user, login_required
+from flask_login import current_user, login_required
 
 from registration import app, secure_store, settings
 
@@ -31,7 +31,7 @@ def dashboard():
         form_data=user.get_friendly_hacknc_data(),
         teammates=user.get_teammates(),
         status_dict=user.get_status(),
-        mlh_edit_link=settings.MLH_EDIT_LINK,
+        mlh_edit_link=settings.MYMLH['edit_link'],
         allowed_extensions=settings.ALLOWED_EXTENSIONS
     )
 

@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy, inspect
 from abc import ABCMeta, abstractmethod
+from dateutil.relativedelta import relativedelta
 
 from . import settings
 from . import utilities
@@ -25,9 +26,10 @@ class User(db.Model):
     discriminator = db.Column(db.String(50))
     __mapper_args__ = {"polymorphic_on": discriminator}
 
+    create_callbacks = []
+
     def __init__(self, email):
         self.email = email
-
 
     def get_id(self):
         """
@@ -37,6 +39,14 @@ class User(db.Model):
 
     def has_role(self, role_name):
         return self.discriminator == role_name
+
+    def user_created(self):
+        for fn in self.create_callbacks:
+            fn(self)
+
+    @staticmethod
+    def register_create_callback(callback):
+        User.create_callbacks.append(callback)
 
     # Flask Login Stuff
     @property
@@ -60,6 +70,9 @@ class HackerUser(User, db.Model):
 
     # The list of keys MLH is allowed to set - don't touch this
     mlh_settable_keys = utilities.mlh_settable_keys
+
+    # The list of MLH keys the user can set
+    mlh_friendly_dict = utilities.mlh_friendly_names
 
     # Things MLH knows - these keys are necessary for the app to function
     # TODO: change application to use email as the primary key
@@ -111,10 +124,13 @@ class HackerUser(User, db.Model):
         return {c: getattr(self, c) for c in inspect(self).attrs.keys()}
 
     def update(self, update_dict):
+        # merge all the updatable dicts into one.
+        updatable_dictionary = utilities.merge_two_dicts(self.mlh_friendly_dict, self.user_get_set_dict)
+        
         for key, value in update_dict.items():
             
-            if key in self.user_get_set_dict.keys():
-                if self.is_editable or self.user_get_set_dict[key]['always']:
+            if key in updatable_dictionary.keys():
+                if self.is_editable or self.updatable_dictionary[key]['always']:
                     setattr(self, key, value)
                 else:
                     return {
@@ -146,9 +162,11 @@ class HackerUser(User, db.Model):
         """
         Returns a dictionary of "Friendly Key" : "Value" pairs
         """
-        friendly_names = utilities.mlh_friendly_names
-        mlh_friendly_values = [sanitize_None(getattr(self, field)) for field in friendly_names.keys()]
-        return zip(friendly_names.values(), mlh_friendly_values)
+        data_dict = self.mlh_friendly_dict
+        for key in data_dict.keys():
+            data_dict[key]['value'] = sanitize_None(getattr(self, key))
+            data_dict[key]['editable'] = self.is_editable or self.data_dict[key]['always']
+        return data_dict
 
     def get_friendly_hacknc_data(self):
         """
@@ -176,6 +194,13 @@ class HackerUser(User, db.Model):
             "action": "admin_update",
             "status":"success"
         } 
+    
+    @property
+    def isOver18(self):
+        return "Y" \
+            if self.date_of_birth <= settings.DATE_OF_HACKATHON - relativedelta(years=18) \
+            else "N"
+    
 
     @property
     def is_editable(self):
@@ -188,21 +213,23 @@ class HackerUser(User, db.Model):
         
         if user:
             pass
+        
         else:
             user = HackerUser(email)
             db.session.add(user)
 
-        for key, value in user_dict.items():
-            if key in user.mlh_settable_keys:
-                setattr(user, key, value)
-            else:
-                # MLH tried to set a key it shouldn't have - panic
-                raise KeyError("MLH Tried to set a key it shouldn't have.")
-        
-        db.session.commit()
+            for key, value in user_dict.items():
+                if key in user.mlh_settable_keys:
+                    setattr(user, key, value)
+                else:
+                    # MLH tried to set a key it shouldn't have - panic
+                    raise KeyError("MLH Tried to set a key it shouldn't have.")
+
+            user.user_created()
+            db.session.commit()
         
         return user
-    
+
 # 
 # Model Helpers
 # 
