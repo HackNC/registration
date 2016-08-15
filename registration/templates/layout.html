@@ -1,28 +1,20 @@
 <!doctype html>
 <head>
     <title>My HackNC</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 </head>
-<div class=page>
-    <div class="shell">
-      <div class="container" id="header">
-          <div class="row">
-              <!-- Header -->
-              <div class="col-md-6 col-md-offset-3 col-sm-8">
-                <img class="header-img" src="{{ url_for('static', filename='img/title.png') }}">
-              </div>
-          </div>
-      </div>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-2m-12">
-              {% for message in get_flashed_messages() %}
-                <div class=flash><p class="bg-info">{{ message }}</p></div>
-              {% endfor %}
-              </div>
-        </div>
-    </div>
-    {% block body %}{% endblock %}
+<div class="page">
+    <header class="header">
+      <div class="sky"></div>
+      <img class="header-img" src="{{ url_for('static', filename='img/header.png') }}"/>
+      <img class="logo" src="{{ url_for('static', filename='img/title.png') }}"/>
+    </header>
+    <section class="flashed-messages">
+      {% for message in get_flashed_messages() %}
+        <div class=flash><p class="bg-info">{{ message }}</p></div>
+      {% endfor %}
+    </section>
+    <section class="content">
+      {% block body %}{% endblock %}
+    </section>
 </div>
