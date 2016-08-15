@@ -24,7 +24,7 @@
             {{ data['value'] }}
           </textarea>
         {% else %}
-          <input type="{{ data['formtype'] }}" class="form-control" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" pattern="{{data['pattern']}}" {{ 'disabled' if not data['editable'] else ''}}>
+          <input type="{{ data['formtype'] }}" class="form-control" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" pattern="{{data['pattern']}}" placeholder="hello" {{ 'disabled' if not data['editable'] else ''}}>
         {% endif %}
       </label>
     {% endfor %}
