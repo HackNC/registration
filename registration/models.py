@@ -71,6 +71,9 @@ class HackerUser(User, db.Model):
     # The list of keys MLH is allowed to set - don't touch this
     mlh_settable_keys = utilities.mlh_settable_keys
 
+    # The list of MLH keys the user can set
+    mlh_friendly_dict = utilities.mlh_friendly_names
+
     # Things MLH knows - these keys are necessary for the app to function
     # TODO: change application to use email as the primary key
     mlh_id = db.Column(db.INTEGER)
@@ -121,10 +124,13 @@ class HackerUser(User, db.Model):
         return {c: getattr(self, c) for c in inspect(self).attrs.keys()}
 
     def update(self, update_dict):
+        # merge all the updatable dicts into one.
+        updatable_dictionary = utilities.merge_two_dicts(self.mlh_friendly_dict, self.user_get_set_dict)
+        
         for key, value in update_dict.items():
             
-            if key in self.user_get_set_dict.keys():
-                if self.is_editable or self.user_get_set_dict[key]['always']:
+            if key in updatable_dictionary.keys():
+                if self.is_editable or self.updatable_dictionary[key]['always']:
                     setattr(self, key, value)
                 else:
                     return {
@@ -156,9 +162,11 @@ class HackerUser(User, db.Model):
         """
         Returns a dictionary of "Friendly Key" : "Value" pairs
         """
-        friendly_names = utilities.mlh_friendly_names
-        mlh_friendly_values = [sanitize_None(getattr(self, field)) for field in friendly_names.keys()]
-        return zip(friendly_names.values(), mlh_friendly_values)
+        data_dict = self.mlh_friendly_dict
+        for key in data_dict.keys():
+            data_dict[key]['value'] = sanitize_None(getattr(self, key))
+            data_dict[key]['editable'] = self.is_editable or self.data_dict[key]['always']
+        return data_dict
 
     def get_friendly_hacknc_data(self):
         """
