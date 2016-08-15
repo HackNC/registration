@@ -94,7 +94,6 @@ header .logo {
   width: 80%;
   margin: 0 10%;
   clear: both;
-  padding: 16px 20px;
 }
 
 /* Form Elements */
@@ -139,6 +138,9 @@ form label textarea:invalid:not(:focus) {
 
 form label textarea {
   line-height: 1.4;
+}
+form .big {
+  padding: 16px 20px;
 }
 
 button {
