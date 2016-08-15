@@ -89,16 +89,12 @@ header .logo {
   /*clear: right;*/
 }
 
-.admin td, th {
-    padding:4px;
-    max-width:300px;
-}
-
 .container{
   display: block;
   width: 80%;
   margin: 0 10%;
   clear: both;
+  padding: 16px 20px;
 }
 
 /* Form Elements */
@@ -118,7 +114,6 @@ button {
   width: 100%;
   font-size: 1em;
   margin-top: 2px;
-  padding: 16px 20px;
   border-radius: 3px;
   background: #346CA5;
   color: white;
@@ -147,14 +142,17 @@ form label textarea {
 }
 
 button {
-  width: 80%;
-  margin: 40px auto;
   background: #FFD600;
   border: none;
   color: #2C2C31;
   font-size: 1.3em;
   cursor: pointer;
   transition: color 0.2s, background 0.3s;
+}
+button.big {
+  padding: 16px 20px;
+  margin: 40px auto;
+  width: 80%;
 }
 
 button:hover {
@@ -175,6 +173,34 @@ button:hover {
 :-moz-placeholder { /* Firefox 4 - 18 */
   color: #204F80;
   opacity: 1;
+}
+
+.admin {
+  font-size: 14px;
+  line-height: 14px;
+}
+.admin a,
+.admin a:hover,
+.admin a:visited {
+  color: white;
+}
+.admin td, th {
+  padding:4px;
+  max-width:300px;
+}
+.admin.block {
+  position: absolute;
+  overflow-y:scroll;
+  top: 0px;
+  height: 100%;
+}
+.admin.block.left{
+  left: 0px;
+  width: 65%;
+}
+.admin.block.right {
+  right: 0px;
+  width: 35%;
 }
 
 @media(min-width: 0px){
