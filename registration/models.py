@@ -115,7 +115,7 @@ class HackerUser(User, db.Model):
         super(HackerUser, self).__init__(email)
         self.is_admin = False
         self.can_edit = True
-        self.registration_status = settings.DEFAULT_USER_STATUS
+        self.registration_status = settings.DEFAULT_REGISTRATION_STATUS
 
     def get_id(self):
         return self.email
