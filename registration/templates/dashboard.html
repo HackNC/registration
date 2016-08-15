@@ -19,12 +19,12 @@
     {% for field_id, data in form_data.items() %}
       <label>{{ data['friendly_name'] }}
         {% if data['formtype'] == 'textarea' %}
-          <textarea class="form-control" id="{{ field_id }}" name="{{ field_id }}" rows="3"
+          <textarea class="form-control" id="{{ field_id }}" name="{{ field_id }}" rows="3" pattern="{{data['pattern']}}"
           {{ 'disabled' if not data['editable'] else ''}}>
             {{ data['value'] }}
           </textarea>
         {% else %}
-          <input type="{{ data['formtype'] }}" class="form-control" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" {{ 'disabled' if not data['editable'] else ''}}>
+          <input type="{{ data['formtype'] }}" class="form-control" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" pattern="{{data['pattern']}}" {{ 'disabled' if not data['editable'] else ''}}>
         {% endif %}
       </label>
     {% endfor %}

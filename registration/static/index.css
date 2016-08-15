@@ -94,7 +94,25 @@ button {
   background: #346CA5;
   color: white;
   border: none;
+  outline: none;
+  box-sizing: border-box !important;
+  border: 1px solid transparent;
+  box-shadow: 0px 0px 4px transparent;
+  transition: border-color 0.4s, box-shadow 0.4s;
 }
+
+form label input:focus,
+form label textarea:focus {
+  border-color: #FFD600;
+  box-shadow: 0px 0px 4px #FFD600;
+}
+
+form label input:invalid:not(:focus),
+form label textarea:invalid:not(:focus) {
+  border-color: #D91414;
+  box-shadow: 0px 0px 4px #D91414;
+}
+
 
 form label textarea {
   line-height: 1.4;

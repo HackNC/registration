@@ -78,31 +78,36 @@ hacker_get_set_dict = collections.OrderedDict([
         "friendly_name": "Your Background",
         "help_text": "Tell us a little more about you!  How'd you get into tech?",
         "formtype": "textarea",
-        "always": False
+        "always": False,
+        "pattern": "^.+$"
     }),
     ("github", {
         "friendly_name" : "GitHub URL",
         "help_text" : "A link to your github profile",
         "formtype": "text",
-        "always": False
+        "always": False,
+        "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?[Gg][Ii][Tt][Hh][Uu][Bb]\.com\/[\w]+$"
     }),
     ("website", {
         "friendly_name" : "Persoanl URL",
         "help_text" : "Could be your website, or a link to something else you're proud of.",
         "formtype": "text",
-        "always": False
+        "always": False,
+        "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?([\dA-Za-z\.-]+)\.([A-Za-z\.]{2,6})([\/\w \.-]*)*\/?$"
     }),
     ("mac_address", {
         "friendly_name" : "MAC Address",
         "help_text" : "The MAC accress of your laptop's wireless card.  We need this to connect you to our WIFI.",
         "formtype": "text",
-        "always": True
+        "always": True,
+        "pattern": "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
     }),
     ("team_name", {
         "friendly_name": "Team Name",
         "help_text": "Create a team by giving us a team name.  Your teammates can all add the same name and get grouped.  This won't affect your application - it's just for fun!",
         "formtype": "text",
-        "always": True
+        "always": True,
+        "pattern": "^\w+$"
     }),
 ])
 
