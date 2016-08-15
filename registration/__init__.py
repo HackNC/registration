@@ -6,7 +6,7 @@ from requests import RequestException
 from flask import Flask, request, url_for, render_template, jsonify, redirect, render_template, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.engine.url import URL
-from flask_login import LoginManager, current_user, login_required, login_user, logout_user
+from flask.ext.login import LoginManager, current_user, login_required, login_user, logout_user
 from flask_cors import CORS, cross_origin
 # modules
 from . import mymlh
@@ -99,9 +99,9 @@ def login():
 # 
 
 def build_auth_url():
-    return settings.MYMLH['auth_url'].format(
+    return settings.AUTH_URL.format(
         client_id=settings.MYMLH['app_id'],
-        callback_uri=settings.MYMLH['redirect_uri']
+        callback_uri=settings.CALLBACK_URI
     )
 
 def allowed_file(filename):

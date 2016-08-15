@@ -1,5 +1,5 @@
 from flask import request, url_for, render_template, jsonify, redirect, render_template, flash
-from flask_login import current_user, login_required
+from flask.ext.login import current_user, login_required
 
 from registration import app, load_user
 
@@ -16,8 +16,7 @@ def admin():
     Administrative users can examine the live registration data
     """
     return renderers.AdminView(current_user).get_admin_panel( 
-        order=request.args.get("order_by"),
-        ufilter=request.args.get("filter"))
+        order=request.args.get("order_by"))
 
 @app.route("/admin/user/<user_email>", methods=["POST", "GET"])
 @login_required
