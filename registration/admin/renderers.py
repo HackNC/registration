@@ -1,6 +1,6 @@
 from flask import render_template, jsonify
 
-from registration import models, utilities
+from .. import models, utilities, forms
 
 class AdminView():
 
@@ -29,7 +29,7 @@ class AdminView():
             return render_template(
                 "admin.html",
                 users=users,
-                statuses=utilities.StatusCodes.keys()
+                statuses=forms.StatusCodes.keys()
             )
         else:
             return jsonify(**self.permission_denied), 403

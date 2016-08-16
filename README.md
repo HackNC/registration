@@ -45,7 +45,7 @@ sudo apt-get install python3 python3-dev python-dev libpq-dev virtualenv postgre
 2. Create a virtual environment: `virtualenv -p python3 .`
 3. Activate `source bin/activate`
 4. run a development install `pip install -e .`
-5. You'll need to ask for a copy of settings.py to drop in the main registration directory.  It contains all our secrets!!  
+5. Move settings_example.py to settings.py and fill out all the fields 
 6. After the database creation, you'll need to build the schema.  `python registration.py migrate debug` will do this for you.
 
 To run in prod, it's highly recommended that you sit flask behind nginx using wsgi. 
