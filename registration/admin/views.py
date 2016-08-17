@@ -1,7 +1,7 @@
 from flask import request, url_for, render_template, jsonify, redirect, render_template, flash
 from flask_login import current_user, login_required
 
-from .. import app, load_user
+from .. import app, load_user, login_required_or_next
 
 from . import renderers
 
@@ -10,7 +10,7 @@ from . import renderers
 # 
 
 @app.route("/admin", methods=["GET"])
-@login_required
+@login_required_or_next(nxt="admin")
 def admin():
     """
     Administrative users can examine the live registration data
@@ -20,7 +20,7 @@ def admin():
         ufilter=request.args.get("filter"))
 
 @app.route("/admin/user/<user_email>", methods=["POST", "GET"])
-@login_required
+@login_required_or_next(nxt="admin_update")
 def admin_update(user_email):
     """
     This method may be used to set ANY field.  Be careful when using this.

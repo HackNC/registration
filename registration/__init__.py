@@ -1,17 +1,17 @@
 # Standard
-import sys
 import os
+from functools import wraps
 # pre-installed
 from requests import RequestException
-from flask import Flask, request, url_for, render_template, jsonify, redirect, render_template, flash
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, request, url_for, jsonify, redirect, render_template
 from sqlalchemy.engine.url import URL
-from flask_login import LoginManager, current_user, login_required, login_user, logout_user
-from flask_cors import CORS, cross_origin
+from flask_login import LoginManager, current_user, login_user, logout_user
+from flask_cors import CORS
 # modules
 from . import mymlh
 from . import models
 from . import settings
+from . import utilities
 
 # Load app
 app = Flask(__name__)
@@ -45,16 +45,34 @@ def index():
     if current_user.is_anonymous:
         return render_template(
             "index.html",
-            auth_url=build_auth_url())
+            auth_url=utilities.build_auth_url())
+    elif current_user.discriminator == "hacker_user":
+        return redirect(url_for(settings.DEFAULT_VIEW))
     else:
-        if current_user.discriminator == "hacker_user":
-            return redirect(url_for("dashboard"))
-        else:
-            return jsonify(action="unknown")
+        return jsonify(action="unknown")
 
 # 
 # Login handlers
-# 
+#
+
+def login_required_or_next(nxt=settings.DEFAULT_VIEW):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            """
+            Require the user to be authenticated.
+            If not, kick user to MLH and set a cookie for the target page.
+            """
+            if not current_user.is_authenticated:
+                # If not authenticated, set a cookie and redirect.
+                target = redirect(utilities.build_auth_url())
+                response = app.make_response(target)
+                response.set_cookie('next', value=nxt)
+                return response
+
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 @login_manager.user_loader
 def load_user(user_email):
@@ -77,6 +95,11 @@ def login():
     """
     user_dict = {}
     auth_code = ""
+    nxt = None
+
+    if 'next' in request.cookies:
+        if request.cookies['next'] in settings.ALLOWED_PAGES:
+            nxt = request.cookies['next']
     
     # There should be a "code" in the url string
     try:
@@ -89,7 +112,13 @@ def login():
         user_dict = mlh_shim.get_user(auth_code)
         user_obj = models.HackerUser.update_or_create(user_dict)
         login_user(user_obj)
-        return redirect(url_for("dashboard"))
+        if nxt:
+            target = redirect(url_for(nxt))
+            response = app.make_response(target)
+            response.set_cookie('next', value='', expires=0)
+            return response
+        else:
+            return redirect(url_for(settings.DEFAULT_VIEW))
     except RequestException as re:
         print(re)
         return redirect(url_for("logout"))
@@ -97,12 +126,6 @@ def login():
 # 
 # Helpers
 # 
-
-def build_auth_url():
-    return settings.MYMLH['auth_url'].format(
-        client_id=settings.MYMLH['app_id'],
-        callback_uri=settings.MYMLH['redirect_uri']
-    )
 
 def allowed_file(filename):
     return '.' in filename \

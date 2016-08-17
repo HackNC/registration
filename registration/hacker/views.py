@@ -1,15 +1,19 @@
 from flask import request, url_for, render_template, jsonify, redirect, render_template, flash
 from flask_login import current_user, login_required
 
-from .. import app, secure_store, settings, forms, utilities
+from .. import app, secure_store, settings, forms, utilities, login_required_or_next
 
 @app.route("/dashboard", methods=["GET"])
-@login_required
+@login_required_or_next(nxt="dashboard")
 def dashboard():
-    return jsonify(**{"action":"unknown"})
+    return render_template(
+        "dashboard.html",
+        status=utilities.get_by_code(current_user.visible_status, forms.StatusCodes),
+        teammates=current_user.get_teammates()
+    )
 
 @app.route("/apply", methods=["GET", "POST"])
-@login_required
+@login_required_or_next(nxt="apply")
 def apply():
     """
     Successful logins are directed here
@@ -44,7 +48,7 @@ def apply():
     )
 
 @app.route("/api/me", methods=["GET", "POST"])
-@login_required
+@login_required_or_next(nxt="me")
 def me():
     """
     a json endpoint for /dashboard data
@@ -67,8 +71,3 @@ def me():
             "user_data":user.serialize(),
             "team_mates": user.get_teammates()
         })
-
-def validate_update(update_form_dict):
-    """
-    :returns: True/False
-    """
