@@ -53,11 +53,11 @@ StatusCodes = {
         "help_text": "Congrats - You're accepted!  Unfortunately, we can't compensate you for travel.  If you have any questions, shoot us an email at hello@hacknc.com",
         "editable_state": False
     },
-    'u': {
+    'x': {
         "code": "x",
-        "friendly_name": "Unknown",
+        "friendly_name": "Null",
         "help_text": "You've been marked with a status code we don't recognize.  It's probably temporary, but if you have any questions, email hello@hacknc.com :)",
-        "editable_state": True
+        "editable_state": False
     }
 }
 
@@ -73,13 +73,15 @@ hacker_get_set_dict = collections.OrderedDict([
         # What sort of form is this?
         "formtype": "textarea",
         # Is the field editable regardless of registration_status?
-        "always": False
+        "always": False,
+        "required": False,
     }),
     ("background", {
         "friendly_name": "Your Background",
         "help_text": "Tell us a little more about you!  How'd you get into tech?",
         "formtype": "textarea",
         "always": False,
+        "required": False,
         "pattern": "^.+$"
     }),
     ("github", {
@@ -87,6 +89,7 @@ hacker_get_set_dict = collections.OrderedDict([
         "help_text" : "A link to your github profile",
         "formtype": "text",
         "always": False,
+        "required": False,
         "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?[Gg][Ii][Tt][Hh][Uu][Bb]\.com\/[\w]+$"
     }),
     ("website", {
@@ -94,6 +97,7 @@ hacker_get_set_dict = collections.OrderedDict([
         "help_text" : "Could be your website, or a link to something else you're proud of.",
         "formtype": "text",
         "always": False,
+        "required": False,
         "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?([\dA-Za-z\.-]+)\.([A-Za-z\.]{2,6})([\/\w \.-]*)*\/?$"
     }),
     ("mac_address", {
@@ -101,6 +105,7 @@ hacker_get_set_dict = collections.OrderedDict([
         "help_text" : "The MAC accress of your laptop's wireless card.  We need this to connect you to our WIFI.",
         "formtype": "text",
         "always": True,
+        "required": False,
         "pattern": "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
     }),
     ("team_name", {
@@ -108,6 +113,7 @@ hacker_get_set_dict = collections.OrderedDict([
         "help_text": "Create a team by giving us a team name.  Your teammates can all add the same name and get grouped.  This won't affect your application - it's just for fun!",
         "formtype": "text",
         "always": True,
+        "required": False,
         "pattern": "^\w+$"
     }),
 ])
@@ -120,72 +126,84 @@ mlh_friendly_names = collections.OrderedDict([
         "friendly_name": "Email",
         "help_text": "",
         "formtype": "email",
+        "required": True,
         "always": False
     }),
     ("first_name", {
         "friendly_name": "First Name",
         "help_text": "",
         "formtype": "text",
+        "required": True,
         "always": False
     }),
     ("last_name", {
         "friendly_name": "Last Name",
         "help_text": "",
         "formtype": "text",
+        "required": True,
         "always": False
     }),
     ("gender", {
         "friendly_name": "Gender",
         "help_text": "",
         "formtype": "text",
+        "required": False,
         "always": False
     }),
     ("graduation", {
         "friendly_name": "Graduation",
         "help_text": "",
-        "formtype": "text",
+        "formtype": "date",
+        "required": False,
         "always": False
     }),
     ("major",{
         "friendly_name": "Major",
         "help_text": "",
         "formtype": "text",
+        "required": False,
         "always": False
     }),
     ("phone_number", {
         "friendly_name": "Phone Number",
         "help_text": "",
-        "formtype": "tel",
+        "formtype": "+tel",
+        "required": False,
         "always": False
     }),
     ("school_name", {
         "friendly_name": "School",
         "help_text": "",
         "formtype": "text",
+        "required": True,
         "always": False
     }),
     ("date_of_birth", {
         "friendly_name": "Date of Birth",
         "help_text": "",
-        "formtype": "text",
+        "formtype": "date",
+        "required": True,
         "always": False
     }),
     ("shirt_size", {
         "friendly_name": "Shirt Size",
         "help_text": "",
         "formtype": "text",
+        "required": True,
         "always": False
     }), 
     ("special_needs", {
         "friendly_name": "Special Needs",
         "help_text": "",
         "formtype": "text",
+        "required": False,
         "always": False
     }),
     ("dietary_restrictions", {
         "friendly_name": "Dietary Restrictions",
         "help_text": "",
         "formtype": "text",
+        "required": False,
         "always": False
     })
 ])

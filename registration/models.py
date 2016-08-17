@@ -178,10 +178,13 @@ class HackerUser(User, db.Model):
     website = db.Column(db.String(128))
 
     # System data - the system needs these.
-    registration_status = db.Column(db.CHAR)
+    visible_status = db.Column(db.CHAR)
+    pending_status = db.Column(db.CHAR)
     can_edit = db.Column(db.Boolean)
     notes = db.Column(db.Text)
     checked_in = db.Column(db.Boolean)
+    rsvp = db.Column(db.Boolean)
+    rsvp_by = db.Column(db.DateTime)
 
     # SQLAlchemy Inheritance stuff
     __tablename__ = 'hacker_user'
@@ -195,7 +198,8 @@ class HackerUser(User, db.Model):
         super(HackerUser, self).__init__(email)
         self.is_admin = False
         self.can_edit = True
-        self.registration_status = settings.DEFAULT_REGISTRATION_STATUS
+        self.visible_status = settings.DEFAULT_REGISTRATION_STATUS
+        self.pending_status = 'x'
 
     def get_teammates(self):
         if self.team_name is not None and self.team_name is not "":
@@ -211,7 +215,7 @@ class HackerUser(User, db.Model):
     
     @property
     def friendly_status(self):
-        return utilities.get_by_code(self.registration_status, forms.StatusCodes)
+        return utilities.get_by_code(self.visible_status, forms.StatusCodes)
 
     @property
     def isOver18(self):

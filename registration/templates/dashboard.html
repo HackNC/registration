@@ -11,7 +11,7 @@
     <div class="column mlh">
       {% for field_id, data in mlh_data.items() %}
         <label>{{ data['friendly_name'] }}
-          <input type="text" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{ data['value'] }}">
+          <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{ data['value'] }}" {{ "required" if data['required'] else ""}}>
         </label>      
       {% endfor %}
     </div>
@@ -23,10 +23,10 @@
           {% if data['formtype'] == 'textarea' %}
             <p class="help-text">{{ data['help_text']}}</p>
             <textarea class="form-control big" id="{{ field_id }}" name="{{ field_id }}" rows="3" pattern="{{data['pattern']}}"
-            {{ 'disabled' if not data['editable'] else ''}}>{{ data['value'] }}</textarea>
+            {{ 'disabled' if not data['editable'] else ''}} {{ "required" if data['required'] else ""}}>{{ data['value'] }}</textarea>
           {% else %}
             <p class="help-text">{{ data['help_text']}}</p>
-            <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" pattern="{{data['pattern']}}" placeholder="hello" {{ 'disabled' if not data['editable'] else ''}}>
+            <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" pattern="{{data['pattern']}}" placeholder="hello" {{ 'disabled' if not data['editable'] else ''}} {{ "required" if data['required'] else ""}}>
           {% endif %}
         </label>
       {% endfor %}

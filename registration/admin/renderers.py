@@ -13,14 +13,14 @@ class AdminView():
 
     def get_admin_panel(self, order=None, ufilter=None):
         if self.user.is_admin:
-            users = users = models.HackerUser.query
+            users = models.HackerUser.query
             if order or ufilter:
                 if order == "school":
                     users = users.order_by(models.HackerUser.school_id)
                 elif order == "id":
                     users = users.order_by(models.HackerUser.mlh_id)
                 elif order == "status":
-                    users = users.order_by(models.HackerUser.registration_status)
+                    users = users.order_by(models.HackerUser.visible_status, models.HackerUser.pending_status)
                 elif order == "over18":
                     users = users.order_by(models.HackerUser.date_of_birth)
                 elif order == "team":
