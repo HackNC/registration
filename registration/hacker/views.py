@@ -3,9 +3,14 @@ from flask_login import current_user, login_required
 
 from .. import app, secure_store, settings, forms, utilities
 
-@app.route("/dashboard", methods=["GET", "POST"])
+@app.route("/dashboard", methods=["GET"])
 @login_required
 def dashboard():
+    return jsonify(**{"action":"unknown"})
+
+@app.route("/apply", methods=["GET", "POST"])
+@login_required
+def apply():
     """
     Successful logins are directed here
     """
@@ -31,7 +36,7 @@ def dashboard():
             flash("File uploaded")
 
     return render_template(
-        "dashboard.html",
+        "apply.html",
         mlh_data=user.fill_form(forms.mlh_friendly_names),
         form_data=user.fill_form(forms.hacker_get_set_dict),
         teammates=user.get_teammates(),

@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<form class=entries action="{{ url_for('apply') }}" method="post" enctype="multipart/form-data">
+
+  <div class="container">
+
+    <h1>Complete your application</h1>
+
+    <!-- MLH Section -->
+    <div class="column mlh">
+      {% for field_id, data in mlh_data.items() %}
+        <label>{{ data['friendly_name'] }}
+          <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{ data['value'] }}" {{ "required" if data['required'] else ""}}>
+        </label>      
+      {% endfor %}
+    </div>
+
+    <!-- HackNC Section -->
+    <div class="column">
+      {% for field_id, data in form_data.items() %}
+        <label>{{ data['friendly_name'] }}
+          {% if data['formtype'] == 'textarea' %}
+            <p class="help-text">{{ data['help_text']}}</p>
+            <textarea class="form-control big" id="{{ field_id }}" name="{{ field_id }}" rows="3" pattern="{{data['pattern']}}"
+            {{ 'disabled' if not data['editable'] else ''}} {{ "required" if data['required'] else ""}}>{{ data['value'] }}</textarea>
+          {% else %}
+            <p class="help-text">{{ data['help_text']}}</p>
+            <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" pattern="{{data['pattern']}}" placeholder="hello" {{ 'disabled' if not data['editable'] else ''}} {{ "required" if data['required'] else ""}}>
+          {% endif %}
+        </label>
+      {% endfor %}
+      <label>Resume Upload
+        <p class="help-text">Accepts {{ allowed_extensions }}</p>
+        <input type="file" class="form-control big" name="resume">
+      </label>
+      <div class="team">
+      <!-- <h2>Team</h2>
+        {% for teammate in teammates %}
+        {{ teammate }}<br>
+        {% endfor %} -->
+      </div>
+      
+      <button class="big" type="submit">Submit!</button>
+    </div>
+
+</form>
+  
+{% endblock %}

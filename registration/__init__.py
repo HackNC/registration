@@ -50,7 +50,7 @@ def index():
         if current_user.discriminator == "hacker_user":
             return redirect(url_for("dashboard"))
         else:
-            return jsonify(action=unknown)
+            return jsonify(action="unknown")
 
 # 
 # Login handlers

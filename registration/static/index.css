@@ -54,13 +54,11 @@ header .header-img {
   width: 100%;
 }
 header .logo {
-  top: -20px;
-  position: absolute;
-  left: 0;
-  right: 0;
+  height: inherit;
+  margin-top: -100px;
+  display: block;
   margin-left: auto;
   margin-right: auto;
-  position: absolute;
 }
 
 .flash {
