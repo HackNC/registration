@@ -54,9 +54,17 @@ To run in prod, it's highly recommended that you sit flask behind nginx using ws
 
 `python registration.py debug` will start a single thread in debug mode.  *DEBUG MODE IS NOT SAFE FOR PRODUCTION*
 
+# Callbacks
+
+HackNC uses a couple of callback which require some other api keys/setup.
+
+1) SparkPost API: sparkpost does transactional email.  You will need to set up an account, generate an API key that can WRITE transmissions and read templates, and create a template.  you can send it the "name" substitution data.
+
+2) Slack Webhooks: Create a new custom slack integration, pick the channel, and paste the url into settings.py
+
 # Modification
 
-You'll need to read and modify the code and object model in [models.py](models.py).  
+You'll need to read and modify the code and object model in [models.py](registration/models.py).  Then, change the registration form by modifying the dictionaries in [forms.py](registration/forms.py).
 
 # Usage
 
