@@ -27,7 +27,9 @@ class User(db.Model):
     discriminator = db.Column(db.String(50))
     __mapper_args__ = {"polymorphic_on": discriminator}
 
+    # the lists of subscribed callback functions
     create_callbacks = []
+    update_callbacks = []
 
     def __init__(self, email):
         self.email = email
@@ -46,6 +48,10 @@ class User(db.Model):
 
     def user_created(self):
         for fn in self.create_callbacks:
+            fn(self)
+
+    def user_updated(self):
+        for fn in self.update_callbacks:
             fn(self)
 
     def fill_form(self, form):
@@ -95,6 +101,11 @@ class User(db.Model):
                     "status": "fail", 
                     "reason": "user tried to set unsettable field"}
         db.session.commit()
+        
+        # Process callbacks if everything went fine.
+        # TODO: This should maybe be async.
+        self.user_updated()
+        
         return {
             "action":"update",
             "status":"success"} 
@@ -112,6 +123,10 @@ class User(db.Model):
     @staticmethod
     def register_create_callback(callback):
         User.create_callbacks.append(callback)
+
+    @staticmethod
+    def register_update_callback(callback):
+        User.update_callbacks.append(callback)
 
     # Flask Login Stuff
     @property
