@@ -53,21 +53,25 @@ header .sky {
 header .header-img {
   width: 100%;
 }
-header .logo {
-  top: -20px;
-  position: absolute;
-  left: 0;
-  right: 0;
+.logo {
+  height: 200px;
+  display: block;
+  margin-top: -100px;
+  text-align: center;
   margin-left: auto;
   margin-right: auto;
-  position: absolute;
+  clear: left;
 }
 
 .flash {
-  width: 80%;
-  margin: 0 10%;
-  padding-left: 10px;
-  background-color: #346CA5;
+  width: 100%;
+  text-align: center;
+}
+.flash.error {
+  background-color: #FF5050;
+}
+.flash.success {
+  background-color: #7BDE5B;
 }
 
 /* Layouts */
@@ -94,6 +98,17 @@ header .logo {
   width: 80%;
   margin: 0 10%;
   clear: both;
+}
+
+#navbar {
+  text-align: center;
+}
+#navbar a{
+  color: white;
+  text-decoration: none;
+  font-size: 1.4rem;
+  font-family: "geo-sans-light", sans-serif;
+  margin: 0 20px;
 }
 
 /* Form Elements */

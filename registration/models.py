@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy, inspect
 from abc import ABCMeta, abstractmethod
 from dateutil.relativedelta import relativedelta
+import datetime
 
 from . import settings
 from . import forms
@@ -8,20 +9,20 @@ from . import utilities
 
 db = SQLAlchemy()
 
-
 class User(db.Model):
 
     __tablename__ = 'user'
     
     # User data
-    email = db.Column(db.String(32), primary_key=True)
+    email = db.Column(db.String(32), unique=True)
     first_name = db.Column(db.String(32))
     last_name = db.Column(db.String(32))
-    phone_number = db.Column(db.String(20))
+    phone_number = db.Column(db.String(20), unique=True)
     shirt_size = db.Column(db.String(32))
 
     # System data
     is_admin = db.Column(db.Boolean)
+    user_id = db.Column(db.Integer, primary_key=True)
 
     # SQLAlchemy inheritance stuff
     discriminator = db.Column(db.String(50))
@@ -41,7 +42,7 @@ class User(db.Model):
         """
         Given the primary key for User, return an instance of the subclass implementation
         """
-        return self.email
+        return self.user_id
 
     def has_role(self, role_name):
         return self.discriminator == role_name
@@ -87,19 +88,27 @@ class User(db.Model):
         """
         for key, value in update_dict.items():       
             if key in updatable_dictionary.keys():
-                if self.is_editable or self.updatable_dictionary[key]['always']:
+                if (
+                    (self.is_editable or updatable_dictionary[key]['always']) 
+                    and updatable_dictionary[key]['editable']
+                    ):
                     setattr(self, key, value)
                 else:
                     return {
                         "action": "update",
                         "status": "fail",
-                        "reason": "non-editable field state"} 
+                        "reason": "non-editable field state",
+                        "failed_key": key,
+                        "failed_value": value} 
             else:
                 # Tell the user they tried to set a bad key.  It was probably an accident
                 return {
                     "action": "update",
                     "status": "fail", 
-                    "reason": "user tried to set unsettable field"}
+                    "reason": "user tried to set unsettable field",
+                    "failed_key": key,
+                    "failed_value": value}
+        
         db.session.commit()
         
         # Process callbacks if everything went fine.
@@ -127,6 +136,10 @@ class User(db.Model):
     @staticmethod
     def register_update_callback(callback):
         User.update_callbacks.append(callback)
+
+    @property
+    def is_editable(self):
+        return False
 
     # Flask Login Stuff
     @property
@@ -156,7 +169,7 @@ class HackerUser(User, db.Model):
 
     # Things MLH knows - these keys are necessary for the app to function
     # TODO: change application to use email as the primary key
-    mlh_id = db.Column(db.INTEGER)
+    mlh_id = db.Column(db.INTEGER, unique=True)
     created_at = db.Column(db.DateTime)
     date_of_birth = db.Column(db.Date)
     gender = db.Column(db.String(16))
@@ -176,26 +189,33 @@ class HackerUser(User, db.Model):
     mac_address = db.Column(db.String(20))
     github = db.Column(db.String(128))
     website = db.Column(db.String(128))
+    travel_cost = db.Column(db.Float)
 
     # System data - the system needs these.
-    registration_status = db.Column(db.CHAR)
+    visible_status = db.Column(db.CHAR)
+    pending_status = db.Column(db.CHAR)
     can_edit = db.Column(db.Boolean)
     notes = db.Column(db.Text)
     checked_in = db.Column(db.Boolean)
+    rsvp = db.Column(db.Boolean)
+    rsvp_by = db.Column(db.DateTime)
+    apply_date = db.Column(db.DateTime)
+    rsvp_date = db.Column(db.DateTime)
 
     # SQLAlchemy Inheritance stuff
     __tablename__ = 'hacker_user'
-    email = db.Column(db.String(32), db.ForeignKey('user.email'), 
-        primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
     __mapper_args__ = {
         "polymorphic_identity": "hacker_user",
-        "inherit_condition": (email == User.email)}
+        "inherit_condition": (user_id == User.user_id)}
 
     def __init__(self, email):
         super(HackerUser, self).__init__(email)
         self.is_admin = False
         self.can_edit = True
-        self.registration_status = settings.DEFAULT_REGISTRATION_STATUS
+        self.visible_status = settings.DEFAULT_REGISTRATION_STATUS
+        self.pending_status = 'x'
+        self.apply_date = datetime.datetime.utcnow()
 
     def get_teammates(self):
         if self.team_name is not None and self.team_name is not "":
@@ -211,7 +231,7 @@ class HackerUser(User, db.Model):
     
     @property
     def friendly_status(self):
-        return utilities.get_by_code(self.registration_status, forms.StatusCodes)
+        return utilities.get_by_code(self.visible_status, forms.StatusCodes)
 
     @property
     def isOver18(self):
@@ -225,13 +245,25 @@ class HackerUser(User, db.Model):
 
     @staticmethod
     def update_or_create(user_dict):
+        """
+        Try to get by MLH ID, then by email.
+        If those fail, create a new user
+        """
         email = user_dict["email"]
-        user = HackerUser.query.get(email)
+        mlh_id = user_dict["mlh_id"]
+        user = None
+
+        if not user:
+            user = HackerUser.query.filter_by(mlh_id=mlh_id).first()
+        if not user:
+            user = HackerUser.query.filter_by(email=email).first()
         
+
         if user:
+            # If we found the user, done
             pass
-        
         else:
+            # Else we must create another.
             user = HackerUser(email)
             db.session.add(user)
 
