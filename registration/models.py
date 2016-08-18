@@ -73,7 +73,7 @@ class User(db.Model):
         data_dict = form
         for key in data_dict.keys():
             data_dict[key]['value'] = sanitize_None(getattr(self, key))
-            data_dict[key]['editable'] = self.is_editable or self.data_dict[key]['always']
+            data_dict[key]['editable'] = self.is_editable or data_dict[key]['always']
         return data_dict
 
     def update(self, update_dict, updatable_dictionary):

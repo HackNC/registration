@@ -11,7 +11,7 @@
     <div class="column mlh">
       {% for field_id, data in mlh_data.items() %}
         <label>{{ data['friendly_name'] }}
-          <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{ data['value'] }}" {{ "required" if data['required'] else ""}}>
+          <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{ data['value'] }}" {{ 'disabled' if not data['editable'] else ''}} {{ "required" if data['required'] else ""}}>
         </label>      
       {% endfor %}
     </div>
@@ -32,6 +32,7 @@
       {% endfor %}
       <label>Resume Upload
         <p class="help-text">Accepts {{ allowed_extensions }}</p>
+        <p class="help-text">{{ "You've uploaded a resume." if current_user.resume_location else "No resume on file" }}</p>
         <input type="file" class="form-control big" name="resume">
       </label>
       <div class="team">
