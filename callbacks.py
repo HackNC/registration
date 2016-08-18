@@ -38,6 +38,6 @@ def send_welcome(user):
 # Feed the new user into slack
 @triggers.new_user
 def send_slack(user):
-    data = {"text": user.first_name + " " + user.last_name + " (" + user.email + ") registered for HackNC.\n<https://my.hacknc.com/admin/user/" + user.email + "| View Application>"}
+    data = {"text": user.first_name + " " + user.last_name + " (" + user.email + ") registered for HackNC.\n<https://my.hacknc.com/admin/user/" + user.user_id + "| View Application>"}
     r = requests.post(settings.SLACK['webhook_url'],data=json.dumps(data))
     print("Slack Reply: " + r.text)
