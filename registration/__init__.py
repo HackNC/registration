@@ -75,9 +75,8 @@ def login_required_or_next(nxt=settings.DEFAULT_VIEW):
     return decorator
 
 @login_manager.user_loader
-def load_user(user_email):
-    return models.User.query.get(user_email)
-
+def load_user(user_id):
+    return models.User.query.get(user_id)
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
@@ -86,7 +85,7 @@ def unauthorized_callback():
 @app.route("/logout")
 def logout():
     logout_user()
-    return jsonify(action="logged_out")
+    return redirect(url_for("index"))
 
 @app.route("/login")
 def login():

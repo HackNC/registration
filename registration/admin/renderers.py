@@ -28,6 +28,7 @@ class AdminView():
 
             return render_template(
                 "admin.html",
+                current_user=self.user,
                 users=users,
                 statuses=forms.StatusCodes.keys()
             )

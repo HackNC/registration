@@ -74,7 +74,10 @@ hacker_get_set_dict = collections.OrderedDict([
         "formtype": "textarea",
         # Is the field editable regardless of registration_status?
         "always": False,
+        # Is the field required?
         "required": False,
+        # Is the field editable at all?
+        "editable": True,
     }),
     ("background", {
         "friendly_name": "Your Background",
@@ -82,6 +85,7 @@ hacker_get_set_dict = collections.OrderedDict([
         "formtype": "textarea",
         "always": False,
         "required": False,
+        "editable": True,
         "pattern": "^.+$"
     }),
     ("github", {
@@ -90,6 +94,7 @@ hacker_get_set_dict = collections.OrderedDict([
         "formtype": "text",
         "always": False,
         "required": False,
+        "editable": True,
         "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?[Gg][Ii][Tt][Hh][Uu][Bb]\.com\/[\w]+$"
     }),
     ("website", {
@@ -98,6 +103,7 @@ hacker_get_set_dict = collections.OrderedDict([
         "formtype": "text",
         "always": False,
         "required": False,
+        "editable": True,
         "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?([\dA-Za-z\.-]+)\.([A-Za-z\.]{2,6})([\/\w \.-]*)*\/?$"
     }),
     ("mac_address", {
@@ -106,6 +112,7 @@ hacker_get_set_dict = collections.OrderedDict([
         "formtype": "text",
         "always": True,
         "required": False,
+        "editable": True,
         "pattern": "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
     }),
     ("team_name", {
@@ -114,6 +121,7 @@ hacker_get_set_dict = collections.OrderedDict([
         "formtype": "text",
         "always": True,
         "required": False,
+        "editable": True,
         "pattern": "^\w+$"
     }),
 ])
@@ -127,6 +135,7 @@ mlh_friendly_names = collections.OrderedDict([
         "help_text": "",
         "formtype": "email",
         "required": True,
+        "editable": False,
         "always": False
     }),
     ("first_name", {
@@ -134,6 +143,7 @@ mlh_friendly_names = collections.OrderedDict([
         "help_text": "",
         "formtype": "text",
         "required": True,
+        "editable": True,
         "always": False
     }),
     ("last_name", {
@@ -141,6 +151,7 @@ mlh_friendly_names = collections.OrderedDict([
         "help_text": "",
         "formtype": "text",
         "required": True,
+        "editable": True,
         "always": False
     }),
     ("gender", {
@@ -148,6 +159,7 @@ mlh_friendly_names = collections.OrderedDict([
         "help_text": "",
         "formtype": "text",
         "required": False,
+        "editable": True,
         "always": False
     }),
     ("graduation", {
@@ -155,6 +167,7 @@ mlh_friendly_names = collections.OrderedDict([
         "help_text": "",
         "formtype": "date",
         "required": False,
+        "editable": True,
         "always": False
     }),
     ("major",{
@@ -162,6 +175,7 @@ mlh_friendly_names = collections.OrderedDict([
         "help_text": "",
         "formtype": "text",
         "required": False,
+        "editable": True,
         "always": False
     }),
     ("phone_number", {
@@ -169,6 +183,7 @@ mlh_friendly_names = collections.OrderedDict([
         "help_text": "",
         "formtype": "+tel",
         "required": False,
+        "editable": True,
         "always": False
     }),
     ("school_name", {
@@ -176,6 +191,7 @@ mlh_friendly_names = collections.OrderedDict([
         "help_text": "",
         "formtype": "text",
         "required": True,
+        "editable": True,
         "always": False
     }),
     ("date_of_birth", {
@@ -183,6 +199,7 @@ mlh_friendly_names = collections.OrderedDict([
         "help_text": "",
         "formtype": "date",
         "required": True,
+        "editable": True,
         "always": False
     }),
     ("shirt_size", {
@@ -190,6 +207,7 @@ mlh_friendly_names = collections.OrderedDict([
         "help_text": "",
         "formtype": "text",
         "required": True,
+        "editable": True,
         "always": False
     }), 
     ("special_needs", {
@@ -197,6 +215,7 @@ mlh_friendly_names = collections.OrderedDict([
         "help_text": "",
         "formtype": "text",
         "required": False,
+        "editable": True,
         "always": False
     }),
     ("dietary_restrictions", {
@@ -204,6 +223,7 @@ mlh_friendly_names = collections.OrderedDict([
         "help_text": "",
         "formtype": "text",
         "required": False,
+        "editable": True,
         "always": False
     })
 ])
