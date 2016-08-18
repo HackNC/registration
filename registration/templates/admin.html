@@ -2,7 +2,7 @@
 <head>
 <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 <script>
-  function get_user(user_email){
+  function get_user(user_id){
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (xhttp.readyState == 4 && xhttp.status == 200) {
@@ -25,7 +25,7 @@
        // . = xhttp.responseText;
       }
     };
-    xhttp.open("GET", ("/admin/user/" + user_email) , true);
+    xhttp.open("GET", ("/admin/user/" + user_id) , true);
     xhttp.send();
   }
 </script>
@@ -57,12 +57,20 @@
         <td>{{ user.school_name }}</td>
 
         <td>
-          <form method='post' action='{{ url_for("admin_update", user_email=user.email) }}'>
-            <select name="registration_status">
+          <form method='post' action='{{ url_for("admin_update", user_id=user.user_id) }}'>
+            <select name="visible_status">
             {% for status in statuses %}
               <option value='{{ status }}'
-                {% if status == user.registration_status %}
+                {% if status == user.visible_status %}
                   selected 
+                {% endif %}>{{ status }}</option>
+            {% endfor %}
+            </select>
+            <select name="pending_status">
+            {% for status in statuses %}
+              <option value='{{ status }}'
+                {% if status == user.pending_status %}
+                  selected
                 {% endif %}>{{ status }}</option>
             {% endfor %}
             </select>
@@ -72,7 +80,7 @@
         <td>{{ user.isOver18 }}</td>
         <td>{{ user.team_name }}</td>
         <td><a href='{{ user.website }}'>{{ user.website }}</a></td>
-        <td><button onclick="get_user('{{ user.email }}')">Details</button></td>
+        <td><button onclick="get_user('{{ user.user_id }}')">Details</button></td>
       </tr>
       {% endfor %}
     </table>

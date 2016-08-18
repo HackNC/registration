@@ -1,41 +1,48 @@
 from flask_sqlalchemy import SQLAlchemy, inspect
 from abc import ABCMeta, abstractmethod
 from dateutil.relativedelta import relativedelta
+import datetime
 
 from . import settings
+from . import forms
 from . import utilities
 
 db = SQLAlchemy()
-
 
 class User(db.Model):
 
     __tablename__ = 'user'
     
     # User data
-    email = db.Column(db.String(32), primary_key=True)
+    email = db.Column(db.String(32), unique=True)
     first_name = db.Column(db.String(32))
     last_name = db.Column(db.String(32))
-    phone_number = db.Column(db.String(20))
+    phone_number = db.Column(db.String(20), unique=True)
     shirt_size = db.Column(db.String(32))
 
     # System data
     is_admin = db.Column(db.Boolean)
+    user_id = db.Column(db.Integer, primary_key=True)
 
     # SQLAlchemy inheritance stuff
     discriminator = db.Column(db.String(50))
     __mapper_args__ = {"polymorphic_on": discriminator}
 
+    # the lists of subscribed callback functions
     create_callbacks = []
+    update_callbacks = []
 
     def __init__(self, email):
         self.email = email
+
+    def serialize(self):
+        return {c: getattr(self, c) for c in inspect(self).attrs.keys()}
 
     def get_id(self):
         """
         Given the primary key for User, return an instance of the subclass implementation
         """
-        return self.email
+        return self.user_id
 
     def has_role(self, role_name):
         return self.discriminator == role_name
@@ -44,9 +51,95 @@ class User(db.Model):
         for fn in self.create_callbacks:
             fn(self)
 
+    def user_updated(self):
+        for fn in self.update_callbacks:
+            fn(self)
+
+    def fill_form(self, form):
+        """
+        :param form: Takes a form from forms.py The most basic could be 
+            { "field_id" : {
+                "always": True/False
+                } 
+            }
+        :returns: A filled form.  Most basic could be 
+            { "field_id" : {
+                "value": "_value_",
+                "always": True/False,
+                "editable": True/False
+                } 
+            }      
+        """
+        data_dict = form
+        for key in data_dict.keys():
+            data_dict[key]['value'] = sanitize_None(getattr(self, key))
+            data_dict[key]['editable'] = self.is_editable or self.data_dict[key]['always']
+        return data_dict
+
+    def update(self, update_dict, updatable_dictionary):
+        """
+        :param update_dict: A dict of key/value pairs.
+        :param updatable_dictionary: A form from forms.py
+        :returns: {
+            "action": "update",
+            "status": "success/fail",
+            "reason": "fail reason if fail"
+            }
+        """
+        for key, value in update_dict.items():       
+            if key in updatable_dictionary.keys():
+                if (
+                    (self.is_editable or updatable_dictionary[key]['always']) 
+                    and updatable_dictionary[key]['editable']
+                    ):
+                    setattr(self, key, value)
+                else:
+                    return {
+                        "action": "update",
+                        "status": "fail",
+                        "reason": "non-editable field state",
+                        "failed_key": key,
+                        "failed_value": value} 
+            else:
+                # Tell the user they tried to set a bad key.  It was probably an accident
+                return {
+                    "action": "update",
+                    "status": "fail", 
+                    "reason": "user tried to set unsettable field",
+                    "failed_key": key,
+                    "failed_value": value}
+        
+        db.session.commit()
+        
+        # Process callbacks if everything went fine.
+        # TODO: This should maybe be async.
+        self.user_updated()
+        
+        return {
+            "action":"update",
+            "status":"success"} 
+    
+    def admin_update(self, update_dict):
+        for key, value in update_dict.items():
+            print(key, value)
+            setattr(self, key, value)
+        db.session.commit()
+        return {
+            "action": "admin_update",
+            "status":"success"
+        }
+
     @staticmethod
     def register_create_callback(callback):
         User.create_callbacks.append(callback)
+
+    @staticmethod
+    def register_update_callback(callback):
+        User.update_callbacks.append(callback)
+
+    @property
+    def is_editable(self):
+        return False
 
     # Flask Login Stuff
     @property
@@ -66,17 +159,17 @@ class HackerUser(User, db.Model):
 
     # The list of keys the user is allowed to get/set, plus metadata for the view.
     # Since it's 1:1, we should keep the meta here.
-    user_get_set_dict = utilities.hacker_get_set_dict
+    user_get_set_dict = forms.hacker_get_set_dict
 
     # The list of keys MLH is allowed to set - don't touch this
-    mlh_settable_keys = utilities.mlh_settable_keys
+    mlh_settable_keys = forms.mlh_settable_keys
 
     # The list of MLH keys the user can set
-    mlh_friendly_dict = utilities.mlh_friendly_names
+    mlh_friendly_dict = forms.mlh_friendly_names
 
     # Things MLH knows - these keys are necessary for the app to function
     # TODO: change application to use email as the primary key
-    mlh_id = db.Column(db.INTEGER)
+    mlh_id = db.Column(db.INTEGER, unique=True)
     created_at = db.Column(db.DateTime)
     date_of_birth = db.Column(db.Date)
     gender = db.Column(db.String(16))
@@ -96,59 +189,33 @@ class HackerUser(User, db.Model):
     mac_address = db.Column(db.String(20))
     github = db.Column(db.String(128))
     website = db.Column(db.String(128))
+    travel_cost = db.Column(db.Float)
 
     # System data - the system needs these.
-    registration_status = db.Column(db.CHAR)
+    visible_status = db.Column(db.CHAR)
+    pending_status = db.Column(db.CHAR)
     can_edit = db.Column(db.Boolean)
     notes = db.Column(db.Text)
     checked_in = db.Column(db.Boolean)
+    rsvp = db.Column(db.Boolean)
+    rsvp_by = db.Column(db.DateTime)
+    apply_date = db.Column(db.DateTime)
+    rsvp_date = db.Column(db.DateTime)
 
     # SQLAlchemy Inheritance stuff
     __tablename__ = 'hacker_user'
-    email = db.Column(db.String(32), db.ForeignKey('user.email'), 
-        primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
     __mapper_args__ = {
         "polymorphic_identity": "hacker_user",
-        "inherit_condition": (email == User.email)}
+        "inherit_condition": (user_id == User.user_id)}
 
     def __init__(self, email):
         super(HackerUser, self).__init__(email)
         self.is_admin = False
         self.can_edit = True
-        self.registration_status = settings.DEFAULT_REGISTRATION_STATUS
-
-    def get_id(self):
-        return self.email
-
-    def serialize(self):
-        return {c: getattr(self, c) for c in inspect(self).attrs.keys()}
-
-    def update(self, update_dict):
-        # merge all the updatable dicts into one.
-        updatable_dictionary = utilities.merge_two_dicts(self.mlh_friendly_dict, self.user_get_set_dict)
-        
-        for key, value in update_dict.items():
-            
-            if key in updatable_dictionary.keys():
-                if self.is_editable or self.updatable_dictionary[key]['always']:
-                    setattr(self, key, value)
-                else:
-                    return {
-                        "action": "update",
-                        "status": "fail",
-                        "reason": "non-editable field state"
-                    }
-            
-            else:
-                # Tell the user they tried to set a bad key.  It was probably an accident
-                return {
-                    "action": "update",
-                    "status": "fail", 
-                    "reason": "user tried to set unsettable field"
-                }
-        
-        db.session.commit()
-        return {"status":"success"} 
+        self.visible_status = settings.DEFAULT_REGISTRATION_STATUS
+        self.pending_status = 'x'
+        self.apply_date = datetime.datetime.utcnow()
 
     def get_teammates(self):
         if self.team_name is not None and self.team_name is not "":
@@ -158,63 +225,45 @@ class HackerUser(User, db.Model):
         else:
             return ["You're not currently on a team"]
 
-    def get_friendly_mlh_data(self):
-        """
-        Returns a dictionary of "Friendly Key" : "Value" pairs
-        """
-        data_dict = self.mlh_friendly_dict
-        for key in data_dict.keys():
-            data_dict[key]['value'] = sanitize_None(getattr(self, key))
-            data_dict[key]['editable'] = self.is_editable or self.data_dict[key]['always']
-        return data_dict
-
-    def get_friendly_hacknc_data(self):
-        """
-        Must resturn both the object_key, Friendly Key, help_text, and value for ever item that should be included in the form
-        """
-        data_dict = self.user_get_set_dict
-        for key in data_dict.keys():
-            data_dict[key]['value'] = sanitize_None(getattr(self, key))
-            data_dict[key]['editable'] = self.is_editable or self.user_get_set_dict[key]['always']
-        return data_dict
-
-    def get_status(self):
-        return utilities.get_by_code(self.registration_status)
-
     def set_resume_location(self, resume_location):
         self.resume_location = resume_location
-        db.session.commit()
-
-    def admin_update(self, update_dict):
-        for key, value in update_dict.items():
-            print(key, value)
-            setattr(self, key, value)
-        db.session.commit()
-        return {
-            "action": "admin_update",
-            "status":"success"
-        } 
+        db.session.commit() 
     
+    @property
+    def friendly_status(self):
+        return utilities.get_by_code(self.visible_status, forms.StatusCodes)
+
     @property
     def isOver18(self):
         return "Y" \
             if self.date_of_birth <= settings.DATE_OF_HACKATHON - relativedelta(years=18) \
             else "N"
-    
 
     @property
     def is_editable(self):
-        return self.get_status()['editable_state']
+        return self.friendly_status['editable_state']
 
     @staticmethod
     def update_or_create(user_dict):
+        """
+        Try to get by MLH ID, then by email.
+        If those fail, create a new user
+        """
         email = user_dict["email"]
-        user = HackerUser.query.get(email)
+        mlh_id = user_dict["mlh_id"]
+        user = None
+
+        if not user:
+            user = HackerUser.query.filter_by(mlh_id=mlh_id).first()
+        if not user:
+            user = HackerUser.query.filter_by(email=email).first()
         
+
         if user:
+            # If we found the user, done
             pass
-        
         else:
+            # Else we must create another.
             user = HackerUser(email)
             db.session.add(user)
 

@@ -4,17 +4,38 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 </head>
 <div class="page">
-    <header class="header">
-      <div class="sky"></div>
-      <img class="header-img" src="{{ url_for('static', filename='img/header.png') }}"/>
-      <img class="logo" src="{{ url_for('static', filename='img/title.png') }}"/>
-    </header>
+
     <section class="flashed-messages">
       {% for message in get_flashed_messages() %}
         <div class=flash><p class="bg-info">{{ message }}</p></div>
       {% endfor %}
     </section>
+
+    <header class="header">
+      <!-- This section can be re-skinned for your hackathon -->
+      <div class="sky"></div>
+      <img class="header-img" src="{{ url_for('static', filename='img/header.png') }}"/>
+      {% if current_user.is_authenticated %}
+      <div class="container">
+        <div id="navbar">
+          <nav>
+            <a href="/apply">Apply</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/logout">Log Out</a>
+            {% if current_user.is_admin %}
+            <a href="/admin">Admin</a>
+            {% endif %}
+          </nav>
+        </div>
+      </div>
+      {% endif %}
+    </header>
+
     <section class="content">
       {% block body %}{% endblock %}
     </section>
+
+    <footer class="footer">
+      <!-- <img class="logo" src="{{ url_for('static', filename='img/title.png') }}"/> -->
+    </footer>
 </div>

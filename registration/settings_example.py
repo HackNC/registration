@@ -28,3 +28,7 @@ MYMLH = {
 SPARKPOST = {
     "secret_key": "SPARKPOST_API_KEY"  
 }
+
+SLACK = {
+    "callback_url": "CALLBACK_URL"
+}

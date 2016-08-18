@@ -1,11 +1,20 @@
 from flask import request, url_for, render_template, jsonify, redirect, render_template, flash
 from flask_login import current_user, login_required
 
-from registration import app, secure_store, settings
+from .. import app, secure_store, settings, forms, utilities, login_required_or_next
 
-@app.route("/dashboard", methods=["GET", "POST"])
-@login_required
+@app.route("/dashboard", methods=["GET"])
+@login_required_or_next(nxt="dashboard")
 def dashboard():
+    return render_template(
+        "dashboard.html",
+        status=utilities.get_by_code(current_user.visible_status, forms.StatusCodes),
+        teammates=current_user.get_teammates()
+    )
+
+@app.route("/apply", methods=["GET", "POST"])
+@login_required_or_next(nxt="apply")
+def apply():
     """
     Successful logins are directed here
     """
@@ -14,7 +23,12 @@ def dashboard():
     if request.method == "POST":
         # TODO: Determine if application is in an updatable state (Has application window closed?)
         update_dict = request.form.to_dict()
-        update_success = user.update(update_dict)
+        # TODO: Validate the form.
+        updatable_dictionary = utilities.merge_two_dicts(
+            forms.hacker_get_set_dict, forms.mlh_friendly_names)
+        
+        update_success = user.update(update_dict, updatable_dictionary)
+        
         if update_success['status'] == "success":
             flash("Update successful")
         else:
@@ -26,17 +40,15 @@ def dashboard():
             flash("File uploaded")
 
     return render_template(
-        "dashboard.html",
-        mlh_data=user.get_friendly_mlh_data(),
-        form_data=user.get_friendly_hacknc_data(),
+        "apply.html",
+        mlh_data=user.fill_form(forms.mlh_friendly_names),
+        form_data=user.fill_form(forms.hacker_get_set_dict),
         teammates=user.get_teammates(),
-        status_dict=user.get_status(),
-        mlh_edit_link=settings.MYMLH['edit_link'],
         allowed_extensions=settings.ALLOWED_EXTENSIONS
     )
 
 @app.route("/api/me", methods=["GET", "POST"])
-@login_required
+@login_required_or_next(nxt="me")
 def me():
     """
     a json endpoint for /dashboard data
@@ -49,8 +61,13 @@ def me():
             "team_mates": user.get_teammates()
         })
     elif request.method == "POST":
-        update_success = user.update(request.form)
+        
+        updatable_dictionary = utilities.merge_two_dicts(
+            forms.hacker_get_set_dict, forms.mlh_friendly_names)
+        
+        update_success = user.update(request.form.to_dict(), updatable_dictionary)
         return jsonify(**{
             "action": update_success,
-            "user_data":user.serialize()
+            "user_data":user.serialize(),
+            "team_mates": user.get_teammates()
         })

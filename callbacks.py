@@ -4,6 +4,8 @@
 
 from registration import triggers, settings  # I like to keep all my secrets in settings.py
 from sparkpost import SparkPost  # Import any other non-essential libraries here.
+import requests
+import json
 
 sp = SparkPost(settings.SPARKPOST['secret_key'])
 
@@ -32,3 +34,10 @@ def send_welcome(user):
         }
     )
     print(response)
+
+# Feed the new user into slack
+@triggers.new_user
+def send_slack(user):
+    data = {"text": user.first_name + " " + user.last_name + " (" + user.email + ") registered for HackNC.\n<https://my.hacknc.com/admin/user/" + user.email + "| View Application>"}
+    r = requests.post(settings.SLACK['webhook_url'],data=json.dumps(data))
+    print("Slack Reply: " + r.text)
