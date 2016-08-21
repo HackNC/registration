@@ -78,11 +78,14 @@ hacker_get_set_dict = collections.OrderedDict([
         "required": False,
         # Is the field editable at all?
         "editable": True,
+        # Max length in chars.  -1 = infinite
+        "max_length": -1,
     }),
     ("background", {
         "friendly_name": "Your Background",
         "help_text": "Tell us a little more about you!  How'd you get into tech?",
         "formtype": "textarea",
+        "max_length": -1,
         "always": False,
         "required": False,
         "editable": True,
@@ -92,15 +95,17 @@ hacker_get_set_dict = collections.OrderedDict([
         "friendly_name" : "GitHub URL",
         "help_text" : "A link to your github profile",
         "formtype": "text",
+        "max_length": 128,
         "always": False,
         "required": False,
         "editable": True,
         "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?[Gg][Ii][Tt][Hh][Uu][Bb]\.com\/[\w]+$"
     }),
     ("website", {
-        "friendly_name" : "Persoanl URL",
+        "friendly_name" : "Personal URL",
         "help_text" : "Could be your website, or a link to something else you're proud of.",
         "formtype": "text",
+        "max_length": 128,
         "always": False,
         "required": False,
         "editable": True,
@@ -111,6 +116,7 @@ hacker_get_set_dict = collections.OrderedDict([
         "help_text" : "The MAC accress of your laptop's wireless card.  We need this to connect you to our WIFI.",
         "formtype": "text",
         "always": True,
+        "max_length": 20,
         "required": False,
         "editable": True,
         "pattern": "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
@@ -120,6 +126,7 @@ hacker_get_set_dict = collections.OrderedDict([
         "help_text": "Create a team by giving us a team name.  Your teammates can all add the same name and get grouped.  This won't affect your application - it's just for fun!",
         "formtype": "text",
         "always": True,
+        "max_length": 32,
         "required": False,
         "editable": True,
         "pattern": "^\w+$"
@@ -134,14 +141,16 @@ mlh_friendly_names = collections.OrderedDict([
         "friendly_name": "Email",
         "help_text": "",
         "formtype": "email",
+        "max_length": 128,
         "required": True,
-        "editable": False,
+        "editable": False,  # Never editable
         "always": False
     }),
     ("first_name", {
         "friendly_name": "First Name",
         "help_text": "",
         "formtype": "text",
+        "max_length": 128,
         "required": True,
         "editable": True,
         "always": False
@@ -150,6 +159,7 @@ mlh_friendly_names = collections.OrderedDict([
         "friendly_name": "Last Name",
         "help_text": "",
         "formtype": "text",
+        "max_length": 128,
         "required": True,
         "editable": True,
         "always": False
@@ -158,6 +168,7 @@ mlh_friendly_names = collections.OrderedDict([
         "friendly_name": "Gender",
         "help_text": "",
         "formtype": "text",
+        "max_length": 64,
         "required": False,
         "editable": True,
         "always": False
@@ -166,6 +177,7 @@ mlh_friendly_names = collections.OrderedDict([
         "friendly_name": "Graduation",
         "help_text": "",
         "formtype": "date",
+        "max_length": -1,
         "required": False,
         "editable": True,
         "always": False
@@ -174,6 +186,7 @@ mlh_friendly_names = collections.OrderedDict([
         "friendly_name": "Major",
         "help_text": "",
         "formtype": "text",
+        "max_length": 128,
         "required": False,
         "editable": True,
         "always": False
@@ -182,6 +195,7 @@ mlh_friendly_names = collections.OrderedDict([
         "friendly_name": "Phone Number",
         "help_text": "",
         "formtype": "+tel",
+        "max_length": 32,
         "required": False,
         "editable": True,
         "always": False
@@ -190,6 +204,7 @@ mlh_friendly_names = collections.OrderedDict([
         "friendly_name": "School",
         "help_text": "",
         "formtype": "text",
+        "max_length": 256,
         "required": True,
         "editable": True,
         "always": False
@@ -198,6 +213,7 @@ mlh_friendly_names = collections.OrderedDict([
         "friendly_name": "Date of Birth",
         "help_text": "",
         "formtype": "date",
+        "max_length": -1,
         "required": True,
         "editable": True,
         "always": False
@@ -206,6 +222,7 @@ mlh_friendly_names = collections.OrderedDict([
         "friendly_name": "Shirt Size",
         "help_text": "",
         "formtype": "text",
+        "max_length": 32,
         "required": True,
         "editable": True,
         "always": False
@@ -214,6 +231,7 @@ mlh_friendly_names = collections.OrderedDict([
         "friendly_name": "Special Needs",
         "help_text": "",
         "formtype": "text",
+        "max_length": -1,
         "required": False,
         "editable": True,
         "always": False
@@ -222,6 +240,7 @@ mlh_friendly_names = collections.OrderedDict([
         "friendly_name": "Dietary Restrictions",
         "help_text": "",
         "formtype": "text",
+        "max_length": -1,
         "required": False,
         "editable": True,
         "always": False
@@ -247,3 +266,62 @@ mlh_settable_keys = [
     "dietary_restrictions",
     "updated_at"
 ]
+
+def validate(user, update_dict, updatable_dict):
+    """
+    user: the user this data applies to
+    update_dict: key-value pairs to set
+    updatable_dict: a dict from above with keys:
+        editable,
+        always, 
+        formtype
+    """
+    status=True
+    invalid_key=None
+    invalid_value=None
+    reason=None
+
+    for key, value in update_dict.items():
+
+        constraints = updatable_dict[key]
+
+        # Make sure the key to be set even exists.
+
+        if key in updatable_dict.keys():
+
+            # Editable check
+
+            if (
+                (user.is_editable or constraints['always'])
+                and constraints['editable']
+                ):
+                pass
+            else: 
+                status = False
+                invalid_key = key
+                invalid_value = value
+                reason="User tried to set an unsettable field"
+                break
+
+            # Length Check.
+
+            if constraints['max_length'] >= 0:
+                # Max length should be checked.
+                if len(value) <= constraints['max_length']:
+                    pass
+                else:
+                    status = False
+                    invalid_value = value
+                    invalid_key = key
+                    reson = "Value exceeds max length"
+                    break
+            else:
+                pass
+
+    return {
+        "action": "validate",
+        "status": "success" if status else "fail",
+        "invalid_key": invalid_key,
+        "invalid_value": invalid_value,
+        "reason": reason
+    }
