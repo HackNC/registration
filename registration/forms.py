@@ -61,11 +61,9 @@ StatusCodes = {
     }
 }
 
-# The list of keys the user is allowed to get/set, plus metadata for the view.
-# Since it's 1:1, we should keep the meta here.
-# Edit this to determine what questions should be shown in the form.
-hacker_get_set_dict = collections.OrderedDict([
-    ("what_to_learn" , { 
+# Master list of form items.  Can span many types of users.
+master = {
+    "what_to_learn": {
         # The field name to shwo the user
         "friendly_name": "What do you want to learn?",
         # Some help text to explain what they should put
@@ -80,8 +78,8 @@ hacker_get_set_dict = collections.OrderedDict([
         "editable": True,
         # Max length in chars.  -1 = infinite
         "max_length": -1,
-    }),
-    ("background", {
+    },
+    "background": {
         "friendly_name": "Your Background",
         "help_text": "Tell us a little more about you!  How'd you get into tech?",
         "formtype": "textarea",
@@ -90,8 +88,8 @@ hacker_get_set_dict = collections.OrderedDict([
         "required": False,
         "editable": True,
         "pattern": "^.+$"
-    }),
-    ("github", {
+    },
+    "github": {
         "friendly_name" : "GitHub URL",
         "help_text" : "A link to your github profile",
         "formtype": "text",
@@ -100,8 +98,8 @@ hacker_get_set_dict = collections.OrderedDict([
         "required": False,
         "editable": True,
         "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?[Gg][Ii][Tt][Hh][Uu][Bb]\.com\/[\w]+$"
-    }),
-    ("website", {
+    },
+    "website": {
         "friendly_name" : "Personal URL",
         "help_text" : "Could be your website, or a link to something else you're proud of.",
         "formtype": "text",
@@ -110,8 +108,8 @@ hacker_get_set_dict = collections.OrderedDict([
         "required": False,
         "editable": True,
         "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?([\dA-Za-z\.-]+)\.([A-Za-z\.]{2,6})([\/\w \.-]*)*\/?$"
-    }),
-    ("mac_address", {
+    },
+    "mac_address": {
         "friendly_name" : "MAC Address",
         "help_text" : "The MAC accress of your laptop's wireless card.  We need this to connect you to our WIFI.",
         "formtype": "text",
@@ -120,8 +118,8 @@ hacker_get_set_dict = collections.OrderedDict([
         "required": False,
         "editable": True,
         "pattern": "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
-    }),
-    ("team_name", {
+    },
+    "team_name": {
         "friendly_name": "Team Name",
         "help_text": "Create a team by giving us a team name.  Your teammates can all add the same name and get grouped.  This won't affect your application - it's just for fun!",
         "formtype": "text",
@@ -130,14 +128,8 @@ hacker_get_set_dict = collections.OrderedDict([
         "required": False,
         "editable": True,
         "pattern": "^\w+$"
-    }),
-])
-
-# The MLH View form.  Same template as above, but
-# this data is separate from our own.
-# Edit this to determine what data from MLH should be shown in the registration form.
-mlh_friendly_names = collections.OrderedDict([
-    ("email", {
+    },
+    "email": {
         "friendly_name": "Email",
         "help_text": "",
         "formtype": "email",
@@ -145,8 +137,8 @@ mlh_friendly_names = collections.OrderedDict([
         "required": True,
         "editable": False,  # Never editable
         "always": False
-    }),
-    ("first_name", {
+    },
+    "first_name": {
         "friendly_name": "First Name",
         "help_text": "",
         "formtype": "text",
@@ -154,8 +146,8 @@ mlh_friendly_names = collections.OrderedDict([
         "required": True,
         "editable": True,
         "always": False
-    }),
-    ("last_name", {
+    },
+    "last_name": {
         "friendly_name": "Last Name",
         "help_text": "",
         "formtype": "text",
@@ -163,8 +155,8 @@ mlh_friendly_names = collections.OrderedDict([
         "required": True,
         "editable": True,
         "always": False
-    }),
-    ("gender", {
+    },
+    "gender": {
         "friendly_name": "Gender",
         "help_text": "",
         "formtype": "text",
@@ -172,8 +164,8 @@ mlh_friendly_names = collections.OrderedDict([
         "required": False,
         "editable": True,
         "always": False
-    }),
-    ("graduation", {
+    },
+    "graduation": {
         "friendly_name": "Graduation",
         "help_text": "",
         "formtype": "date",
@@ -181,8 +173,8 @@ mlh_friendly_names = collections.OrderedDict([
         "required": False,
         "editable": True,
         "always": False
-    }),
-    ("major",{
+    },
+    "major": {
         "friendly_name": "Major",
         "help_text": "",
         "formtype": "text",
@@ -190,8 +182,8 @@ mlh_friendly_names = collections.OrderedDict([
         "required": False,
         "editable": True,
         "always": False
-    }),
-    ("phone_number", {
+    },
+    "phone_number": {
         "friendly_name": "Phone Number",
         "help_text": "",
         "formtype": "+tel",
@@ -199,8 +191,8 @@ mlh_friendly_names = collections.OrderedDict([
         "required": False,
         "editable": True,
         "always": False
-    }),
-    ("school_name", {
+    },
+    "school_name": {
         "friendly_name": "School",
         "help_text": "",
         "formtype": "text",
@@ -208,8 +200,8 @@ mlh_friendly_names = collections.OrderedDict([
         "required": True,
         "editable": True,
         "always": False
-    }),
-    ("date_of_birth", {
+    },
+    "date_of_birth": {
         "friendly_name": "Date of Birth",
         "help_text": "",
         "formtype": "date",
@@ -217,8 +209,8 @@ mlh_friendly_names = collections.OrderedDict([
         "required": True,
         "editable": True,
         "always": False
-    }),
-    ("shirt_size", {
+    },
+    "shirt_size": {
         "friendly_name": "Shirt Size",
         "help_text": "",
         "formtype": "text",
@@ -226,8 +218,8 @@ mlh_friendly_names = collections.OrderedDict([
         "required": True,
         "editable": True,
         "always": False
-    }), 
-    ("special_needs", {
+    }, 
+    "special_needs": {
         "friendly_name": "Special Needs",
         "help_text": "",
         "formtype": "text",
@@ -235,17 +227,17 @@ mlh_friendly_names = collections.OrderedDict([
         "required": False,
         "editable": True,
         "always": False
-    }),
-    ("dietary_restrictions", {
+    },
+    "dietary_restrictions": {
         "friendly_name": "Dietary Restrictions",
         "help_text": "",
         "formtype": "text",
         "max_length": -1,
         "required": False,
         "editable": True,
-        "always": False
-    })
-])
+        "always": False,
+    }
+}
 
 # The list of keys MLH is allowed to set - don't touch this
 mlh_settable_keys = [
@@ -266,6 +258,41 @@ mlh_settable_keys = [
     "dietary_restrictions",
     "updated_at"
 ]
+
+#
+# Define the view forms here using fields from the master list.
+#
+
+# The list of keys the user is allowed to get/set, plus metadata for the view.
+# Since it's 1:1, we should keep the meta here.
+# Edit this to determine what questions should be shown in the form.
+hacker_form = collections.OrderedDict([
+    ("what_to_learn" , master['what_to_learn']),
+    ("background", master['background']),
+    ("github", master['github']),
+    ("website", master['website']),
+    ("mac_address", master['mac_address']),
+    ("team_name", master['team_name']),
+])
+
+# The MLH View form.  Same template as above, but
+# this data is separate from our own.
+# Edit this to determine what data from MLH should be shown in the registration form.
+mlh_form = collections.OrderedDict([
+    ("email", master["email"]),
+    ("first_name", master["first_name"]),
+    ("last_name", master["last_name"]),
+    ("gender", master["gender"]),
+    ("graduation", master["graduation"]),
+    ("major",master["major"]),
+    ("phone_number", master["phone_number"]),
+    ("school_name", master["school_name"]),
+    ("date_of_birth", master["date_of_birth"]),
+    ("shirt_size", master["shirt_size"]),
+    ("special_needs", master["special_needs"]),
+    ("dietary_restrictions",master["dietary_restrictions"])
+])
+
 
 def validate(user, update_dict, updatable_dict):
     """

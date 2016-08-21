@@ -92,8 +92,8 @@ class User(db.Model):
         valid_data = forms.validate(self, update_dict, updatable_dictionary)
 
         if valid_data['status'] == "success":
-            for key, value in update_dict():
-                setattr(self, key, value)
+            for key, value in update_dict.items():
+                setattr(self, key, sanitize_Blank(value))
             db.session.commit()
         else:
             return valid_data
@@ -144,16 +144,15 @@ class HackerUser(User, db.Model):
 
     # The list of keys the user is allowed to get/set, plus metadata for the view.
     # Since it's 1:1, we should keep the meta here.
-    user_get_set_dict = forms.hacker_get_set_dict
+    user_get_set_dict = forms.hacker_form
 
     # The list of keys MLH is allowed to set - don't touch this
     mlh_settable_keys = forms.mlh_settable_keys
 
     # The list of MLH keys the user can set
-    mlh_friendly_dict = forms.mlh_friendly_names
+    mlh_friendly_dict = forms.mlh_form
 
     # Things MLH knows - these keys are necessary for the app to function
-    # TODO: change application to use email as the primary key
     mlh_id = db.Column(db.INTEGER, unique=True)
     created_at = db.Column(db.DateTime)
     date_of_birth = db.Column(db.Date)
