@@ -1,3 +1,5 @@
+# This module contains the business logic for handling application state changes.
+
 import datetime
 
 from . import models

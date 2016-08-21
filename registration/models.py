@@ -11,13 +11,16 @@ db = SQLAlchemy()
 
 class User(db.Model):
 
+    # TODO: Change max lengths to pull from forms.py
+    # Should never maintain 2 copies of the same data
+
     __tablename__ = 'user'
     
     # User data
-    email = db.Column(db.String(32), unique=True)
-    first_name = db.Column(db.String(32))
-    last_name = db.Column(db.String(32))
-    phone_number = db.Column(db.String(20), unique=True)
+    email = db.Column(db.String(128), unique=True)
+    first_name = db.Column(db.String(128))
+    last_name = db.Column(db.String(128))
+    phone_number = db.Column(db.String(32))
     shirt_size = db.Column(db.String(32))
 
     # System data
@@ -86,38 +89,20 @@ class User(db.Model):
             "reason": "fail reason if fail"
             }
         """
-        for key, value in update_dict.items():       
-            if key in updatable_dictionary.keys():
-                if (
-                    (self.is_editable or updatable_dictionary[key]['always']) 
-                    and updatable_dictionary[key]['editable']
-                    ):
-                    setattr(self, key, value)
-                else:
-                    return {
-                        "action": "update",
-                        "status": "fail",
-                        "reason": "non-editable field state",
-                        "failed_key": key,
-                        "failed_value": value} 
-            else:
-                # Tell the user they tried to set a bad key.  It was probably an accident
-                return {
-                    "action": "update",
-                    "status": "fail", 
-                    "reason": "user tried to set unsettable field",
-                    "failed_key": key,
-                    "failed_value": value}
-        
-        db.session.commit()
+        valid_data = forms.validate(self, update_dict, updatable_dictionary)
+
+        if valid_data['status'] == "success":
+            for key, value in update_dict.items():
+                setattr(self, key, sanitize_Blank(value))
+            db.session.commit()
+        else:
+            return valid_data
         
         # Process callbacks if everything went fine.
         # TODO: This should maybe be async.
         self.user_updated()
         
-        return {
-            "action":"update",
-            "status":"success"} 
+        return valid_data
     
     def admin_update(self, update_dict):
         for key, value in update_dict.items():
@@ -159,22 +144,21 @@ class HackerUser(User, db.Model):
 
     # The list of keys the user is allowed to get/set, plus metadata for the view.
     # Since it's 1:1, we should keep the meta here.
-    user_get_set_dict = forms.hacker_get_set_dict
+    user_get_set_dict = forms.hacker_form
 
     # The list of keys MLH is allowed to set - don't touch this
     mlh_settable_keys = forms.mlh_settable_keys
 
     # The list of MLH keys the user can set
-    mlh_friendly_dict = forms.mlh_friendly_names
+    mlh_friendly_dict = forms.mlh_form
 
     # Things MLH knows - these keys are necessary for the app to function
-    # TODO: change application to use email as the primary key
     mlh_id = db.Column(db.INTEGER, unique=True)
     created_at = db.Column(db.DateTime)
     date_of_birth = db.Column(db.Date)
-    gender = db.Column(db.String(16))
+    gender = db.Column(db.String(64))
     graduation = db.Column(db.Date)
-    major = db.Column(db.String(64))
+    major = db.Column(db.String(128))
     school_id = db.Column(db.INTEGER)
     school_name = db.Column(db.String(256))
     special_needs = db.Column(db.Text)
@@ -274,8 +258,8 @@ class HackerUser(User, db.Model):
                     # MLH tried to set a key it shouldn't have - panic
                     raise KeyError("MLH Tried to set a key it shouldn't have.")
 
-            user.user_created()
             db.session.commit()
+            user.user_created()
         
         return user
 
@@ -288,4 +272,13 @@ def make_migrations(app):
         db.create_all()
 
 def sanitize_None(value):
-    return "" if value in [None, "None"] else value
+    """
+    When reading the database to the form, change nulls to ''
+    """
+    return "" if value in [None, "None", "none", "na", "n/a"] else value
+
+def sanitize_Blank(value):
+    """
+    When reading the form to the db, change '' to nulls
+    """
+    return None if value in ['', ' '] else value
