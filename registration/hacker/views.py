@@ -25,7 +25,7 @@ def apply():
         update_dict = request.form.to_dict()
         # TODO: Validate the form.
         updatable_dictionary = utilities.merge_two_dicts(
-            forms.hacker_get_set_dict, forms.mlh_friendly_names)
+            forms.hacker_form, forms.mlh_form)
         
         update_success = user.update(update_dict, updatable_dictionary)
         
@@ -41,8 +41,8 @@ def apply():
 
     return render_template(
         "apply.html",
-        mlh_data=user.fill_form(forms.mlh_friendly_names),
-        form_data=user.fill_form(forms.hacker_get_set_dict),
+        mlh_data=user.fill_form(forms.mlh_form),
+        form_data=user.fill_form(forms.hacker_form),
         teammates=user.get_teammates(),
         allowed_extensions=settings.ALLOWED_EXTENSIONS
     )
@@ -63,7 +63,7 @@ def me():
     elif request.method == "POST":
         
         updatable_dictionary = utilities.merge_two_dicts(
-            forms.hacker_get_set_dict, forms.mlh_friendly_names)
+            forms.hacker_form, forms.mlh_form)
         
         update_success = user.update(request.form.to_dict(), updatable_dictionary)
         return jsonify(**{
