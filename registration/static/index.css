@@ -246,6 +246,14 @@ button:hover {
   header .logo {
     height: 200px;
   }
+  #navbar a{
+    font-size: 1.1rem;
+    margin: 0 10px;
+  }
+  .container {
+    width: 98%;
+    margin: 1% 1%;
+  }
 }
 @media(min-width: 850px){
   .column {
@@ -256,5 +264,13 @@ button:hover {
   }
   header .logo {
     height: 240px;
+  }
+  #navbar a{
+    font-size: 1.4rem;
+    margin: 0 20px;
+  }
+  .container {
+    width: 88%;
+    margin: 0 10%;
   }
 }
