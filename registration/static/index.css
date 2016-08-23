@@ -159,8 +159,19 @@ form label textarea:invalid:not(:focus) {
 form label textarea {
   line-height: 1.4;
 }
+form label input[type='checkbox'] {
+  text-align: left;
+  width: auto;
+  display: inline;
+}
+
 form .big {
   padding: 16px 20px;
+}
+form .checkbox_help {
+  font-size: 14px;
+  font-family: sans-serif;
+  font-weight: 300;
 }
 
 button {
