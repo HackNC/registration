@@ -32,7 +32,9 @@ def apply():
         if update_success['status'] == "success":
             flash("Update successful")
         else:
-            flash("Update failed")
+            flash("Update failed! reason: {reason}".format(
+                reason=update_success['reason']))
+            print(update_success)
 
         resume_success = secure_store(request.files, user, "resume")
         if resume_success:

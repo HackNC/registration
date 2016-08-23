@@ -11,6 +11,8 @@
     <div class="column mlh">
       {% for field_id, data in mlh_data.items() %}
         <label>{{ data['friendly_name'] }}
+          <span class='required-asterisk' 
+            style="display:{{"inline" if data['required'] else "none"}};">*</span>
           <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{ data['value'] }}" {{ 'disabled' if not data['editable'] else ''}} {{ "required" if data['required'] else ""}}>
         </label>      
       {% endfor %}
@@ -20,16 +22,40 @@
     <div class="column">
       {% for field_id, data in form_data.items() %}
         <label>{{ data['friendly_name'] }}
+        <span class='required-asterisk' 
+          style="display:{{"inline" if data['required'] else "none"}};">*</span>
+          
           {% if data['formtype'] == 'textarea' %}
             <p class="help-text">{{ data['help_text']}}</p>
             <textarea class="form-control big" id="{{ field_id }}" name="{{ field_id }}" rows="3" pattern="{{data['pattern']}}"
-            {{ 'disabled' if not data['editable'] else ''}} {{ "required" if data['required'] else ""}}>{{ data['value'] }}</textarea>
+                {{ 'disabled' if not data['editable'] else ''}} {{ "required" if data['required'] else ""}}>{{ data['value'] }}</textarea>
+          
+          {% elif data['formtype'] == 'dropdown' %}
+            <p class="help-text">{{ data['help_text']}}</p>
+            <select name="{{ field_id }}" {{ "required" if data['required'] else '' }}>
+              
+              {% for option in data['options'] %}
+                <option value="{{ option }}" 
+                  {{ "selected" if current_user[field_id] == option else ""}}>{{ option }}</option>
+              {% endfor %}
+            
+            </select>
+          {% elif data['formtype'] == 'checkbox' %}
+            <br>
+            <input type="checkbox" name="{{ field_id }}" value="true"
+              {{"checked" if current_user[field_id] else "" }}
+              {{"required" if data['required'] else '' }}><span class="checkbox_help">{{ data['help_text'] }}</span><br>
+          
           {% else %}
             <p class="help-text">{{ data['help_text']}}</p>
-            <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" pattern="{{data['pattern']}}" placeholder="hello" {{ 'disabled' if not data['editable'] else ''}} {{ "required" if data['required'] else ""}}>
+            <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" pattern="{{data['pattern']}}" placeholder="hello" 
+              {{ 'disabled' if not data['editable'] else ''}} 
+              {{ "required" if data['required'] else ""}}>
+          
           {% endif %}
         </label>
       {% endfor %}
+      
       <label>Resume Upload
         <p class="help-text">Accepts {{ allowed_extensions }}</p>
         <p class="help-text">{{ "You've uploaded a resume." if current_user.resume_location else "No resume on file" }}</p>

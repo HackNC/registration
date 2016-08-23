@@ -17,11 +17,11 @@ class User(db.Model):
     __tablename__ = 'user'
     
     # User data
-    email = db.Column(db.String(128), unique=True)
-    first_name = db.Column(db.String(128))
-    last_name = db.Column(db.String(128))
-    phone_number = db.Column(db.String(32))
-    shirt_size = db.Column(db.String(32))
+    email = db.Column(db.String(forms.get_length("email")), unique=True)
+    first_name = db.Column(db.String(forms.get_length("first_name")))
+    last_name = db.Column(db.String(forms.get_length("last_name")))
+    phone_number = db.Column(db.String(forms.get_length("phone_number")))
+    shirt_size = db.Column(db.String(forms.get_length("shirt_size")))
 
     # System data
     is_admin = db.Column(db.Boolean)
@@ -156,24 +156,30 @@ class HackerUser(User, db.Model):
     mlh_id = db.Column(db.INTEGER, unique=True)
     created_at = db.Column(db.DateTime)
     date_of_birth = db.Column(db.Date)
-    gender = db.Column(db.String(64))
+    gender = db.Column(db.String(forms.get_length("gender")))
     graduation = db.Column(db.Date)
-    major = db.Column(db.String(128))
+    major = db.Column(db.String(forms.get_length("major")))
     school_id = db.Column(db.INTEGER)
-    school_name = db.Column(db.String(256))
+    school_name = db.Column(db.String(forms.get_length("school_name")))
     special_needs = db.Column(db.Text)
     updated_at = db.Column(db.DateTime)
     dietary_restrictions = db.Column(db.Text)
 
     # Our extended data - we can modify this
     what_to_learn = db.Column(db.Text)
-    resume_location = db.Column(db.String(256))
+    resume_location = db.Column(db.String(512))
     background = db.Column(db.Text)
-    team_name = db.Column(db.String(32))
-    mac_address = db.Column(db.String(20))
-    github = db.Column(db.String(128))
-    website = db.Column(db.String(128))
+    team_name = db.Column(db.String(forms.get_length("team_name")))
+    # mac_address = db.Column(db.String(forms.get_length("mac_address")))
+    github = db.Column(db.String(forms.get_length("github")))
+    website = db.Column(db.String(forms.get_length("website")))
     travel_cost = db.Column(db.Float)
+    
+    accepts_mlh_code = db.Column(db.Boolean)
+    accepts_mlh_release = db.Column(db.Boolean)
+
+    preferred_travel_method = db.Column(db.String(forms.get_length("preferred_travel_method")))
+    needs_reimbursement = db.Column(db.String(forms.get_length("needs_reimbursement")))
 
     # System data - the system needs these.
     visible_status = db.Column(db.CHAR)
@@ -191,7 +197,8 @@ class HackerUser(User, db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
     __mapper_args__ = {
         "polymorphic_identity": "hacker_user",
-        "inherit_condition": (user_id == User.user_id)}
+        "inherit_condition": (user_id == User.user_id)
+    }
 
     def __init__(self, email):
         super(HackerUser, self).__init__(email)

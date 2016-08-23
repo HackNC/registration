@@ -55,7 +55,7 @@ def index():
 # Login handlers
 #
 
-def login_required_or_next(nxt=settings.DEFAULT_VIEW):
+def login_required_or_next(nxt=settings.DEFAULT_VIEW, requires_admin=False):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -69,6 +69,10 @@ def login_required_or_next(nxt=settings.DEFAULT_VIEW):
                 response = app.make_response(target)
                 response.set_cookie('next', value=nxt)
                 return response
+
+            # If admin required
+            if requires_admin and not current_user.is_admin:
+                return jsonify(**{"status": "permission_denied"}), 403
 
             return f(*args, **kwargs)
         return decorated_function

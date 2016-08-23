@@ -61,8 +61,13 @@ StatusCodes = {
     }
 }
 
-# Master list of form items.  Can span many types of users.
+# Master list of form items.  Put any form items for any objects in here.
 master = {
+    
+    # 
+    # Custom form items
+    # 
+
     "what_to_learn": {
         # The field name to shwo the user
         "friendly_name": "What do you want to learn?",
@@ -129,6 +134,11 @@ master = {
         "editable": True,
         "pattern": "^\w+$"
     },
+
+    # 
+    # MLH form items
+    # 
+    
     "email": {
         "friendly_name": "Email",
         "help_text": "",
@@ -236,6 +246,56 @@ master = {
         "required": False,
         "editable": True,
         "always": False,
+    },
+    "accepts_mlh_code": {
+        "friendly_name":"MLH Code of Conduct",
+        "help_text": "I accept the MLH code of conduct.",
+        "formtype": "checkbox",
+        "max_length": -1,
+        "required": True,
+        "editable": True,
+        "always": False
+    },
+    "accepts_mlh_release": {
+        "friendly_name":"MLH Photo Release Policy",
+        "help_text": "I accept the MLH photo release policy.",
+        "formtype": "checkbox",
+        "max_length": -1,
+        "required": True,
+        "editable": True,
+        "always": False
+    },
+    "preferred_travel_method": {
+        "friendly_name":"Means of Travel",
+        "help_text": "How will you be traveling to HackNC?",
+        "formtype": "dropdown",
+        "max_length": 128,
+        "required": False,
+        "editable": True,
+        "always": False,
+        "options": [
+            "",
+            "car - drive myself",
+            "car - carpool",
+            "bus - HackNC is providing a bus from my school",
+            "bus - purchase my own ticket",
+            "train - purchase my own ticket",
+            "flight - purchase my own ticket"
+        ]
+    },
+    "needs_reimbursement":{
+        "friendly_name":"Travel Reimbursement",
+        "help_text": "Will you need help paying for travel to HackNC?",
+        "formtype": "dropdown",
+        "max_length": 32,
+        "required": True,
+        "editable": True,
+        "always": False,
+        "options": [
+            "",
+            "yes",
+            "no",
+        ]
     }
 }
 
@@ -271,8 +331,12 @@ hacker_form = collections.OrderedDict([
     ("background", master['background']),
     ("github", master['github']),
     ("website", master['website']),
-    ("mac_address", master['mac_address']),
+    # ("mac_address", master['mac_address']),
     ("team_name", master['team_name']),
+    ("needs_reimbursement", master['needs_reimbursement']),
+    ("preferred_travel_method", master['preferred_travel_method']),
+    ("accepts_mlh_code", master['accepts_mlh_code']),
+    ("accepts_mlh_release", master['accepts_mlh_release']),
 ])
 
 # The MLH View form.  Same template as above, but
@@ -290,8 +354,11 @@ mlh_form = collections.OrderedDict([
     ("date_of_birth", master["date_of_birth"]),
     ("shirt_size", master["shirt_size"]),
     ("special_needs", master["special_needs"]),
-    ("dietary_restrictions",master["dietary_restrictions"])
+    ("dietary_restrictions",master["dietary_restrictions"]),
 ])
+
+def get_length(name):
+    return master[name]['max_length']
 
 
 def validate(user, update_dict, updatable_dict):
@@ -316,7 +383,7 @@ def validate(user, update_dict, updatable_dict):
 
         if key in updatable_dict.keys():
 
-            # Editable check
+            # Editable check - make sure we CAN set this field.
 
             if (
                 (user.is_editable or constraints['always'])
@@ -330,9 +397,10 @@ def validate(user, update_dict, updatable_dict):
                 reason="User tried to set an unsettable field"
                 break
 
-            # Length Check.
+            # Length Check - make sure the length is OK
 
             if constraints['max_length'] >= 0:
+                
                 # Max length should be checked.
                 if len(value) <= constraints['max_length']:
                     pass
@@ -344,6 +412,32 @@ def validate(user, update_dict, updatable_dict):
                     break
             else:
                 pass
+
+            # Required Check - make sure required fields are set.
+
+            if constraints['required']:
+
+                if value not in [None, '']:
+                    pass
+                else:
+                    status = False
+                    invalid_key = key
+                    invalid_value = value
+                    reason = "Field was required but not set"
+                    break
+
+            # Dropdown Check - make sure dropdown values are in the possible set.
+
+            if constraints['formtype'] == 'dropdown':
+
+                if value in constraints['options']:
+                    pass
+                else:
+                    status = False
+                    invalid_key = key
+                    invalid_value = value
+                    reason = "Value was not within list of possible options."
+                    break
 
     return {
         "action": "validate",
