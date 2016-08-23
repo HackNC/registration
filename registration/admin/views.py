@@ -10,7 +10,7 @@ from . import renderers
 # 
 
 @app.route("/admin", methods=["GET"])
-@login_required_or_next(nxt="admin")
+@login_required_or_next(nxt="admin", requires_admin=True)
 def admin():
     """
     Administrative users can examine the live registration data
@@ -20,11 +20,12 @@ def admin():
         ufilter=request.args.get("filter"))
 
 @app.route("/admin/user/<user_id>", methods=["POST", "GET"])
-@login_required_or_next(nxt="admin_update")
+@login_required_or_next(nxt="admin_update", requires_admin=True)
 def admin_update(user_id):
     """
     This method may be used to set ANY field.  Be careful when using this.
     """
+
     if request.method == "POST":
         user = load_user(user_id)
         success_status = user.admin_update(request.form.to_dict())
