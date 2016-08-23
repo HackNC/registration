@@ -30,10 +30,11 @@ def apply():
         update_success = user.update(update_dict, updatable_dictionary)
         
         if update_success['status'] == "success":
-            flash("Update successful")
+            flash("Application Saved.  You may save as often as you wish.")
         else:
-            flash("Update failed! reason: {reason}".format(
-                reason=update_success['reason']))
+            flash("Update failed! reason: {reason} {bug_report}".format(
+                reason=update_success['reason'],
+                bug_report="Report bugs to bugs@hacknc.com"))
             print(update_success)
 
         resume_success = secure_store(request.files, user, "resume")
