@@ -69,10 +69,10 @@ master = {
     # 
 
     "what_to_learn": {
-        # The field name to shwo the user
+        # The field name to show the user
         "friendly_name": "What do you want to learn?",
         # Some help text to explain what they should put
-        "help_text": "Whether it be virtual reality, the internet of things, or how to scrape together your first webpage, let us know what you're interested in learning!",
+        "placeholder": "Whether it be virtual reality, the internet of things, or how to scrape together your first webpage, let us know what you're interested in learning!",
         # What sort of form is this?
         "formtype": "textarea",
         # Is the field editable regardless of registration_status?
@@ -86,7 +86,7 @@ master = {
     },
     "background": {
         "friendly_name": "Your Background",
-        "help_text": "Tell us a little more about you!  How'd you get into tech?",
+        "placeholder": "Tell us a little more about you!",
         "formtype": "textarea",
         "max_length": -1,
         "always": False,
@@ -96,7 +96,7 @@ master = {
     },
     "github": {
         "friendly_name" : "GitHub URL",
-        "help_text" : "A link to your github profile",
+        "placeholder" : "github.com/[username]",
         "formtype": "text",
         "max_length": 128,
         "always": False,
@@ -106,7 +106,7 @@ master = {
     },
     "website": {
         "friendly_name" : "Personal URL",
-        "help_text" : "Could be your website, or a link to something else you're proud of.",
+        "placeholder" : "Your website or something else you're proud of",
         "formtype": "text",
         "max_length": 128,
         "always": False,
@@ -114,19 +114,19 @@ master = {
         "editable": True,
         "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?([\dA-Za-z\.-]+)\.([A-Za-z\.]{2,6})([\/\w \.-]*)*\/?$"
     },
-    "mac_address": {
-        "friendly_name" : "MAC Address",
-        "help_text" : "The MAC accress of your laptop's wireless card.  We need this to connect you to our WIFI.",
-        "formtype": "text",
-        "always": True,
-        "max_length": 20,
-        "required": False,
-        "editable": True,
-        "pattern": "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
-    },
+    # "mac_address": {
+    #     "friendly_name" : "MAC Address",
+    #     "help_text" : "The MAC accress of your laptop's wireless card.  We need this to connect you to our WIFI.",
+    #     "formtype": "text",
+    #     "always": True,
+    #     "max_length": 20,
+    #     "required": False,
+    #     "editable": True,
+    #     "pattern": "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
+    # },
     "team_name": {
         "friendly_name": "Team Name",
-        "help_text": "Create a team by giving us a team name.  Your teammates can all add the same name and get grouped.  This won't affect your application - it's just for fun!",
+        "help_text": "Create a team by giving us a team name. If your friends enter the same group name, they'll show up on your dashboard. If you don't have a team in mind, do not fear! We will have a session to help you find teammates.",
         "formtype": "text",
         "always": True,
         "max_length": 32,
