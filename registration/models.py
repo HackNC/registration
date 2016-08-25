@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy, inspect
+from flask import escape
 from abc import ABCMeta, abstractmethod
 from dateutil.relativedelta import relativedelta
 import datetime
@@ -10,9 +11,6 @@ from . import utilities
 db = SQLAlchemy()
 
 class User(db.Model):
-
-    # TODO: Change max lengths to pull from forms.py
-    # Should never maintain 2 copies of the same data
 
     __tablename__ = 'user'
     
@@ -26,6 +24,8 @@ class User(db.Model):
     # System data
     is_admin = db.Column(db.Boolean)
     user_id = db.Column(db.Integer, primary_key=True)
+    user_created_at = db.Column(db.DateTime)
+    user_last_updated_at = db.Column(db.DateTime)
 
     # SQLAlchemy inheritance stuff
     discriminator = db.Column(db.String(50))
@@ -37,9 +37,11 @@ class User(db.Model):
 
     def __init__(self, email):
         self.email = email
+        self.user_created_at = datetime.datetime.utcnow()
+        self.user_last_updated_at = datetime.datetime.utcnow()
 
     def serialize(self):
-        return {c: getattr(self, c) for c in inspect(self).attrs.keys()}
+        return {c: escape(getattr(self, c)) for c in inspect(self).attrs.keys()}
 
     def get_id(self):
         """
@@ -55,6 +57,8 @@ class User(db.Model):
             fn(self)
 
     def user_updated(self):
+        self.user_last_updated_at = datetime.datetime.utcnow()
+        db.session.commit()
         for fn in self.update_callbacks:
             fn(self)
 
@@ -75,7 +79,7 @@ class User(db.Model):
         """
         data_dict = form
         for key in data_dict.keys():
-            data_dict[key]['value'] = sanitize_None(getattr(self, key))
+            data_dict[key]['value'] = escape(sanitize_None(getattr(self, key)))
             data_dict[key]['editable'] = self.is_editable or data_dict[key]['always']
         return data_dict
 
@@ -94,7 +98,13 @@ class User(db.Model):
         if valid_data['status'] == "success":
             for key, value in update_dict.items():
                 setattr(self, key, sanitize_Blank(value))
-            db.session.commit()
+            
+            try:
+                db.session.commit()
+            except Exception as e:
+                valid_data['exception'] = e
+                return valid_data
+        
         else:
             return valid_data
         
@@ -170,7 +180,6 @@ class HackerUser(User, db.Model):
     resume_location = db.Column(db.String(512))
     background = db.Column(db.Text)
     team_name = db.Column(db.String(forms.get_length("team_name")))
-    # mac_address = db.Column(db.String(forms.get_length("mac_address")))
     github = db.Column(db.String(forms.get_length("github")))
     website = db.Column(db.String(forms.get_length("website")))
     travel_cost = db.Column(db.Float)
@@ -209,16 +218,41 @@ class HackerUser(User, db.Model):
         self.apply_date = datetime.datetime.utcnow()
 
     def get_teammates(self):
-        if self.team_name is not None and self.team_name is not "":
+        if self.team_name not in ['', None]:
             teammates = self.query.filter(HackerUser.team_name.ilike(self.team_name))
             teammates = [teammate.first_name + " " + teammate.last_name for teammate in teammates]
             return teammates
         else:
             return ["You're not currently on a team"]
 
+    def get_team_count(self, team_name):
+        if team_name not in ['', None]:
+            return self.query.filter(HackerUser.team_name.ilike(team_name)).count()
+        else:
+            return None
+
     def set_resume_location(self, resume_location):
         self.resume_location = resume_location
         db.session.commit() 
+
+    def update(self, update_dict, updatable_dictionary):
+
+        # Validate team size.
+        if 'team_name' in update_dict.keys():
+            if update_dict['team_name'].lower() != self.team_name:
+                team_count = self.get_team_count(update_dict['team_name'])
+                if team_count >= 4:
+                    return {
+                        "status":"fail",
+                        "reason":"Teams must be limited to 4 members.",
+                        "invalid_key":"team_name",
+                        "invalid_value":update_dict['team_name'],
+                    }
+
+            # Lower case the team name
+            update_dict['team_name'] = update_dict['team_name'].lower()
+        
+        return super(HackerUser, self).update(update_dict, updatable_dictionary)
     
     @property
     def friendly_status(self):
@@ -236,39 +270,39 @@ class HackerUser(User, db.Model):
 
     @staticmethod
     def update_or_create(user_dict):
-        """
-        Try to get by MLH ID, then by email.
-        If those fail, create a new user
-        """
-        email = user_dict["email"]
-        mlh_id = user_dict["mlh_id"]
-        user = None
+            """
+            Try to get by MLH ID, then by email.
+            If those fail, create a new user
+            """
+            email = user_dict["email"]
+            mlh_id = user_dict["mlh_id"]
+            user = None
 
-        if not user:
-            user = HackerUser.query.filter_by(mlh_id=mlh_id).first()
-        if not user:
-            user = HackerUser.query.filter_by(email=email).first()
-        
+            if not user:
+                user = HackerUser.query.filter_by(mlh_id=mlh_id).first()
+            if not user:
+                user = HackerUser.query.filter_by(email=email).first()
+            
 
-        if user:
-            # If we found the user, done
-            pass
-        else:
-            # Else we must create another.
-            user = HackerUser(email)
-            db.session.add(user)
+            if user:
+                # If we found the user, done
+                pass
+            else:
+                # Else we must create another.
+                user = HackerUser(email)
+                db.session.add(user)
 
-            for key, value in user_dict.items():
-                if key in user.mlh_settable_keys:
-                    setattr(user, key, value)
-                else:
-                    # MLH tried to set a key it shouldn't have - panic
-                    raise KeyError("MLH Tried to set a key it shouldn't have.")
+                for key, value in user_dict.items():
+                    if key in user.mlh_settable_keys:
+                        setattr(user, key, value)
+                    else:
+                        # MLH tried to set a key it shouldn't have - panic
+                        raise KeyError("MLH Tried to set a key it shouldn't have.")
 
-            db.session.commit()
-            user.user_created()
-        
-        return user
+                db.session.commit()
+                user.user_created()
+            
+            return user
 
 # 
 # Model Helpers

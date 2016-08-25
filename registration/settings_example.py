@@ -2,6 +2,7 @@ import datetime
 
 DATE_OF_HACKATHON = datetime.date(2016, 10, 29)
 DAYS_TO_RSVP = 7  # How many days after an acceptance to allow RSVP to happen
+MAX_UPLOAD_SIZE_MB = 10
 SECRET_KEY = "SECRET_KEY" # Anything you want.  Should be hard to guess.
 UPLOAD_FOLDER = "/path/to/resumes_folder"
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'docx', 'odt'])

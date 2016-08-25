@@ -1,4 +1,5 @@
 import collections
+from dateutil import parser
 
 # The status codes and their meanings
 # These are the statuses that a user account can be in
@@ -127,12 +128,63 @@ master = {
     "team_name": {
         "friendly_name": "Team Name",
         "help_text": "Create a team by giving us a team name. If your friends enter the same group name, they'll show up on your dashboard. If you don't have a team in mind, do not fear! We will have a session to help you find teammates.",
+        "placeholder": "Teams can have a max of 4 members.",
         "formtype": "text",
         "always": True,
         "max_length": 32,
         "required": False,
         "editable": True,
-        "pattern": "^\w+$"
+        "pattern": "^.*$"
+    },
+    "accepts_mlh_code": {
+        "friendly_name":"MLH Code of Conduct",
+        "help_text": "I accept the MLH code of conduct.",
+        "formtype": "checkbox",
+        "max_length": -1,
+        "required": True,
+        "editable": True,
+        "always": False
+    },
+    "accepts_mlh_release": {
+        "friendly_name":"MLH Photo Release Policy",
+        "help_text": "I accept the MLH photo release policy.",
+        "formtype": "checkbox",
+        "max_length": -1,
+        "required": True,
+        "editable": True,
+        "always": False
+    },
+    "preferred_travel_method": {
+        "friendly_name":"Means of Travel",
+        "help_text": "How will you be traveling to HackNC?",
+        "formtype": "dropdown",
+        "max_length": 128,
+        "required": False,
+        "editable": True,
+        "always": False,
+        "options": [
+            "",
+            "car - drive myself",
+            "car - carpool",
+            "bus - HackNC is providing a bus from my school",
+            "bus - purchase my own ticket",
+            "train - purchase my own ticket",
+            "flight - purchase my own ticket"
+        ]
+    },
+    "needs_reimbursement":{
+        "friendly_name":"Travel Reimbursement",
+        "help_text": "Will you need help paying for travel to HackNC?",
+        "formtype": "dropdown",
+        "max_length": 32,
+        "required": True,
+        "editable": True,
+        "always": False,
+        "options": [
+            "",
+            "yes",
+            "no",
+        ]
     },
 
     # 
@@ -145,7 +197,7 @@ master = {
         "formtype": "email",
         "max_length": 128,
         "required": True,
-        "editable": False,  # Never editable
+        "editable": False,
         "always": False
     },
     "first_name": {
@@ -176,11 +228,11 @@ master = {
         "always": False
     },
     "graduation": {
-        "friendly_name": "Graduation",
+        "friendly_name": "Graduation Year",
         "help_text": "",
         "formtype": "date",
         "max_length": -1,
-        "required": False,
+        "required": True,
         "editable": True,
         "always": False
     },
@@ -246,56 +298,6 @@ master = {
         "required": False,
         "editable": True,
         "always": False,
-    },
-    "accepts_mlh_code": {
-        "friendly_name":"MLH Code of Conduct",
-        "help_text": "I accept the MLH code of conduct.",
-        "formtype": "checkbox",
-        "max_length": -1,
-        "required": True,
-        "editable": True,
-        "always": False
-    },
-    "accepts_mlh_release": {
-        "friendly_name":"MLH Photo Release Policy",
-        "help_text": "I accept the MLH photo release policy.",
-        "formtype": "checkbox",
-        "max_length": -1,
-        "required": True,
-        "editable": True,
-        "always": False
-    },
-    "preferred_travel_method": {
-        "friendly_name":"Means of Travel",
-        "help_text": "How will you be traveling to HackNC?",
-        "formtype": "dropdown",
-        "max_length": 128,
-        "required": False,
-        "editable": True,
-        "always": False,
-        "options": [
-            "",
-            "car - drive myself",
-            "car - carpool",
-            "bus - HackNC is providing a bus from my school",
-            "bus - purchase my own ticket",
-            "train - purchase my own ticket",
-            "flight - purchase my own ticket"
-        ]
-    },
-    "needs_reimbursement":{
-        "friendly_name":"Travel Reimbursement",
-        "help_text": "Will you need help paying for travel to HackNC?",
-        "formtype": "dropdown",
-        "max_length": 32,
-        "required": True,
-        "editable": True,
-        "always": False,
-        "options": [
-            "",
-            "yes",
-            "no",
-        ]
     }
 }
 
@@ -331,7 +333,7 @@ hacker_form = collections.OrderedDict([
     ("background", master['background']),
     ("github", master['github']),
     ("website", master['website']),
-    # ("mac_address", master['mac_address']),
+    ("graduation", master["graduation"]),
     ("team_name", master['team_name']),
     ("needs_reimbursement", master['needs_reimbursement']),
     ("preferred_travel_method", master['preferred_travel_method']),
@@ -347,7 +349,6 @@ mlh_form = collections.OrderedDict([
     ("first_name", master["first_name"]),
     ("last_name", master["last_name"]),
     ("gender", master["gender"]),
-    ("graduation", master["graduation"]),
     ("major",master["major"]),
     ("phone_number", master["phone_number"]),
     ("school_name", master["school_name"]),
@@ -377,11 +378,11 @@ def validate(user, update_dict, updatable_dict):
 
     for key, value in update_dict.items():
 
-        constraints = updatable_dict[key]
-
         # Make sure the key to be set even exists.
 
         if key in updatable_dict.keys():
+
+            constraints = updatable_dict[key]
 
             # Editable check - make sure we CAN set this field.
 
@@ -438,6 +439,25 @@ def validate(user, update_dict, updatable_dict):
                     invalid_value = value
                     reason = "Value was not within list of possible options."
                     break
+
+            # type check.
+
+            if constraints['formtype'] == 'datetime':
+
+                try:
+                    parser.parse(value)
+                except:
+                    status = False
+                    invalid_key = key
+                    invalid_value = value
+                    reason = "DateTime could not parse."
+                    break
+
+        else:
+            status = False
+            invalid_key = key
+            invalid_value = value
+            reason = "Specified field does not exist"
 
     return {
         "action": "validate",
