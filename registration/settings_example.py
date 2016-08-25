@@ -1,11 +1,17 @@
 import datetime
 
 DATE_OF_HACKATHON = datetime.date(2016, 10, 29)
-SECRET_KEY = "SECRET_KEY_HERE" # Anything you want.  Should be hard to guess.  UUIDs are good.
-UPLOAD_FOLDER = "ROOT_FOLDER_PATH_HERE/resumes"
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'docx', 'otd'])
+DAYS_TO_RSVP = 7  # How many days after an acceptance to allow RSVP to happen
+MAX_UPLOAD_SIZE_MB = 10
+SECRET_KEY = "SECRET_KEY" # Anything you want.  Should be hard to guess.
+UPLOAD_FOLDER = "/path/to/resumes_folder"
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'docx', 'odt'])
 DEFAULT_REGISTRATION_STATUS = "o" # Open
-ACCEPTING_NEW = True
+NULL_PENDING_STATUS = "x"  # The state to default pending_state to
+BATCH_PENDING_STATUS= "p"  # The state to move open applications to while they are processed
+ACCEPTING_NEW = True  # Override all application acceptance states without modifying the object model
+DEFAULT_VIEW="apply" # Which page to show newly logged in users
+ALLOWED_PAGES=['apply', 'dashboard', 'admin', 'admin_update'] # What pages can users route to?
 
 DATABASE = {
     "drivername": "DB_DRIVER",

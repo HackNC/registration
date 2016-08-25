@@ -36,3 +36,10 @@ def admin_update(user_id):
     elif request.method == "GET":
         user = load_user(user_id)
         return renderers.AdminView(current_user).api_get(user)
+
+@app.route("/admin/restart", methods=['GET'])
+@login_required_or_next(nxt="admin_restart", requires_admin=True)
+def admin_restart():
+    return jsonify(**{
+        "status": uwsgi.reload()
+    })

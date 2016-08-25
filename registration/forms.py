@@ -1,4 +1,5 @@
 import collections
+from dateutil import parser
 
 # The status codes and their meanings
 # These are the statuses that a user account can be in
@@ -69,10 +70,10 @@ master = {
     # 
 
     "what_to_learn": {
-        # The field name to shwo the user
+        # The field name to show the user
         "friendly_name": "What do you want to learn?",
         # Some help text to explain what they should put
-        "help_text": "Whether it be virtual reality, the internet of things, or how to scrape together your first webpage, let us know what you're interested in learning!",
+        "placeholder": "Whether it be virtual reality, the internet of things, or how to scrape together your first webpage, let us know what you're interested in learning!",
         # What sort of form is this?
         "formtype": "textarea",
         # Is the field editable regardless of registration_status?
@@ -86,7 +87,7 @@ master = {
     },
     "background": {
         "friendly_name": "Your Background",
-        "help_text": "Tell us a little more about you!  How'd you get into tech?",
+        "placeholder": "Tell us a little more about you!",
         "formtype": "textarea",
         "max_length": -1,
         "always": False,
@@ -96,7 +97,7 @@ master = {
     },
     "github": {
         "friendly_name" : "GitHub URL",
-        "help_text" : "A link to your github profile",
+        "placeholder" : "github.com/[username]",
         "formtype": "text",
         "max_length": 128,
         "always": False,
@@ -106,7 +107,7 @@ master = {
     },
     "website": {
         "friendly_name" : "Personal URL",
-        "help_text" : "Could be your website, or a link to something else you're proud of.",
+        "placeholder" : "Your website or something else you're proud of",
         "formtype": "text",
         "max_length": 128,
         "always": False,
@@ -114,138 +115,26 @@ master = {
         "editable": True,
         "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?([\dA-Za-z\.-]+)\.([A-Za-z\.]{2,6})([\/\w \.-]*)*\/?$"
     },
-    "mac_address": {
-        "friendly_name" : "MAC Address",
-        "help_text" : "The MAC accress of your laptop's wireless card.  We need this to connect you to our WIFI.",
-        "formtype": "text",
-        "always": True,
-        "max_length": 20,
-        "required": False,
-        "editable": True,
-        "pattern": "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
-    },
+    # "mac_address": {
+    #     "friendly_name" : "MAC Address",
+    #     "help_text" : "The MAC accress of your laptop's wireless card.  We need this to connect you to our WIFI.",
+    #     "formtype": "text",
+    #     "always": True,
+    #     "max_length": 20,
+    #     "required": False,
+    #     "editable": True,
+    #     "pattern": "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"
+    # },
     "team_name": {
         "friendly_name": "Team Name",
-        "help_text": "Create a team by giving us a team name.  Your teammates can all add the same name and get grouped.  This won't affect your application - it's just for fun!",
+        "help_text": "Create a team by giving us a team name. If your friends enter the same group name, they'll show up on your dashboard. If you don't have a team in mind, do not fear! We will have a session to help you find teammates.",
+        "placeholder": "Teams can have a max of 4 members.",
         "formtype": "text",
         "always": True,
         "max_length": 32,
         "required": False,
         "editable": True,
-        "pattern": "^\w+$"
-    },
-
-    # 
-    # MLH form items
-    # 
-    
-    "email": {
-        "friendly_name": "Email",
-        "help_text": "",
-        "formtype": "email",
-        "max_length": 128,
-        "required": True,
-        "editable": False,  # Never editable
-        "always": False
-    },
-    "first_name": {
-        "friendly_name": "First Name",
-        "help_text": "",
-        "formtype": "text",
-        "max_length": 128,
-        "required": True,
-        "editable": True,
-        "always": False
-    },
-    "last_name": {
-        "friendly_name": "Last Name",
-        "help_text": "",
-        "formtype": "text",
-        "max_length": 128,
-        "required": True,
-        "editable": True,
-        "always": False
-    },
-    "gender": {
-        "friendly_name": "Gender",
-        "help_text": "",
-        "formtype": "text",
-        "max_length": 64,
-        "required": False,
-        "editable": True,
-        "always": False
-    },
-    "graduation": {
-        "friendly_name": "Graduation",
-        "help_text": "",
-        "formtype": "date",
-        "max_length": -1,
-        "required": False,
-        "editable": True,
-        "always": False
-    },
-    "major": {
-        "friendly_name": "Major",
-        "help_text": "",
-        "formtype": "text",
-        "max_length": 128,
-        "required": False,
-        "editable": True,
-        "always": False
-    },
-    "phone_number": {
-        "friendly_name": "Phone Number",
-        "help_text": "",
-        "formtype": "+tel",
-        "max_length": 32,
-        "required": False,
-        "editable": True,
-        "always": False
-    },
-    "school_name": {
-        "friendly_name": "School",
-        "help_text": "",
-        "formtype": "text",
-        "max_length": 256,
-        "required": True,
-        "editable": True,
-        "always": False
-    },
-    "date_of_birth": {
-        "friendly_name": "Date of Birth",
-        "help_text": "",
-        "formtype": "date",
-        "max_length": -1,
-        "required": True,
-        "editable": True,
-        "always": False
-    },
-    "shirt_size": {
-        "friendly_name": "Shirt Size",
-        "help_text": "",
-        "formtype": "text",
-        "max_length": 32,
-        "required": True,
-        "editable": True,
-        "always": False
-    }, 
-    "special_needs": {
-        "friendly_name": "Special Needs",
-        "help_text": "",
-        "formtype": "text",
-        "max_length": -1,
-        "required": False,
-        "editable": True,
-        "always": False
-    },
-    "dietary_restrictions": {
-        "friendly_name": "Dietary Restrictions",
-        "help_text": "",
-        "formtype": "text",
-        "max_length": -1,
-        "required": False,
-        "editable": True,
-        "always": False,
+        "pattern": "^.*$"
     },
     "accepts_mlh_code": {
         "friendly_name":"MLH Code of Conduct",
@@ -296,6 +185,131 @@ master = {
             "yes",
             "no",
         ]
+    },
+
+    # 
+    # MLH form items
+    # 
+    
+    "email": {
+        "friendly_name": "Email",
+        "help_text": "",
+        "formtype": "email",
+        "max_length": 128,
+        "required": True,
+        "editable": False,
+        "placeholder": "hacker@school.edu",
+        "always": False
+    },
+    "first_name": {
+        "friendly_name": "First Name",
+        "placeholder": "Susie",
+        "help_text": "",
+        "formtype": "text",
+        "max_length": 128,
+        "required": True,
+        "editable": True,
+        "always": False
+    },
+    "last_name": {
+        "friendly_name": "Last Name",
+        "placeholder": "Hacker",
+        "help_text": "",
+        "formtype": "text",
+        "max_length": 128,
+        "required": True,
+        "editable": True,
+        "always": False
+    },
+    "gender": {
+        "friendly_name": "Gender",
+        "placeholder": "Non-Binary",
+        "help_text": "",
+        "formtype": "text",
+        "max_length": 64,
+        "required": False,
+        "editable": True,
+        "always": False
+    },
+    "graduation": {
+        "friendly_name": "Graduation Year",
+        "placeholder": "05-01-2020",
+        "help_text": "",
+        "formtype": "date",
+        "max_length": -1,
+        "required": True,
+        "editable": True,
+        "always": False
+    },
+    "major": {
+        "friendly_name": "Major",
+        "placeholder": "Electrical Engineering and Sociology",
+        "help_text": "",
+        "formtype": "text",
+        "max_length": 128,
+        "required": False,
+        "editable": True,
+        "always": False
+    },
+    "phone_number": {
+        "friendly_name": "Phone Number",
+        "placeholder": "+1 555 555 5555",
+        "help_text": "",
+        "formtype": "+tel",
+        "max_length": 32,
+        "required": False,
+        "editable": True,
+        "always": False
+    },
+    "school_name": {
+        "friendly_name": "School",
+        "placeholder": "University of North Carolina at Chapel Hill",
+        "help_text": "",
+        "formtype": "text",
+        "max_length": 256,
+        "required": True,
+        "editable": True,
+        "always": False
+    },
+    "date_of_birth": {
+        "friendly_name": "Date of Birth",
+        "placeholder": "01-01-1998",
+        "help_text": "",
+        "formtype": "date",
+        "max_length": -1,
+        "required": True,
+        "editable": True,
+        "always": False
+    },
+    "shirt_size": {
+        "friendly_name": "Shirt Size",
+        "placeholder": "Unisex - M",
+        "help_text": "",
+        "formtype": "text",
+        "max_length": 32,
+        "required": True,
+        "editable": True,
+        "always": False
+    }, 
+    "special_needs": {
+        "friendly_name": "Special Needs",
+        "placeholder": "Anything else you might need while you're here?",
+        "help_text": "",
+        "formtype": "text",
+        "max_length": -1,
+        "required": False,
+        "editable": True,
+        "always": False
+    },
+    "dietary_restrictions": {
+        "friendly_name": "Dietary Restrictions",
+        "placeholder": "Vegan, Vegetarian, Halal or Kosher?",
+        "help_text": "",
+        "formtype": "text",
+        "max_length": -1,
+        "required": False,
+        "editable": True,
+        "always": False,
     }
 }
 
@@ -331,7 +345,7 @@ hacker_form = collections.OrderedDict([
     ("background", master['background']),
     ("github", master['github']),
     ("website", master['website']),
-    # ("mac_address", master['mac_address']),
+    ("graduation", master["graduation"]),
     ("team_name", master['team_name']),
     ("needs_reimbursement", master['needs_reimbursement']),
     ("preferred_travel_method", master['preferred_travel_method']),
@@ -347,7 +361,6 @@ mlh_form = collections.OrderedDict([
     ("first_name", master["first_name"]),
     ("last_name", master["last_name"]),
     ("gender", master["gender"]),
-    ("graduation", master["graduation"]),
     ("major",master["major"]),
     ("phone_number", master["phone_number"]),
     ("school_name", master["school_name"]),
@@ -377,11 +390,11 @@ def validate(user, update_dict, updatable_dict):
 
     for key, value in update_dict.items():
 
-        constraints = updatable_dict[key]
-
         # Make sure the key to be set even exists.
 
         if key in updatable_dict.keys():
+
+            constraints = updatable_dict[key]
 
             # Editable check - make sure we CAN set this field.
 
@@ -438,6 +451,25 @@ def validate(user, update_dict, updatable_dict):
                     invalid_value = value
                     reason = "Value was not within list of possible options."
                     break
+
+            # type check.
+
+            if constraints['formtype'] == 'datetime':
+
+                try:
+                    parser.parse(value)
+                except:
+                    status = False
+                    invalid_key = key
+                    invalid_value = value
+                    reason = "DateTime could not parse."
+                    break
+
+        else:
+            status = False
+            invalid_key = key
+            invalid_value = value
+            reason = "Specified field does not exist"
 
     return {
         "action": "validate",

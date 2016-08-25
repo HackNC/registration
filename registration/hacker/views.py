@@ -23,17 +23,21 @@ def apply():
     if request.method == "POST":
         # TODO: Determine if application is in an updatable state (Has application window closed?)
         update_dict = request.form.to_dict()
-        # TODO: Validate the form.
+
         updatable_dictionary = utilities.merge_two_dicts(
             forms.hacker_form, forms.mlh_form)
         
         update_success = user.update(update_dict, updatable_dictionary)
         
         if update_success['status'] == "success":
-            flash("Update successful")
+            flash("Application submitted.  You may submit as often as you wish while applications are open.")
         else:
-            flash("Update failed! reason: {reason}".format(
-                reason=update_success['reason']))
+            # flash("Update failed on {invalid_key} = {invalid_value}! reason: {reason} {bug_report}".format(
+            flash("Update failed! Reason = {reason} {bug_report}".format(
+                reason=update_success['reason'],
+                invalid_value=update_success['invalid_value'],
+                invalid_key=update_success['invalid_key'],
+                bug_report="Report bugs to bugs@hacknc.com"))
             print(update_success)
 
         resume_success = secure_store(request.files, user, "resume")

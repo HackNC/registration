@@ -1,6 +1,7 @@
 # Standard
 import os
 from functools import wraps
+import ntpath
 # pre-installed
 from requests import RequestException
 from flask import Flask, request, url_for, jsonify, redirect, render_template
@@ -20,7 +21,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = URL(**settings.DATABASE)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = settings.UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 #16MB
+app.config['MAX_CONTENT_LENGTH'] = settings.MAX_UPLOAD_SIZE_MB * 1024 * 1024
 app.secret_key = settings.SECRET_KEY
 
 # Load sub-modules
@@ -156,6 +157,7 @@ def secure_store(requests_files, user, form_file_name):
                 email=user.email,
                 filetype=form_file_name,
                 ext=extension)
+            new_filename = ntpath.split(new_filename)[-1]
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
             return {
                 "action": "uploaded",
