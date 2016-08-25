@@ -232,7 +232,7 @@ master = {
         "always": False
     },
     "graduation": {
-        "friendly_name": "Graduation Year",
+        "friendly_name": "Graduation Date",
         "placeholder": "05-01-2020",
         "help_text": "",
         "formtype": "date",

@@ -101,6 +101,10 @@ class User(db.Model):
             
             try:
                 db.session.commit()
+                # Process callbacks if everything went fine.
+                # TODO: This should maybe be async.
+                self.user_updated()
+            
             except Exception as e:
                 valid_data['status'] = "fail"
                 valid_data['exception'] = e
@@ -110,10 +114,6 @@ class User(db.Model):
         
         else:
             return valid_data
-        
-        # Process callbacks if everything went fine.
-        # TODO: This should maybe be async.
-        self.user_updated()
         
         return valid_data
     

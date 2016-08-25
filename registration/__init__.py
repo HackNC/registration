@@ -158,10 +158,12 @@ def secure_store(requests_files, user, form_file_name):
                 filetype=form_file_name,
                 ext=extension)
             new_filename = ntpath.split(new_filename)[-1]
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
+            full_file_path = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
+            print("Resume uploaded - " + full_file_path)
+            file.save(full_file_path)
             return {
                 "action": "uploaded",
-                "filename": new_filename
+                "filename": full_file_path
             }
 
 # Load views - this is how we make sub modules

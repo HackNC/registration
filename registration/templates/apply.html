@@ -45,6 +45,12 @@
             <input type="checkbox" name="{{ field_id }}" value="true"
               {{"checked" if current_user[field_id] else "" }}
               {{"required" if data['required'] else '' }}><span class="checkbox_help">{{ data['help_text'] }}</span><br>
+
+          {% elif data['formtype'] == 'date' %}
+            <p class="help-text">{{ data['help_text']}}</p>
+              <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" placeholder="{{ data['placeholder'] }}" 
+                {{ 'disabled' if not data['editable'] else ''}} 
+                {{ "required" if data['required'] else ""}}>
           
           {% else %}
             <p class="help-text">{{ data['help_text']}}</p>
