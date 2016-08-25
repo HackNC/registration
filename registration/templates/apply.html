@@ -13,7 +13,7 @@
         <label>{{ data['friendly_name'] }}
           <span class='required-asterisk' 
             style="display:{{"inline" if data['required'] else "none"}};">*</span>
-          <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{ data['value'] }}" placeholder="{{ data['placeholder'] }}" {{ 'disabled' if not data['editable'] else ''}} {{ "required" if data['required'] else ""}}>
+          <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{ data['value'] }}" placeholder="{{ data['placeholder'] }}" {{ "" if data['editable'] else "disabled"}} {{ "required" if data['required'] else ""}}>
         </label>      
       {% endfor %}
     </div>

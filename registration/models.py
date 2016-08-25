@@ -80,7 +80,7 @@ class User(db.Model):
         data_dict = form
         for key in data_dict.keys():
             data_dict[key]['value'] = escape(sanitize_None(getattr(self, key)))
-            data_dict[key]['editable'] = self.is_editable or data_dict[key]['always']
+            data_dict[key]['editable'] = (self.is_editable or data_dict[key]['always']) and data_dict[key]['editable']
         return data_dict
 
     def update(self, update_dict, updatable_dictionary):
@@ -102,7 +102,10 @@ class User(db.Model):
             try:
                 db.session.commit()
             except Exception as e:
+                valid_data['status'] = "fail"
                 valid_data['exception'] = e
+                valid_data['reason'] = "Database constraint violation."
+                db.session.rollback()
                 return valid_data
         
         else:
@@ -229,7 +232,7 @@ class HackerUser(User, db.Model):
         if team_name not in ['', None]:
             return self.query.filter(HackerUser.team_name.ilike(team_name)).count()
         else:
-            return None
+            return 0
 
     def set_resume_location(self, resume_location):
         self.resume_location = resume_location

@@ -198,10 +198,12 @@ master = {
         "max_length": 128,
         "required": True,
         "editable": False,
+        "placeholder": "hacker@school.edu",
         "always": False
     },
     "first_name": {
         "friendly_name": "First Name",
+        "placeholder": "Susie",
         "help_text": "",
         "formtype": "text",
         "max_length": 128,
@@ -211,6 +213,7 @@ master = {
     },
     "last_name": {
         "friendly_name": "Last Name",
+        "placeholder": "Hacker",
         "help_text": "",
         "formtype": "text",
         "max_length": 128,
@@ -220,6 +223,7 @@ master = {
     },
     "gender": {
         "friendly_name": "Gender",
+        "placeholder": "Non-Binary",
         "help_text": "",
         "formtype": "text",
         "max_length": 64,
@@ -229,6 +233,7 @@ master = {
     },
     "graduation": {
         "friendly_name": "Graduation Year",
+        "placeholder": "05-01-2020",
         "help_text": "",
         "formtype": "date",
         "max_length": -1,
@@ -238,6 +243,7 @@ master = {
     },
     "major": {
         "friendly_name": "Major",
+        "placeholder": "Electrical Engineering and Sociology",
         "help_text": "",
         "formtype": "text",
         "max_length": 128,
@@ -247,6 +253,7 @@ master = {
     },
     "phone_number": {
         "friendly_name": "Phone Number",
+        "placeholder": "+1 555 555 5555",
         "help_text": "",
         "formtype": "+tel",
         "max_length": 32,
@@ -256,6 +263,7 @@ master = {
     },
     "school_name": {
         "friendly_name": "School",
+        "placeholder": "University of North Carolina at Chapel Hill",
         "help_text": "",
         "formtype": "text",
         "max_length": 256,
@@ -265,6 +273,7 @@ master = {
     },
     "date_of_birth": {
         "friendly_name": "Date of Birth",
+        "placeholder": "01-01-1998",
         "help_text": "",
         "formtype": "date",
         "max_length": -1,
@@ -274,6 +283,7 @@ master = {
     },
     "shirt_size": {
         "friendly_name": "Shirt Size",
+        "placeholder": "Unisex - M",
         "help_text": "",
         "formtype": "text",
         "max_length": 32,
@@ -283,6 +293,7 @@ master = {
     }, 
     "special_needs": {
         "friendly_name": "Special Needs",
+        "placeholder": "Anything else you might need while you're here?",
         "help_text": "",
         "formtype": "text",
         "max_length": -1,
@@ -292,6 +303,7 @@ master = {
     },
     "dietary_restrictions": {
         "friendly_name": "Dietary Restrictions",
+        "placeholder": "Vegan, Vegetarian, Halal or Kosher?",
         "help_text": "",
         "formtype": "text",
         "max_length": -1,

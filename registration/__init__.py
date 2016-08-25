@@ -1,6 +1,7 @@
 # Standard
 import os
 from functools import wraps
+import ntpath
 # pre-installed
 from requests import RequestException
 from flask import Flask, request, url_for, jsonify, redirect, render_template
@@ -156,6 +157,7 @@ def secure_store(requests_files, user, form_file_name):
                 email=user.email,
                 filetype=form_file_name,
                 ext=extension)
+            new_filename = ntpath.split(new_filename)[-1]
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
             return {
                 "action": "uploaded",

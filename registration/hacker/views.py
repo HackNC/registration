@@ -32,7 +32,8 @@ def apply():
         if update_success['status'] == "success":
             flash("Application submitted.  You may submit as often as you wish while applications are open.")
         else:
-            flash("Update failed on {invalid_key} = {invalid_value}! reason: {reason} {bug_report}".format(
+            # flash("Update failed on {invalid_key} = {invalid_value}! reason: {reason} {bug_report}".format(
+            flash("Update failed! Reason = {reason} {bug_report}".format(
                 reason=update_success['reason'],
                 invalid_value=update_success['invalid_value'],
                 invalid_key=update_success['invalid_key'],
