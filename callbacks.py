@@ -46,7 +46,7 @@ def send_slack(user):
 @triggers.update_user
 def upload_resume(user):
     if user.resume_location:
-        subprocess.call([
+        subprocess.Popen([
             '/opt/dropbox/dropbox_uploader.sh',
             'upload',
             user.resume_location,
