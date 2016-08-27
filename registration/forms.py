@@ -1,5 +1,6 @@
 import collections
 from dateutil import parser
+from flask import Markup
 
 # The status codes and their meanings
 # These are the statuses that a user account can be in
@@ -138,7 +139,7 @@ master = {
     },
     "accepts_mlh_code": {
         "friendly_name":"MLH Code of Conduct",
-        "help_text": "I accept the MLH code of conduct.",
+        "help_text": Markup("I accept the <a href='https://static.mlh.io/docs/mlh-code-of-conduct.pdf'>MLH code of conduct</a>."),
         "formtype": "checkbox",
         "max_length": -1,
         "required": True,
@@ -147,7 +148,7 @@ master = {
     },
     "accepts_mlh_release": {
         "friendly_name":"MLH Photo Release Policy",
-        "help_text": "I accept the MLH photo release policy.",
+        "help_text": Markup("I accept the <a href='https://mlh.io/privacy'>MLH privacy policy</a>."),
         "formtype": "checkbox",
         "max_length": -1,
         "required": True,
