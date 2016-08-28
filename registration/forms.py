@@ -311,6 +311,52 @@ master = {
         "required": False,
         "editable": True,
         "always": False,
+    },
+    "accepts_mlh_code": {
+        "help_text": "I accept the MLH code of conduct.",
+        "formtype": "checkbox",
+        "max_length": -1,
+        "required": True,
+        "editable": True,
+        "always": False
+    },
+    "accepts_mlh_release": {
+        "help_text": "I accept the MLH photo release policy.",
+        "formtype": "checkbox",
+        "max_length": -1,
+        "required": True,
+        "editable": True,
+        "always": False
+    },
+    "preferred_travel_method": {
+        "friendly_name":"Travel Method",
+        "help_text":"How are you getting to HackNC?",
+        "formtype": "dropdown",
+        "max_length": 128,
+        "required": False,
+        "editable": True,
+        "always": False,
+        "options": [
+            "Car - I'll drive myself",
+            "Car - I'll carpool",
+            "Bus - HackNC is providing a bus from my school",
+            "Bus - I'll purchase my own ticket",
+            "Train - I'll purchase my own ticket",
+            "Flight - I'll purchase my own ticket"
+        ]
+    },
+    "needs_reimbursement":{
+        "friendly_name":"Travel Reimbursement",
+        "help_text": "Will you need help paying for travel to HackNC?",
+        "formtype": "dropdown",
+        "max_length": 32,
+        "required": True,
+        "editable": True,
+        "always": False,
+        "options": [
+            "Yes",
+            "No",
+        ]
     }
 }
 
@@ -350,6 +396,7 @@ hacker_form = collections.OrderedDict([
     ("team_name", master['team_name']),
     ("needs_reimbursement", master['needs_reimbursement']),
     ("preferred_travel_method", master['preferred_travel_method']),
+    ("team_name", master['team_name']),
     ("accepts_mlh_code", master['accepts_mlh_code']),
     ("accepts_mlh_release", master['accepts_mlh_release']),
 ])

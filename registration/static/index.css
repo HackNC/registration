@@ -121,8 +121,13 @@ form label {
   color: #DCEEFF;
 }
 
+form label .help-text {
+  margin: 4px 0;
+}
+
 form label input,
 form label textarea,
+form label select,
 button {
   display: block;
   width: 100%;
@@ -139,19 +144,36 @@ button {
   transition: border-color 0.4s, box-shadow 0.4s;
 }
 
+form label select {
+  -webkit-appearance: none;
+  padding-left: 20px;
+  height: 55px;
+  cursor: pointer;
+}
+
+form label select option:disabled{
+  display: none;
+}
+
 form label input:focus,
-form label textarea:focus {
+form label textarea:focus,
+form label select:focus,
+form label input[type='checkbox']:focus ~ .checkbox-indicator {
   border-color: #FFD600;
   box-shadow: 0px 0px 4px #FFD600;
 }
 
 form label input:disabled,
-form label textarea:disabled {
-  background-color: #8B99A4;
+form label textarea:disabled,
+form label select:disabled,
+form label input[type='checkbox']:disabled ~ .checkbox-indicator {
+  color: #E8E8E8;
 }
 
-form label input:invalid:not(:focus),
-form label textarea:invalid:not(:focus) {
+form label input.touched:invalid:not(:focus),
+form label textarea.touched:invalid:not(:focus),
+form label select.touched:invalid:not(:focus),
+form label input[type='checkbox'].touched:invalid:not(:focus) ~ .checkbox-indicator {
   border-color: #D91414;
   box-shadow: 0px 0px 4px #D91414;
 }
@@ -159,10 +181,51 @@ form label textarea:invalid:not(:focus) {
 form label textarea {
   line-height: 1.4;
 }
+
 form label input[type='checkbox'] {
   text-align: left;
   width: auto;
   display: inline;
+  display: none;
+}
+
+form label input[type='checkbox'] ~ .checkbox-indicator {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  background: red;
+  display: inline-block;
+  cursor: pointer;
+  background: #346CA5;
+  border-radius: 3px;
+  position: relative;
+  vertical-align: middle;
+  margin-top: 2px;
+}
+
+form label input[type='checkbox'] ~ .checkbox-indicator .checkmark{
+  display:inline-block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+form label input[type='checkbox'] ~ .checkbox-indicator .checkmark:after {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-radius: 2px;
+    border-width: 0 4px 4px 0;
+    transform: rotate(45deg);
+}
+
+form label input[type='checkbox']:checked ~ .checkbox-indicator .checkmark {
+  opacity: 1;
 }
 
 form .big {
