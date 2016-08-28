@@ -20,6 +20,10 @@
 
     <!-- HackNC Section -->
     <div class="column">
+      <label>Resume Upload
+        <p class="help-text">{{ "You've uploaded a resume." if current_user.resume_location }}</p>
+        <input type="file" class="form-control big" name="resume">
+      </label>
       {% for field_id, data in form_data.items() %}
         <label
           style="{{'display: none;' if field_id == 'preferred_travel_method' and current_user[field_id] != 'Yes'}}"
@@ -73,10 +77,6 @@
         </label>
       {% endfor %}
       
-      <label>Resume Upload
-        <p class="help-text">{{ "You've uploaded a resume." if current_user.resume_location else "No resume on file" }}</p>
-        <input type="file" class="form-control big" name="resume">
-      </label>
       <div class="team">
       <!-- <h2>Team</h2>
         {% for teammate in teammates %}

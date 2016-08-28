@@ -396,6 +396,7 @@ hacker_form = collections.OrderedDict([
     ("team_name", master['team_name']),
     ("needs_reimbursement", master['needs_reimbursement']),
     ("preferred_travel_method", master['preferred_travel_method']),
+    ("team_name", master['team_name']),
     ("accepts_mlh_code", master['accepts_mlh_code']),
     ("accepts_mlh_release", master['accepts_mlh_release']),
 ])
