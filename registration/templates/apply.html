@@ -26,7 +26,7 @@
       </label>
       {% for field_id, data in form_data.items() %}
         <label
-          style="{{'display: none;' if field_id == 'preferred_travel_method' and current_user[field_id] != 'Yes'}}"
+          style="{{'display: none;' if field_id == 'preferred_travel_method' and current_user['needs_reimbursement'] != 'Yes'}}"
           title="{{field_id}}"
         >
         {{ data['friendly_name'] }}
