@@ -88,7 +88,7 @@ master = {
     },
     "background": {
         "friendly_name": "Your Background",
-        "placeholder": "Tell us a little more about you!",
+        "placeholder": "Tell us a little more about you!  What got you interested in tech?",
         "formtype": "textarea",
         "max_length": -1,
         "always": False,
@@ -108,7 +108,7 @@ master = {
     },
     "website": {
         "friendly_name" : "Personal URL",
-        "placeholder" : "Your website or something else you're proud of",
+        "placeholder" : "Your website or something else you're proud of.",
         "formtype": "text",
         "max_length": 128,
         "always": False,
@@ -170,7 +170,8 @@ master = {
             "bus - HackNC is providing a bus from my school",
             "bus - purchase my own ticket",
             "train - purchase my own ticket",
-            "flight - purchase my own ticket"
+            "flight - purchase my own ticket",
+            "UNC student - no travel"
         ]
     },
     "needs_reimbursement":{
