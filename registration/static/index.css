@@ -127,6 +127,7 @@ form label .help-text {
 
 form label input,
 form label textarea,
+form label select,
 button {
   display: block;
   width: 100%;
@@ -143,19 +144,37 @@ button {
   transition: border-color 0.4s, box-shadow 0.4s;
 }
 
+form label select {
+  -webkit-appearance: none;
+  padding-left: 20px;
+  height: 55px;
+  cursor: pointer;
+}
+
+form label select option:disabled{
+  display: none;
+}
+
 form label input:focus,
-form label textarea:focus {
+form label textarea:focus,
+form label select:focus,
+form label input[type='checkbox']:focus ~ .checkbox-indicator {
   border-color: #FFD600;
   box-shadow: 0px 0px 4px #FFD600;
 }
 
 form label input:disabled,
-form label textarea:disabled {
+form label textarea:disabled,
+form label select:disabled,
+form label input[type='checkbox']:disabled ~ .checkbox-indicator {
   background-color: #8B99A4;
+  color: #204F80;
 }
 
-form label input:invalid:not(:focus),
-form label textarea:invalid:not(:focus) {
+form label input.touched:invalid:not(:focus),
+form label textarea.touched:invalid:not(:focus),
+form label select.touched:invalid:not(:focus),
+form label input[type='checkbox'].touched:invalid:not(:focus) ~ .checkbox-indicator {
   border-color: #D91414;
   box-shadow: 0px 0px 4px #D91414;
 }
@@ -163,6 +182,7 @@ form label textarea:invalid:not(:focus) {
 form label textarea {
   line-height: 1.4;
 }
+
 form label input[type='checkbox'] {
   text-align: left;
   width: auto;
