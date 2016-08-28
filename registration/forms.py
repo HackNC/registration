@@ -1,5 +1,6 @@
 import collections
 from dateutil import parser
+from flask import Markup
 
 # The status codes and their meanings
 # These are the statuses that a user account can be in
@@ -87,7 +88,7 @@ master = {
     },
     "background": {
         "friendly_name": "Your Background",
-        "placeholder": "Tell us a little more about you!",
+        "placeholder": "Tell us a little more about you!  What got you interested in tech?",
         "formtype": "textarea",
         "max_length": -1,
         "always": False,
@@ -107,7 +108,7 @@ master = {
     },
     "website": {
         "friendly_name" : "Personal URL",
-        "placeholder" : "Your website or something else you're proud of",
+        "placeholder" : "Your website or something else you're proud of.",
         "formtype": "text",
         "max_length": 128,
         "always": False,
@@ -138,7 +139,7 @@ master = {
     },
     "accepts_mlh_code": {
         "friendly_name":"MLH Code of Conduct",
-        "help_text": "I accept the MLH code of conduct.",
+        "help_text": Markup("I accept the <a href='https://static.mlh.io/docs/mlh-code-of-conduct.pdf'>MLH code of conduct</a>."),
         "formtype": "checkbox",
         "max_length": -1,
         "required": True,
@@ -147,7 +148,7 @@ master = {
     },
     "accepts_mlh_release": {
         "friendly_name":"MLH Photo Release Policy",
-        "help_text": "I accept the MLH photo release policy.",
+        "help_text": Markup("I accept the <a href='https://mlh.io/privacy'>MLH privacy policy</a>."),
         "formtype": "checkbox",
         "max_length": -1,
         "required": True,
@@ -169,7 +170,8 @@ master = {
             "bus - HackNC is providing a bus from my school",
             "bus - purchase my own ticket",
             "train - purchase my own ticket",
-            "flight - purchase my own ticket"
+            "flight - purchase my own ticket",
+            "UNC student - no travel"
         ]
     },
     "needs_reimbursement":{
@@ -232,7 +234,7 @@ master = {
         "always": False
     },
     "graduation": {
-        "friendly_name": "Graduation Year",
+        "friendly_name": "Graduation Date",
         "placeholder": "05-01-2020",
         "help_text": "",
         "formtype": "date",
@@ -310,6 +312,52 @@ master = {
         "required": False,
         "editable": True,
         "always": False,
+    },
+    "accepts_mlh_code": {
+        "help_text": "I accept the MLH code of conduct.",
+        "formtype": "checkbox",
+        "max_length": -1,
+        "required": True,
+        "editable": True,
+        "always": False
+    },
+    "accepts_mlh_release": {
+        "help_text": "I accept the MLH photo release policy.",
+        "formtype": "checkbox",
+        "max_length": -1,
+        "required": True,
+        "editable": True,
+        "always": False
+    },
+    "preferred_travel_method": {
+        "friendly_name":"Travel Method",
+        "help_text":"How are you getting to HackNC?",
+        "formtype": "dropdown",
+        "max_length": 128,
+        "required": False,
+        "editable": True,
+        "always": False,
+        "options": [
+            "Car - I'll drive myself",
+            "Car - I'll carpool",
+            "Bus - HackNC is providing a bus from my school",
+            "Bus - I'll purchase my own ticket",
+            "Train - I'll purchase my own ticket",
+            "Flight - I'll purchase my own ticket"
+        ]
+    },
+    "needs_reimbursement":{
+        "friendly_name":"Travel Reimbursement",
+        "help_text": "Will you need help paying for travel to HackNC?",
+        "formtype": "dropdown",
+        "max_length": 32,
+        "required": True,
+        "editable": True,
+        "always": False,
+        "options": [
+            "Yes",
+            "No",
+        ]
     }
 }
 
@@ -349,6 +397,7 @@ hacker_form = collections.OrderedDict([
     ("team_name", master['team_name']),
     ("needs_reimbursement", master['needs_reimbursement']),
     ("preferred_travel_method", master['preferred_travel_method']),
+    ("team_name", master['team_name']),
     ("accepts_mlh_code", master['accepts_mlh_code']),
     ("accepts_mlh_release", master['accepts_mlh_release']),
 ])

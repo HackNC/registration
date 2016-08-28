@@ -20,10 +20,18 @@
 
     <!-- HackNC Section -->
     <div class="column">
+      <label>Resume Upload
+        <p class="help-text">{{ "You've uploaded a resume." if current_user.resume_location }}</p>
+        <input type="file" class="form-control big" name="resume">
+      </label>
       {% for field_id, data in form_data.items() %}
-        <label>{{ data['friendly_name'] }}
+        <label
+          style="{{'display: none;' if field_id == 'preferred_travel_method' and current_user['needs_reimbursement'] != 'Yes'}}"
+          title="{{field_id}}"
+        >
+        {{ data['friendly_name'] }}
         <span class='required-asterisk' 
-          style="display:{{"inline" if data['required'] else "none"}};">*</span>
+          style="display:{{"inline" if data['required'] and not data['formtype'] == 'checkbox' else "none"}};">*</span>
           
           {% if data['formtype'] == 'textarea' %}
             <p class="help-text">{{ data['help_text']}}</p>
@@ -31,12 +39,16 @@
                 {{ 'disabled' if not data['editable'] else ''}} {{ "required" if data['required'] else ""}}>{{ data['value'] }}</textarea>
           
           {% elif data['formtype'] == 'dropdown' %}
-            <p class="help-text">{{ data['help_text']}}</p>
-            <select name="{{ field_id }}" {{ "required" if data['required'] else '' }}>
+            <select name="{{ field_id }}" 
+              style="{{ 'color: #204F80;' if not current_user[field_id] }}"
+              {{ "required" if data['required'] else '' }}
+            >
               
+              <option value="" disabled 
+              {{ "selected" if not current_user[field_id] or current_user[field_id].length == 0 }}>{{data['help_text']}}</option>
               {% for option in data['options'] %}
                 <option value="{{ option }}" 
-                  {{ "selected" if current_user[field_id] == option else ""}}>{{ option }}</option>
+                  {{ "selected" if current_user[field_id] == option else "" }}>{{ option }}</option>
               {% endfor %}
             
             </select>
@@ -44,8 +56,17 @@
             <br>
             <input type="checkbox" name="{{ field_id }}" value="true"
               {{"checked" if current_user[field_id] else "" }}
-              {{"required" if data['required'] else '' }}><span class="checkbox_help">{{ data['help_text'] }}</span><br>
-          
+              {{"required" if data['required'] else '' }}>
+            <span class="checkbox-indicator"><span class='checkmark'></span></span>
+            {{ data['help_text'] }}
+            <span class='required-asterisk' 
+            style="display:{{"inline" if data['required'] else "none"}};">*</span>
+            <br>
+          {% elif data['formtype'] == 'date' %}
+            <p class="help-text">{{ data['help_text']}}</p>
+              <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" placeholder="{{ data['placeholder'] }}" 
+                {{ 'disabled' if not data['editable'] else ''}} 
+                {{ "required" if data['required'] else ""}}>
           {% else %}
             <p class="help-text">{{ data['help_text']}}</p>
             <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" pattern="{{data['pattern']}}" placeholder="{{ data['placeholder'] }}" 
@@ -56,11 +77,6 @@
         </label>
       {% endfor %}
       
-      <label>Resume Upload
-        <p class="help-text">Accepts {{ allowed_extensions }}</p>
-        <p class="help-text">{{ "You've uploaded a resume." if current_user.resume_location else "No resume on file" }}</p>
-        <input type="file" class="form-control big" name="resume">
-      </label>
       <div class="team">
       <!-- <h2>Team</h2>
         {% for teammate in teammates %}
@@ -68,11 +84,10 @@
         {% endfor %} -->
       </div>
     
-      <p class="help-text">You can submit as many times as you want until applications close.</p>
       </label>
       <button class="big" type="submit">Submit!</button>
     </div>
 
 </form>
-  
+<script type="text/javascript" src="static/index.js"></script>
 {% endblock %}

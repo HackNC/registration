@@ -26,7 +26,14 @@ def apply():
 
         updatable_dictionary = utilities.merge_two_dicts(
             forms.hacker_form, forms.mlh_form)
+
+        # Handle the resume first
+        resume_success = secure_store(request.files, user, "resume")
+        if resume_success:
+            user.set_resume_location(resume_success['filename'])
+            flash("File uploaded")
         
+        # Then, the rest of the update
         update_success = user.update(update_dict, updatable_dictionary)
         
         if update_success['status'] == "success":
@@ -39,11 +46,6 @@ def apply():
                 invalid_key=update_success['invalid_key'],
                 bug_report="Report bugs to bugs@hacknc.com"))
             print(update_success)
-
-        resume_success = secure_store(request.files, user, "resume")
-        if resume_success:
-            user.set_resume_location(resume_success['filename'])
-            flash("File uploaded")
 
     return render_template(
         "apply.html",

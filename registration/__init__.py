@@ -2,6 +2,8 @@
 import os
 from functools import wraps
 import ntpath
+import logging
+from logging import StreamHandler
 # pre-installed
 from requests import RequestException
 from flask import Flask, request, url_for, jsonify, redirect, render_template
@@ -22,7 +24,14 @@ app.config['SQLALCHEMY_DATABASE_URI'] = URL(**settings.DATABASE)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = settings.UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = settings.MAX_UPLOAD_SIZE_MB * 1024 * 1024
+app.config['DEBUG'] = settings.DEBUG
 app.secret_key = settings.SECRET_KEY
+
+# Verbose logging in PROD
+if app.debug is False:
+    handler = StreamHandler(sys.stdout)
+    handler.setLevel(logging.DEBUG)
+    app.logger.addHandler(handler)
 
 # Load sub-modules
 CORS(app)
@@ -158,10 +167,12 @@ def secure_store(requests_files, user, form_file_name):
                 filetype=form_file_name,
                 ext=extension)
             new_filename = ntpath.split(new_filename)[-1]
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
+            full_file_path = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
+            print("Resume uploaded - " + full_file_path)
+            file.save(full_file_path)
             return {
                 "action": "uploaded",
-                "filename": new_filename
+                "filename": full_file_path
             }
 
 # Load views - this is how we make sub modules
