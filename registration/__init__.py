@@ -2,6 +2,8 @@
 import os
 from functools import wraps
 import ntpath
+import logging
+from logging import StreamHandler
 # pre-installed
 from requests import RequestException
 from flask import Flask, request, url_for, jsonify, redirect, render_template
@@ -22,7 +24,14 @@ app.config['SQLALCHEMY_DATABASE_URI'] = URL(**settings.DATABASE)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = settings.UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = settings.MAX_UPLOAD_SIZE_MB * 1024 * 1024
+app.config['DEBUG'] = settings.DEBUG
 app.secret_key = settings.SECRET_KEY
+
+# Verbose logging in PROD
+if app.debug is False:
+    handler = StreamHandler(sys.stdout)
+    handler.setLevel(logging.DEBUG)
+    app.logger.addHandler(handler)
 
 # Load sub-modules
 CORS(app)
