@@ -121,6 +121,10 @@ form label {
   color: #DCEEFF;
 }
 
+form label .help-text {
+  margin: 4px 0;
+}
+
 form label input,
 form label textarea,
 button {
@@ -163,6 +167,46 @@ form label input[type='checkbox'] {
   text-align: left;
   width: auto;
   display: inline;
+  display: none;
+}
+
+form label input[type='checkbox'] ~ .checkbox-indicator {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  background: red;
+  display: inline-block;
+  cursor: pointer;
+  background: #346CA5;
+  border-radius: 3px;
+  position: relative;
+  vertical-align: middle;
+  margin-top: 2px;
+}
+
+form label input[type='checkbox'] ~ .checkbox-indicator .checkmark{
+  display:inline-block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+form label input[type='checkbox'] ~ .checkbox-indicator .checkmark:after {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-radius: 2px;
+    border-width: 0 4px 4px 0;
+    transform: rotate(45deg);
+}
+
+form label input[type='checkbox']:checked ~ .checkbox-indicator .checkmark {
+  opacity: 1;
 }
 
 form .big {

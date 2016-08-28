@@ -44,14 +44,14 @@
             <br>
             <input type="checkbox" name="{{ field_id }}" value="true"
               {{"checked" if current_user[field_id] else "" }}
-              {{"required" if data['required'] else '' }}><span class="checkbox_help">{{ data['help_text'] }}</span><br>
-
+              {{"required" if data['required'] else '' }}>
+            <span class="checkbox-indicator"><span class='checkmark'></span></span>
+            <span class="checkbox_help">{{ data['help_text'] }}</span><br>
           {% elif data['formtype'] == 'date' %}
             <p class="help-text">{{ data['help_text']}}</p>
               <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" placeholder="{{ data['placeholder'] }}" 
                 {{ 'disabled' if not data['editable'] else ''}} 
                 {{ "required" if data['required'] else ""}}>
-          
           {% else %}
             <p class="help-text">{{ data['help_text']}}</p>
             <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" pattern="{{data['pattern']}}" placeholder="{{ data['placeholder'] }}" 
@@ -63,7 +63,6 @@
       {% endfor %}
       
       <label>Resume Upload
-        <p class="help-text">Accepts {{ allowed_extensions }}</p>
         <p class="help-text">{{ "You've uploaded a resume." if current_user.resume_location else "No resume on file" }}</p>
         <input type="file" class="form-control big" name="resume">
       </label>
