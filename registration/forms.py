@@ -114,7 +114,7 @@ master = {
         "always": False,
         "required": False,
         "editable": True,
-        "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?([\dA-Za-z\.-]+)\.([A-Za-z\.]{2,6})([\/\w \.-]*)*\/?$"
+        # "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?([\dA-Za-z\.-]+)\.([A-Za-z\.]{2,6})([\/\w \.-]*)*\/?$"
     },
     # "mac_address": {
     #     "friendly_name" : "MAC Address",
