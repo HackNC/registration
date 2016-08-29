@@ -12,7 +12,7 @@ if __name__ == '__main__':
 
     # Where should the server listen
     host = '0.0.0.0' if debug else '127.0.0.1'
-    port = 8000 if debug else 9000
+    port = 8002 if debug else 9002
 
     # Make the migrations if we need to
     if migrate:

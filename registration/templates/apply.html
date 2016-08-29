@@ -6,6 +6,7 @@
   <div class="container">
 
     <h1>Complete your application</h1>
+    <p>Fill out a few more questions below so we can get to know you!  Required fields are marked with an asterisk (*)</p>
 
     <!-- MLH Section -->
     <div class="column mlh">
@@ -25,10 +26,11 @@
         <input type="file" class="form-control big" name="resume">
       </label>
       {% for field_id, data in form_data.items() %}
-        <label
+        <!-- <label
           style="{{'display: none;' if field_id == 'preferred_travel_method' and current_user['needs_reimbursement'] != 'Yes'}}"
           title="{{field_id}}"
-        >
+        > -->
+        <label title="{{ field_id}}">
         {{ data['friendly_name'] }}
         <span class='required-asterisk' 
           style="display:{{"inline" if data['required'] and not data['formtype'] == 'checkbox' else "none"}};">*</span>
@@ -59,8 +61,10 @@
               {{"required" if data['required'] else '' }}>
             <span class="checkbox-indicator"><span class='checkmark'></span></span>
             {{ data['help_text'] }}
-            <span class='required-asterisk' 
-            style="display:{{"inline" if data['required'] else "none"}};">*</span>
+            {% if data['required'] %}
+              <span class='required-asterisk'>*</span>
+              <span class="required-text">Required</span>
+            {% endif %}
             <br>
           {% elif data['formtype'] == 'date' %}
             <p class="help-text">{{ data['help_text']}}</p>

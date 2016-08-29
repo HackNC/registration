@@ -129,7 +129,7 @@ master = {
     "team_name": {
         "friendly_name": "Team Name",
         "help_text": "Create a team by giving us a team name. If your friends enter the same group name, they'll show up on your dashboard. If you don't have a team in mind, do not fear! We will have a session to help you find teammates.",
-        "placeholder": "Teams can have a max of 4 members.",
+        "placeholder": "Teams can have a max of 4 members",
         "formtype": "text",
         "always": True,
         "max_length": 32,
@@ -157,14 +157,13 @@ master = {
     },
     "preferred_travel_method": {
         "friendly_name":"Means of Travel",
-        "help_text": "How will you be traveling to HackNC?",
+        "help_text": "If yes: how will you get to HackNC?",
         "formtype": "dropdown",
         "max_length": 128,
         "required": False,
         "editable": True,
         "always": False,
         "options": [
-            "",
             "car - drive myself",
             "car - carpool",
             "bus - HackNC is providing a bus from my school",
@@ -183,9 +182,8 @@ master = {
         "editable": True,
         "always": False,
         "options": [
-            "",
-            "yes",
-            "no",
+            "Yes",
+            "No",
         ]
     },
 
@@ -312,52 +310,6 @@ master = {
         "required": False,
         "editable": True,
         "always": False,
-    },
-    "accepts_mlh_code": {
-        "help_text": "I accept the MLH code of conduct.",
-        "formtype": "checkbox",
-        "max_length": -1,
-        "required": True,
-        "editable": True,
-        "always": False
-    },
-    "accepts_mlh_release": {
-        "help_text": "I accept the MLH photo release policy.",
-        "formtype": "checkbox",
-        "max_length": -1,
-        "required": True,
-        "editable": True,
-        "always": False
-    },
-    "preferred_travel_method": {
-        "friendly_name":"Travel Method",
-        "help_text":"How are you getting to HackNC?",
-        "formtype": "dropdown",
-        "max_length": 128,
-        "required": False,
-        "editable": True,
-        "always": False,
-        "options": [
-            "Car - I'll drive myself",
-            "Car - I'll carpool",
-            "Bus - HackNC is providing a bus from my school",
-            "Bus - I'll purchase my own ticket",
-            "Train - I'll purchase my own ticket",
-            "Flight - I'll purchase my own ticket"
-        ]
-    },
-    "needs_reimbursement":{
-        "friendly_name":"Travel Reimbursement",
-        "help_text": "Will you need help paying for travel to HackNC?",
-        "formtype": "dropdown",
-        "max_length": 32,
-        "required": True,
-        "editable": True,
-        "always": False,
-        "options": [
-            "Yes",
-            "No",
-        ]
     }
 }
 
