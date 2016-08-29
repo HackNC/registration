@@ -59,8 +59,10 @@
               {{"required" if data['required'] else '' }}>
             <span class="checkbox-indicator"><span class='checkmark'></span></span>
             {{ data['help_text'] }}
-            <span class='required-asterisk' 
-            style="display:{{"inline" if data['required'] else "none"}};">*</span>
+            {% if data['required'] %}
+              <span class='required-asterisk'>*</span>
+              <span class="required-text">Required</span>
+            {% endif %}
             <br>
           {% elif data['formtype'] == 'date' %}
             <p class="help-text">{{ data['help_text']}}</p>

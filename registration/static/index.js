@@ -36,3 +36,19 @@ var travelMethod = document.querySelector('label[title="preferred_travel_method"
 for (var i=0; i< selects.length; i++) {
   selects[i].addEventListener('change', setColor);
 }
+
+function ensureChecked(e){
+  var checks = document.querySelectorAll('input[type="checkbox"][required]:not(:checked)')
+  
+  if (checks.length > 0){
+    e.preventDefault();
+    console.log(checks)
+    checks.forEach(function(check){
+      if (check.className.indexOf('invalid') == -1){
+        check.className += ' invalid' 
+      }
+    })
+  }
+}
+
+document.querySelector('form').addEventListener('submit', ensureChecked)

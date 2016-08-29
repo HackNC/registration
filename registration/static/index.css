@@ -173,9 +173,21 @@ form label input[type='checkbox']:disabled ~ .checkbox-indicator {
 form label input.touched:invalid:not(:focus),
 form label textarea.touched:invalid:not(:focus),
 form label select.touched:invalid:not(:focus),
-form label input[type='checkbox'].touched:invalid:not(:focus) ~ .checkbox-indicator {
+form label input[type='checkbox'].touched:invalid:not(:focus) ~ .checkbox-indicator,
+form label input[type='checkbox'].invalid:not(:focus) ~ .checkbox-indicator {
   border-color: #D91414;
   box-shadow: 0px 0px 4px #D91414;
+}
+
+form label .required-text {
+  display: none;
+  color: #D91414;
+  margin-top: 2px;
+  margin-left: 45px;
+}
+
+form label input[type='checkbox'].invalid:not(.touched) ~ .required-text {
+  display: block;
 }
 
 form label textarea {
@@ -197,6 +209,7 @@ form label input[type='checkbox'] ~ .checkbox-indicator {
   display: inline-block;
   cursor: pointer;
   background: #346CA5;
+  border: 1px solid transparent;
   border-radius: 3px;
   position: relative;
   vertical-align: middle;
