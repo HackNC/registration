@@ -41,11 +41,7 @@
                 {{ 'disabled' if not data['editable'] else ''}} {{ "required" if data['required'] else ""}}>{{ data['value'] }}</textarea>
           
           {% elif data['formtype'] == 'dropdown' %}
-            <select name="{{ field_id }}" 
-              style="{{ 'color: #204F80;' if not current_user[field_id] }}"
-              {{ "required" if data['required'] else '' }}
-            >
-              
+            <select name="{{ field_id }}" {{ "required" if data['required'] else '' }}>
               <option value="" disabled 
               {{ "selected" if not current_user[field_id] or current_user[field_id].length == 0 }}>{{data['help_text']}}</option>
               {% for option in data['options'] %}
