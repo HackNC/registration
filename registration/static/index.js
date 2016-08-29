@@ -12,7 +12,13 @@ for (var i = 0; i < inputs.length; i++) {
   inputs[i].addEventListener('blur', markTouched);
 }
 
-
+function validate(){
+  var checks = document.querySelectorAll('input[type="checkbox"][required]:not(:checked)');
+  if (checks.length > 0){
+    console.log(checks);
+    alert("Please accept the required policies and terms.");
+  }
+}
 // function setColor(e) {
 //   var t = e.target;
 //   console.log(t.value)
@@ -37,18 +43,18 @@ for (var i = 0; i < inputs.length; i++) {
 //   selects[i].addEventListener('change', setColor);
 // }
 
-function ensureChecked(e){
-  var checks = document.querySelectorAll('input[type="checkbox"][required]:not(:checked)')
+// function ensureChecked(e){
+//   var checks = document.querySelectorAll('input[type="checkbox"][required]:not(:checked)')
   
-  if (checks.length > 0){
-    e.preventDefault();
-    console.log(checks)
-    checks.forEach(function(check){
-      if (check.className.indexOf('invalid') == -1){
-        check.className += ' invalid' 
-      }
-    })
-  }
-}
+//   if (checks.length > 0){
+//     e.preventDefault();
+//     console.log(checks)
+//     checks.forEach(function(check){
+//       if (check.className.indexOf('invalid') == -1){
+//         check.className += ' invalid' 
+//       }
+//     })
+//   }
+// }
 
-document.querySelector('form').addEventListener('submit', ensureChecked)
+// document.querySelector('form').addEventListener('submit', ensureChecked)
