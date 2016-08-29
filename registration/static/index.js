@@ -13,29 +13,29 @@ for (var i = 0; i < inputs.length; i++) {
 }
 
 
-function setColor(e) {
-  var t = e.target;
-  console.log(t.value)
-  if (t.value.length == 0){
-    t.style.color = "#204F80"
-  }else{
-    t.style.color = "white"
-  }
+// function setColor(e) {
+//   var t = e.target;
+//   console.log(t.value)
+//   if (t.value.length == 0){
+//     t.style.color = "#204F80"
+//   }else{
+//     t.style.color = "white"
+//   }
 
-  if (t.name == "needs_reimbursement"){
-    if (t.value == 'Yes'){
-      travelMethod.style.display = "block";
-    } else {
-      travelMethod.style.display = "none"
-    }
-  }
-}
+//   if (t.name == "needs_reimbursement"){
+//     if (t.value == 'Yes'){
+//       travelMethod.style.display = "block";
+//     } else {
+//       travelMethod.style.display = "none"
+//     }
+//   }
+// }
 
-var selects = document.querySelectorAll('select');
-var travelMethod = document.querySelector('label[title="preferred_travel_method"]')
-for (var i=0; i< selects.length; i++) {
-  selects[i].addEventListener('change', setColor);
-}
+// var selects = document.querySelectorAll('select');
+// var travelMethod = document.querySelector('label[title="preferred_travel_method"]')
+// for (var i=0; i< selects.length; i++) {
+//   selects[i].addEventListener('change', setColor);
+// }
 
 function ensureChecked(e){
   var checks = document.querySelectorAll('input[type="checkbox"][required]:not(:checked)')

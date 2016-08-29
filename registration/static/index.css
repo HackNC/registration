@@ -125,6 +125,12 @@ form label .help-text {
   margin: 4px 0;
 }
 
+form label a,
+form label a:hover,
+form label a:visited{
+  color: white;
+}
+
 form label input,
 form label textarea,
 form label select,

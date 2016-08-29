@@ -26,10 +26,11 @@
         <input type="file" class="form-control big" name="resume">
       </label>
       {% for field_id, data in form_data.items() %}
-        <label
+        <!-- <label
           style="{{'display: none;' if field_id == 'preferred_travel_method' and current_user['needs_reimbursement'] != 'Yes'}}"
           title="{{field_id}}"
-        >
+        > -->
+        <label title="{{ field_id}}">
         {{ data['friendly_name'] }}
         <span class='required-asterisk' 
           style="display:{{"inline" if data['required'] and not data['formtype'] == 'checkbox' else "none"}};">*</span>
