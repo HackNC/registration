@@ -127,10 +127,17 @@ def login():
         user_obj = models.HackerUser.update_or_create(user_dict)
         login_user(user_obj)
         if nxt:
-            target = redirect(url_for(nxt))
-            response = app.make_response(target)
-            response.set_cookie('next', value='', expires=0)
-            return response
+            try:
+                target = redirect(url_for(nxt))
+                response = app.make_response(target)
+                response.set_cookie('next', value='', expires=0)
+                return response
+            except Exception as e:
+                return jsonify(**{
+                    "action": "Redirect",
+                    "status": "failed",
+                    "message": "please log in and retry your request.  Report bugs to bugs@hacknc.com",
+                })
         else:
             return redirect(url_for(settings.DEFAULT_VIEW))
     except RequestException as re:
