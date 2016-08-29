@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 
-<form class=entries action="{{ url_for('apply') }}" method="post" enctype="multipart/form-data">
+<form class=entries action="{{ url_for('apply') }}" method="post" enctype="multipart/form-data" onsubmit="validate()">
 
   <div class="container">
 
@@ -89,7 +89,7 @@
       </div>
     
       </label>
-      <button class="big" type="submit">Submit!</button>
+      <button onclick="validate()" class="big" type="submit">Submit!</button>
     </div>
 
 </form>
