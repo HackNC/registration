@@ -31,7 +31,7 @@
           title="{{field_id}}"
         > -->
         <label title="{{ field_id}}">
-        {{ data['friendly_name'] }}
+        {{ data['friendly_name'] if data['formtype'] != 'checkbox' else '' }}
         <span class='required-asterisk' 
           style="display:{{"inline" if data['required'] and not data['formtype'] == 'checkbox' else "none"}};">*</span>
           
@@ -42,7 +42,7 @@
           
           {% elif data['formtype'] == 'dropdown' %}
             <select name="{{ field_id }}" {{ "required" if data['required'] else '' }}>
-              <option value="" disabled 
+              <option class="muted" value="" disabled 
               {{ "selected" if not current_user[field_id] or current_user[field_id].length == 0 }}>{{data['help_text']}}</option>
               {% for option in data['options'] %}
                 <option value="{{ option }}" 
@@ -85,7 +85,9 @@
       </div>
     
       </label>
-      <button onclick="validate()" class="big" type="submit">Submit!</button>
+      <button onclick="validate()" class="big" type="submit">
+        {{ "Submit!" if current_user.is_new else "Update" }}
+      </button>
     </div>
 
 </form>

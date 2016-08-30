@@ -38,7 +38,6 @@ class User(db.Model):
     def __init__(self, email):
         self.email = email
         self.user_created_at = datetime.datetime.utcnow()
-        self.user_last_updated_at = datetime.datetime.utcnow()
 
     def serialize(self):
         return {c: escape(getattr(self, c)) for c in inspect(self).attrs.keys()}
@@ -151,6 +150,14 @@ class User(db.Model):
     @property
     def is_anonymous(self):
         return False
+
+    @property
+    def is_new(self):
+        """
+        Returns whether or not the user has ever saved before
+        """
+        return self.user_last_updated_at == None
+    
 
 
 class HackerUser(User, db.Model):

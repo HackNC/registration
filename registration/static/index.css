@@ -32,6 +32,7 @@ h1, h2, h3 {
 p {
 
 }
+
 p.help-text {
   font-family: -apple-system,"Helvetica Neue",sans-serif;
   font-size: 12px;
@@ -155,6 +156,10 @@ form label select {
   padding-left: 20px;
   height: 55px;
   cursor: pointer;
+}
+
+form label select .muted {
+  color: #204F80;
 }
 
 form label select option:disabled{
