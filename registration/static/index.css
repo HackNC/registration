@@ -178,7 +178,8 @@ form label input:disabled,
 form label textarea:disabled,
 form label select:disabled,
 form label input[type='checkbox']:disabled ~ .checkbox-indicator {
-  color: #E8E8E8;
+  color: #204F80;
+  background-color: #E8E8E8;
 }
 
 form label input.touched:invalid:not(:focus),

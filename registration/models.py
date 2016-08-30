@@ -79,7 +79,8 @@ class User(db.Model):
         data_dict = form
         for key in data_dict.keys():
             data_dict[key]['value'] = escape(sanitize_None(getattr(self, key)))
-            data_dict[key]['editable'] = (self.is_editable or data_dict[key]['always']) and data_dict[key]['editable']
+            key_editable = data_dict[key]['editable']
+            data_dict[key]['editable'] = (self.is_editable or data_dict[key]['always']) and key_editable
         return data_dict
 
     def update(self, update_dict, updatable_dictionary):
@@ -136,7 +137,7 @@ class User(db.Model):
 
     @property
     def is_editable(self):
-        return False
+        raise NotImplementedError("is_editable doesn't exist at this level")
 
     # Flask Login Stuff
     @property
