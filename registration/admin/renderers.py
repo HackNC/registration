@@ -12,6 +12,7 @@ class AdminView():
 
     def get_admin_panel(self, order=None, ufilter=None):
         users = models.HackerUser.query
+        count = models.HackerUser.query.count()
         if order or ufilter:
             if order == "school":
                 users = users.order_by(models.HackerUser.school_id)
@@ -23,6 +24,8 @@ class AdminView():
                 users = users.order_by(models.HackerUser.date_of_birth)
             elif order == "team":
                 users = users.order_by(models.HackerUser.team_name)
+            elif order == "gender":
+                users = users.order_by(models.HackerUser.gender)
 
         return render_template(
             "admin.html",

@@ -307,7 +307,7 @@ button:hover {
 }
 .admin td, th {
   padding:4px;
-  max-width:300px;
+  max-width:180px;
 }
 .admin.block {
   position: absolute;

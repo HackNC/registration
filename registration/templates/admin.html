@@ -46,6 +46,7 @@
         <th><a href="{{ url_for('admin') }}?order_by=status">Status</a></th>
         <th><a href="{{ url_for('admin') }}?order_by=over18">18+</a></th>
         <th><a href="{{ url_for('admin') }}?order_by=team">Team</a></th>
+        <th><a href="{{ url_for('admin') }}?order_by=gender">Gender</a></th>
         <th>Site</th>
         <th>Details</th>
       </tr>
@@ -79,6 +80,7 @@
         </td>
         <td>{{ user.isOver18 }}</td>
         <td>{{ user.team_name }}</td>
+        <td>{{ user.gender }}</td>
         <td><a href='{{ user.website }}'>{{ user.website }}</a></td>
         <td><button onclick="get_user('{{ user.user_id }}')">Details</button></td>
       </tr>
