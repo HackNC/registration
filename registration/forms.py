@@ -455,10 +455,12 @@ def validate(user, update_dict, updatable_dict):
 
             # type check.
 
-            if constraints['formtype'] == 'datetime':
+            if constraints['formtype'] == 'date':
 
                 try:
                     parser.parse(value)
+                    # If it parses, set the new value
+                    update_dict[key] = parser.parse(value)
                 except:
                     status = False
                     invalid_key = key
