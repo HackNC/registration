@@ -104,7 +104,7 @@ master = {
         "always": False,
         "required": False,
         "editable": True,
-        "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?[Gg][Ii][Tt][Hh][Uu][Bb]\.com\/[\w]+$"
+        "pattern": "^([Hh][Tt][Tt][Pp][Ss]?:\/\/)?[Gg][Ii][Tt][Hh][Uu][Bb]\.com\/[\w-]+$"
     },
     "website": {
         "friendly_name" : "Personal URL",
