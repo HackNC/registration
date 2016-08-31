@@ -67,6 +67,9 @@
               <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" placeholder="{{ data['placeholder'] }}" 
                 {{ 'disabled' if not data['editable'] else ''}} 
                 {{ "required" if data['required'] else ""}}>
+
+          {% elif data['formtype'] == 'info' %}
+            <p class="help-text">{{ data['help_text']}}</p>
           {% else %}
             <p class="help-text">{{ data['help_text']}}</p>
             <input type="{{ data['formtype'] }}" class="form-control big" id="{{ field_id }}" name="{{ field_id }}" value="{{  data['value'] }}" pattern="{{data['pattern']}}" placeholder="{{ data['placeholder'] }}" 

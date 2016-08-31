@@ -78,9 +78,13 @@ class User(db.Model):
         """
         data_dict = form
         for key in data_dict.keys():
-            data_dict[key]['value'] = escape(sanitize_None(getattr(self, key)))
-            key_editable = data_dict[key]['editable']
-            data_dict[key]['editable'] = (self.is_editable or data_dict[key]['always']) and key_editable
+            if data_dict[key]['formtype'] in forms.ignore_types:
+                pass
+            else:
+                data_dict[key]['value'] = escape(sanitize_None(getattr(self, key)))
+                key_editable = data_dict[key]['editable']
+                data_dict[key]['editable'] = (self.is_editable or data_dict[key]['always']) and key_editable
+        
         return data_dict
 
     def update(self, update_dict, updatable_dictionary):
@@ -96,6 +100,7 @@ class User(db.Model):
         valid_data = forms.validate(self, update_dict, updatable_dictionary)
 
         if valid_data['status'] == "success":
+            
             for key, value in update_dict.items():
                 setattr(self, key, sanitize_Blank(value))
             
