@@ -445,7 +445,7 @@ def validate(user, update_dict, updatable_dict):
                     status = False
                     invalid_value = value
                     invalid_key = key
-                    reason = "Value exceeds max length"
+                    reason = "Value exceeds max length of %s characters" % constraints['max_length']
                     break
             else:
                 pass
