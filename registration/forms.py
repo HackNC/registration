@@ -1,7 +1,10 @@
 import collections
+import copy
 from dateutil import parser
 from flask import Markup
 
+# Types that don't require filling with values
+ignore_types = ['info']
 # The status codes and their meanings
 # These are the statuses that a user account can be in
 # Here's how HackNC does it:
@@ -146,13 +149,22 @@ master = {
         "editable": True,
         "always": False
     },
-    "accepts_mlh_release": {
-        "friendly_name":"MLH Photo Release Policy",
-        "help_text": Markup("I accept the <a href='https://mlh.io/privacy'>MLH privacy policy</a>."),
-        "formtype": "checkbox",
+    # "accepts_mlh_release": {
+    #     "friendly_name":"MLH Data Sharing Notice",
+    #     "help_text": Markup("HackNC may share certain information with MLH in accordance with the <a href='https://mlh.io/privacy'>MLH Privacy Policy</a>."),
+    #     "formtype": "checkbox",
+    #     "max_length": -1,
+    #     "required": True,
+    #     "editable": True,
+    #     "always": False
+    # },
+    "accepts_mlh_release":{
+        "friendly_name": "",
+        "help_text": Markup("We participate in Major League Hacking (MLH) as a MLH Member Event. You authorize us to share certain application/registration information for event administration, ranking, MLH administration, pre and post-event informational e-mails, and occasional messages about hackathons in line with the <a href='https://mlh.io/privacy'>MLH Privacy Policy</a>."),
+        "formtype": "info",
         "max_length": -1,
-        "required": True,
-        "editable": True,
+        "required": False,
+        "editable": False,
         "always": False
     },
     "preferred_travel_method": {
@@ -389,7 +401,18 @@ def validate(user, update_dict, updatable_dict):
     invalid_value=None
     reason=None
 
-    for key, value in update_dict.items():
+    # Create a deep copy to iterate on
+    dict_copy = copy.deepcopy(update_dict)
+
+    for key, value in dict_copy.items():
+
+        # Encode as ascii
+        # No need to preserve any unicode.
+        if isinstance(value, str):
+            pass
+        else:
+            value = value.encode('utf-8')
+            update_dict[key] = value
 
         # Make sure the key to be set even exists.
 
@@ -422,7 +445,7 @@ def validate(user, update_dict, updatable_dict):
                     status = False
                     invalid_value = value
                     invalid_key = key
-                    reson = "Value exceeds max length"
+                    reason = "Value exceeds max length"
                     break
             else:
                 pass
@@ -472,12 +495,17 @@ def validate(user, update_dict, updatable_dict):
             status = False
             invalid_key = key
             invalid_value = value
-            reason = "Specified field does not exist"
+            reason = "Specified field does not exist"   
 
-    return {
+    response = {
         "action": "validate",
         "status": "success" if status else "fail",
         "invalid_key": invalid_key,
         "invalid_value": invalid_value,
         "reason": reason
     }
+    
+    if not status:
+        print(response)
+
+    return response
