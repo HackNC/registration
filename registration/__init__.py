@@ -174,7 +174,8 @@ def secure_store(requests_files, user, form_file_name):
                 email=user.email,
                 filetype=form_file_name,
                 ext=extension)
-            new_filename = ntpath.split(new_filename)[-1]
+            new_filename = ntpath.split(new_filename)[-1]  # in case the user tries to manipulate the path
+            new_filename = new_filename.replace(' ', '')  # Replace any unintentional spaces
             full_file_path = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
             print("Resume uploaded - " + full_file_path)
             file.save(full_file_path)
